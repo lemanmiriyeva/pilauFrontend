@@ -1,0 +1,9 @@
+{
+  "/page": "app/page.js",
+  "/daxilol/page": "app/daxilol/page.js",
+  "/2fa-qurulmasi/page": "app/2fa-qurulmasi/page.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js"
+}
