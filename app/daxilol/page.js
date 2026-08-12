@@ -1,7 +1,6 @@
 "use client"
 import React, {useState, useRef} from 'react';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -145,7 +144,6 @@ export default function Page() {
             display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden',
             backgroundColor: '#FFFFFF', position: 'fixed', top: 0, left: 0,
         }}>
-            <CssBaseline/>
 
             <Box sx={{display: {xs: 'block', md: 'none'}, position: 'absolute', inset: 0, zIndex: 0}}>
                 <BuildingBlueprint/>

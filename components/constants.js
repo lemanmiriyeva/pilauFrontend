@@ -19,6 +19,9 @@ export const APP_ROUTES = {
     MODULES: "/modullar",
     ICAZELER: "/icazeler",
     TESKILATLAR: "/teskilatlar",
+    INZIBATCI: "/inzibatci-paneli",
+    INZIBATCI_ISTIFADECILER: "/inzibatci-paneli/istifadeciler",
+    INZIBATCI_ICAZELER: "/inzibatci-paneli/icazeler",
 }
 
 export const LOGIN_STEPS = {

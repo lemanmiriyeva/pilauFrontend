@@ -1,6 +1,14 @@
 import React, {Suspense} from 'react'
+// Self-hosted Inter (via @fontsource) — includes latin-ext, so Azerbaijani
+// characters (ə, ğ, ı, ö, ş, ü, ç) render correctly, with no external font request.
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
+import '@fontsource/inter/800.css'
 import './globals.css'
 import SnackProvider from "./SnackbarProvider";
+import ThemeRegistry from "./ThemeRegistry";
 
 export const metadata = {
     title: 'Giriş Sistemi',
@@ -12,11 +20,13 @@ export default function RootLayout({children}) {
     return (
         <html lang="az">
         <body>
-        <Suspense fallback={null}>
-            <SnackProvider>
-                {children}
-            </SnackProvider>
-        </Suspense>
+        <ThemeRegistry>
+            <Suspense fallback={null}>
+                <SnackProvider>
+                    {children}
+                </SnackProvider>
+            </Suspense>
+        </ThemeRegistry>
         </body>
         </html>
     );

@@ -79,7 +79,7 @@ export default function Page() {
                         {modules.map((m) => (
                             <ModuleCard
                                 key={m.id} module={m} variant="home"
-                                onClick={() => router.push(`${APP_ROUTES.MODULES}/${m.key}`)}
+                                onClick={() => router.push(`${m.key}`)}
                             />
                         ))}
                     </Box>

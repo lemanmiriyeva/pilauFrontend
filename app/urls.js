@@ -16,12 +16,15 @@ export const DJANGO_API_ENDPOINTS = {
         PASSWORD_FORGOT_CONFIRM: API_URL + "/api/auth/password/forgot/confirm/",
         PASSWORD_CHANGE: API_URL + "/api/auth/password/change/",
 
+        ADMIN_USERS_LIST: API_URL + "/api/auth/admin/users/",
         ADMIN_CREATE_USER: API_URL + "/api/auth/admin/users/create/",
+        ADMIN_USER_DETAIL: (id) => API_URL + `/api/auth/admin/users/${id}/`,
         ADMIN_UNLOCK_USER: API_URL + "/api/auth/admin/users/unlock/",
         ADMIN_RESET_TOTP: API_URL + "/api/auth/admin/users/reset-totp/",
     },
     ORGANIZATIONS: {
         TREE: API_URL + "/api/organizations/tree/",
+        SUMMARY: API_URL + "/api/organizations/summary/",
         LIST: API_URL + "/api/organizations/",
         DETAIL: API_URL + "/api/organizations/",
     },
@@ -46,9 +49,14 @@ export const NEXT_API_ENDPOINTS = {
 
         PASSWORD_FORGOT: "auth/password-forgot/",
         PASSWORD_FORGOT_CONFIRM: "auth/password-forgot-confirm/",
+
+        ADMIN_USERS_LIST: "auth/admin/users/",
+        ADMIN_CREATE_USER: "auth/admin/users-create/",
+        ADMIN_USER_DETAIL: (id) => `auth/admin/users/${id}/`,
     },
     ORGANIZATIONS: {
         TREE: "organizations/tree/",
+        SUMMARY: "organizations/summary/",
         LIST: "organizations/",
         DETAIL: "organizations/",
     },

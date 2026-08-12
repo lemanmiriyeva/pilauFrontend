@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import CssBaseline from "@mui/material/CssBaseline";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DownloadIcon from '@mui/icons-material/Download';
 import {useRouter} from "next/navigation";
@@ -123,7 +122,6 @@ export default function Page() {
             display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden',
             backgroundColor: '#FFFFFF', position: 'fixed', top: 0, left: 0,
         }}>
-            <CssBaseline/>
 
             <Box sx={{display: {xs: 'block', md: 'none'}, position: 'absolute', inset: 0, zIndex: 0}}>
                 <BuildingBlueprint/>
