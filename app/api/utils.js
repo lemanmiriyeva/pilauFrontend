@@ -90,4 +90,36 @@ export async function delete_request(url, access_token, refresh_token) {
     return __base_request(url, METHODS.DELETE, null, access_token, refresh_token)
 }
 
+/**
+ * multipart/form-data (fayl yükləmə) sorğuları üçün - __base_request-dən fərqli olaraq
+ * Content-Type təyin ETMİR (fetch FormData üçün bunu boundary ilə özü qoyur) və body-ni
+ * JSON.stringify etmir, FormData-nı olduğu kimi ötürür.
+ */
+async function __base_multipart_request(url, formData, access_token, refresh_token) {
+    const _headers = new Headers({'Accept': 'application/json'})
+    if (access_token?.value) _headers.set('Authorization', 'Bearer ' + access_token.value)
+
+    const clientIp = getClientIp();
+    if (clientIp) _headers.set('X-Forwarded-For', clientIp);
+
+    const config = {headers: _headers, method: METHODS.POST, body: formData}
+    const res = await fetch(url, config)
+
+    if (res.status === 401 && refresh_token?.value) {
+        try {
+            const {access} = await __refresh(refresh_token.value)
+            _headers.set('Authorization', 'Bearer ' + access)
+            return await fetch(url, {...config, headers: _headers})
+        } catch (e) {
+            clearTokenCookies()
+            return res
+        }
+    }
+    return res
+}
+
+export async function post_multipart_request(url, formData, access_token, refresh_token) {
+    return __base_multipart_request(url, formData, access_token, refresh_token)
+}
+
 export {setTokenCookies, clearTokenCookies}

@@ -1,6 +1,23 @@
 {
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/inzibatci-paneli/icazeler/icaze-yarat/page": "app/inzibatci-paneli/icazeler/icaze-yarat/page.js",
+  "/page": "app/page.js",
+  "/api/auth/admin/users/route": "app/api/auth/admin/users/route.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/inzibatci-paneli/istifadeciler/page": "app/inzibatci-paneli/istifadeciler/page.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/page": "app/modullar/lisenziya-senedler/idxal-ixrac/page.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/[id]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/[id]/page.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page.js",
+  "/inzibatci-paneli/istifadeciler/istifadeci-yarat/page": "app/inzibatci-paneli/istifadeciler/istifadeci-yarat/page.js",
+  "/inzibatci-paneli/istifadeciler/[id]/page": "app/inzibatci-paneli/istifadeciler/[id]/page.js",
+  "/api/permissions/modules/route": "app/api/permissions/modules/route.js",
+  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
+  "/api/organizations/tree/route": "app/api/organizations/tree/route.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/yeni/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/page.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
+  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
   "/inzibatci-paneli/icazeler/page": "app/inzibatci-paneli/icazeler/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js"
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js"
 }

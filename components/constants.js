@@ -22,6 +22,8 @@ export const APP_ROUTES = {
     INZIBATCI: "/inzibatci-paneli",
     INZIBATCI_ISTIFADECILER: "/inzibatci-paneli/istifadeciler",
     INZIBATCI_ICAZELER: "/inzibatci-paneli/icazeler",
+    IDXAL_IXRAC: "/modullar/lisenziya-senedler/idxal-ixrac",
+    IDXAL_IXRAC_YENI: "/modullar/lisenziya-senedler/idxal-ixrac/yeni",
 }
 
 export const LOGIN_STEPS = {

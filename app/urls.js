@@ -34,6 +34,13 @@ export const DJANGO_API_ENDPOINTS = {
         USER_PERMISSIONS: API_URL + "/api/permissions/user-permissions/",
         GRANT: API_URL + "/api/permissions/grant/",
     },
+    LICENSES: {
+        APPLICANT_INFO: API_URL + "/api/licenses/applicant-info/",
+        PERMIT_SCHEMA: API_URL + "/api/licenses/permit-documents/schema/",
+        PERMIT_LIST: API_URL + "/api/licenses/permit-documents/",
+        PERMIT_DETAIL: (id) => API_URL + `/api/licenses/permit-documents/${id}/`,
+        PERMIT_CREATE: API_URL + "/api/licenses/permit-documents/",
+    },
 }
 
 export const NEXT_API_ENDPOINTS = {
@@ -65,5 +72,12 @@ export const NEXT_API_ENDPOINTS = {
         MY_MODULES: "permissions/my-modules/",
         USER_PERMISSIONS: "permissions/user-permissions/",
         GRANT: "permissions/grant/",
+    },
+    LICENSES: {
+        APPLICANT_INFO: "licenses/applicant-info/",
+        PERMIT_SCHEMA: "licenses/permit-documents-schema/",
+        PERMIT_LIST: "licenses/permit-documents/",
+        PERMIT_DETAIL: (id) => `licenses/permit-documents/${id}/`,
+        PERMIT_CREATE: "licenses/permit-documents-create/",
     },
 }
