@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {GOV} from "@/components/theme/govColors";
-import OrganizationSelect from "@/components/admin/OrganizationSelect";
-import ModulePermissionsPicker from "@/components/admin/ModulePermissionsPicker";
+import OrganizationSelect from "@/components/atoms/admin/OrganizationSelect";
+import ModulePermissionsPicker from "@/components/atoms/admin/ModulePermissionsPicker";
 
 const emptyForm = {
     first_name: '', last_name: '', username: '', email: '', phone: '',

@@ -14,10 +14,6 @@ const STATUS_FIELDS = [
     {key: 'can_approve', label: 'TƏSDİQ'},
 ];
 
-/**
- * initialModules: [{module, can_view, can_edit, can_approve}, ...] - redaktə rejimi üçün ilkin dəyərlər.
- * onChange(modulesPayload): hər dəyişiklikdə seçilmiş (aktiv) modulların siyahısını ötürür.
- */
 export default function ModulePermissionsPicker({initialModules = [], onChange}) {
     const [modules, setModules] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -50,7 +46,6 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
                 setLoading(false);
             }
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -59,7 +54,6 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
             .filter((id) => enabled[id])
             .map((id) => ({module: Number(id), ...status}));
         onChange && onChange(payload);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [enabled, status, loading]);
 
     if (loading) {

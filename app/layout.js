@@ -1,6 +1,5 @@
 import React, {Suspense} from 'react'
-// Self-hosted Inter (via @fontsource) — includes latin-ext, so Azerbaijani
-// characters (ə, ğ, ı, ö, ş, ü, ç) render correctly, with no external font request.
+
 import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'

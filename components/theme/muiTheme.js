@@ -1,10 +1,7 @@
 import {createTheme} from '@mui/material/styles';
 import {GOV} from './govColors';
 
-// Central theme: same visual language the app already uses (navy/gold GOV palette,
-// rounded-1.5 corners, no-uppercase buttons), just declared once instead of repeated
-// as sx overrides on every Button/TextField. Font is the self-hosted Inter variable
-// set up in app/fonts.js and applied via the CSS var below.
+
 export const muiTheme = createTheme({
     palette: {
         primary: {

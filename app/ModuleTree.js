@@ -1,8 +1,4 @@
-/**
- * tree: get_visible_module_tree() nəticəsi (top-level array)
- * pathKeys: ['lisenziya-senedler', 'istehsal'] kimi URL seqmentləri
- * Qaytarır: { node, breadcrumb: [{title, keyPath}] } və ya null (tapılmasa/icazə yoxdursa)
- */
+
 export function findModuleByPath(tree, pathKeys) {
     let currentLevel = tree;
     let node = null;

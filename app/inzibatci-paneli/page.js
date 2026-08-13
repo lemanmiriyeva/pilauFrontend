@@ -6,7 +6,7 @@ import Link from '@mui/material/Link';
 import {useRouter} from "next/navigation";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
-import AdminShell from "@/components/atoms/admin/AdminShell";
+import AppShell from "@/components/atoms/AppShell";
 import ModuleCard from "@/components/atoms/ModuleCard";
 import {findModuleByPath} from "@/app/ModuleTree";
 
@@ -14,7 +14,7 @@ export default function Page() {
     const router = useRouter();
 
     return (
-        <AdminShell>
+        <AppShell>
             {({tree}) => {
                 const result = findModuleByPath(tree, ['inzibatci-paneli']);
                 const children = result?.node?.children || [];
@@ -66,6 +66,6 @@ export default function Page() {
                     </Box>
                 );
             }}
-        </AdminShell>
+        </AppShell>
     );
 }

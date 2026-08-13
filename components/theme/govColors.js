@@ -8,6 +8,11 @@ export const GOV = {
     goldSoft: "#E4C583",
     goldDark: "#AA8A00",
 
+    navIconBgTop: "#9BC9FF",
+    navIconBgBottom: "#BFDCFF",
+    navIconFg: "#2488FF",
+    navDivider: "#1B2440",
+
     textOnNavy: "#F2F4FA",
     textOnNavyMuted: "#9AA5C7",
 

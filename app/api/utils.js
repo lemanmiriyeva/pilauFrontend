@@ -7,7 +7,6 @@ import {ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE} from "@/components/constants"
 const METHODS = {GET: "GET", POST: "POST", PUT: "PUT", PATCH: "PATCH", DELETE: "DELETE"}
 
 function getClientIp() {
-    // Next.js-in qarşısındakı reverse proxy (nginx v.s.) real IP-ni bu header-lərdə ötürür.
     const h = nextHeaders();
     const forwardedFor = h.get('x-forwarded-for');
     if (forwardedFor) return forwardedFor.split(',')[0].trim();

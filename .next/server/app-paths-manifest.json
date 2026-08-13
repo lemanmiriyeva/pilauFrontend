@@ -1,6 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/icon.png/route": "app/icon.png/route.js"
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/inzibatci-paneli/icazeler/page": "app/inzibatci-paneli/icazeler/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js"
 }

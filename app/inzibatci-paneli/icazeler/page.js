@@ -14,7 +14,7 @@ import {NEXT_API_ENDPOINTS} from "@/app/urls";
 import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
-import AdminShell from "@/components/atoms/admin/AdminShell";
+import AppShell from "@/components/atoms/AppShell";
 
 export default function Page() {
     const [orgs, setOrgs] = useState([]);
@@ -33,11 +33,10 @@ export default function Page() {
                 setLoading(false);
             }
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <AdminShell>
+        <AppShell>
             <Box sx={{maxWidth: 1080, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 3}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.INZIBATCI)}
@@ -57,7 +56,7 @@ export default function Page() {
                     </Box>
                     <Button
                         variant="contained" startIcon={<AddIcon/>}
-                        onClick={() => router.push(`${APP_ROUTES.INZIBATCI_ICAZELER}/yeni`)}
+                        onClick={() => router.push(`${APP_ROUTES.INZIBATCI_ICAZELER}/icaze-yarat`)}
                         sx={{
                             backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13,
                             '&:hover': {backgroundColor: GOV.navyMid},
@@ -117,6 +116,6 @@ export default function Page() {
                     )}
                 </Box>
             </Box>
-        </AdminShell>
+        </AppShell>
     );
 }

@@ -22,7 +22,6 @@ export async function POST(req) {
         if (res.status === 200 && data.access && data.refresh) {
             await setTokenCookies(data.access, data.refresh)
             cookies().delete(PENDING_2FA_COOKIE)
-            // access/refresh client-e HEC vaxt gonderilmir - yalniz backup_codes ve user
             return Response.json({backup_codes: data.backup_codes, user: data.user}, {status: 200})
         }
         return Response.json(data, {status: res.status})

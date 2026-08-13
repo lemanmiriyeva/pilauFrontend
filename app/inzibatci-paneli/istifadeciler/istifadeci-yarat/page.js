@@ -10,7 +10,7 @@ import {NEXT_API_ENDPOINTS} from "@/app/urls";
 import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
-import AdminShell from "@/components/atoms/admin/AdminShell";
+import AppShell from "@/components/atoms/AppShell";
 import UserForm from "@/components/atoms/admin/UserForm";
 
 export default function Page() {
@@ -42,7 +42,7 @@ export default function Page() {
     };
 
     return (
-        <AdminShell>
+        <AppShell>
             <Box sx={{maxWidth: 900, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 3}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.INZIBATCI)}
@@ -68,6 +68,6 @@ export default function Page() {
                     onCancel={() => router.push(APP_ROUTES.INZIBATCI_ISTIFADECILER)}
                 />
             </Box>
-        </AdminShell>
+        </AppShell>
     );
 }

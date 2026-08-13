@@ -15,12 +15,11 @@ export async function POST(req) {
         const data = await res.json()
 
         if (res.status === 200 && data.temp_token) {
-            // temp_token YALNIZ httpOnly cookie kimi saxlanılır - client JS heç vaxt görmür
             cookies().set(PENDING_2FA_COOKIE, data.temp_token, {
                 secure: process.env.NODE_ENV === 'production',
                 httpOnly: true,
                 sameSite: 'strict',
-                maxAge: 300, // backend TEMP_TOKEN_TTL_SECONDS ilə eyni
+                maxAge: 300,
             })
             return Response.json({step: data.step}, {status: 200})
         }

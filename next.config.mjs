@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    // "maksimum tehlukesizlik" - response header-lerinde texniki melumat sizmasin
     poweredByHeader: false,
     async headers() {
         return [
