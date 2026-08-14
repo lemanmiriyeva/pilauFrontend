@@ -1,13 +1,9 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/modullar/lisenziya-senedler/xususi-satis/yeni/page": "app/modullar/lisenziya-senedler/xususi-satis/yeni/page.js",
-  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
-  "/modullar/lisenziya-senedler/xususi-satis/[id]/page": "app/modullar/lisenziya-senedler/xususi-satis/[id]/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/page": "app/page.js",
-  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
-  "/chixish/page": "app/chixish/page.js",
+  "/api/auth/totp-verify/route": "app/api/auth/totp-verify/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/daxilol/page": "app/daxilol/page.js",
-  "/icon.png/route": "app/icon.png/route.js"
+  "/page": "app/page.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js"
 }

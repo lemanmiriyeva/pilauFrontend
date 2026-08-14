@@ -28,6 +28,8 @@ export const APP_ROUTES = {
     ISTEHSAL_YENI: "/modullar/lisenziya-senedler/istehsal/yeni",
     XUSUSI_SATIS: "/modullar/lisenziya-senedler/xususi-satis",
     XUSUSI_SATIS_YENI: "/modullar/lisenziya-senedler/xususi-satis/yeni",
+    EDV_GUZESTI: "/modullar/lisenziya-senedler/edv-guzesti",
+    EDV_GUZESTI_YENI: "/modullar/lisenziya-senedler/edv-guzesti/yeni",
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
 }
 

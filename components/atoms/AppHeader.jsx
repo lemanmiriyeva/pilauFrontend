@@ -27,13 +27,13 @@ export default function AppHeader({user}) {
     const open = Boolean(anchorEl);
 
     return (
-        <Box onClick={() => {
-            router.push(APP_ROUTES.HOME);
-        }} sx={{
-            display: 'flex',cursor:'pointer', alignItems: 'center', justifyContent: 'space-between',
+        <Box sx={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             backgroundColor: GOV.navy, color: GOV.textOnNavy, px: {xs: 2, md: 4}, py: 1.5,
         }}>
-            <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5}}>
+            <Box onClick={() => {
+                router.push(APP_ROUTES.HOME);
+            }} sx={{display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer'}}>
                 <Image src={logo} alt="" height={44} style={{width: 'auto', height: 44}}/>
             </Box>
 
