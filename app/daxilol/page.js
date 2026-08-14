@@ -165,20 +165,23 @@ export default function Page() {
                 }}>
                     <BrandMark/>
                     <Box sx={{position: 'relative', zIndex: 10, mb: 4}}>
-                        <Typography sx={{color: GOV.gold, letterSpacing: 4, fontSize: 13, fontWeight: 600, mb: 1}}>
-                            TƏHLÜKƏSİZLİK PLATFORMASI
+                        <Typography sx={{color: GOV.gold, letterSpacing: 4,textTransform:'uppercase', fontSize: 13, fontWeight: 600, mb: 1}}>
+                            İdarəetmə platforması
                         </Typography>
                         <Typography sx={{
                             fontSize: {md: 48, lg: 64}, fontWeight: 800, lineHeight: 1,
                             textTransform: 'uppercase', letterSpacing: 1, mb: 2,
                         }}>
-                            Məxfi Sistem Girişi
+                            PİLAU
                         </Typography>
                         <Typography sx={{color: GOV.textOnNavyMuted, maxWidth: 440, fontSize: 15, lineHeight: 1.7}}>
-                            Bu sistem yalnız icazə verilmiş istifadəçilər üçündür. Bütün girişlər izlənilir və
-                            iki mərhələli təsdiqləmə tələb olunur.
+                            İstehsal, təchizat və sənəd dövriyyəsi proseslərinin
+                            vahid idarəetmə mühiti. Giriş yalnız sistem
+                            administratoru tərəfindən yaradılmış hesablar üçün
+                            mümkündür.
                         </Typography>
                     </Box>
+                    <Box></Box>
                     <BuildingBlueprint/>
                 </Box>
 
