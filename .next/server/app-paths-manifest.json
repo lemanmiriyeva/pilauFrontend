@@ -1,18 +1,16 @@
 {
-  "/modullar/teskilatlar/yeni/page": "app/modullar/teskilatlar/yeni/page.js",
-  "/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page.js",
-  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
+  "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
+  "/modullar/lisenziya-senedler/istehsal/[id]/page": "app/modullar/lisenziya-senedler/istehsal/[id]/page.js",
+  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js",
   "/modullar/lisenziya-senedler/idxal-ixrac/page": "app/modullar/lisenziya-senedler/idxal-ixrac/page.js",
-  "/inzibatci-paneli/icazeler/icaze-yarat/page": "app/inzibatci-paneli/icazeler/icaze-yarat/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
-  "/api/organizations/[id]/route": "app/api/organizations/[id]/route.js",
+  "/daxilol/page": "app/daxilol/page.js",
   "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/api/licenses/permit-documents/[id]/route": "app/api/licenses/permit-documents/[id]/route.js",
-  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
-  "/modullar/lisenziya-senedler/idxal-ixrac/[id]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/[id]/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
-  "/modullar/lisenziya-senedler/idxal-ixrac/yeni/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/page.js",
-  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js"
+  "/modullar/lisenziya-senedler/xususi-satis/page": "app/modullar/lisenziya-senedler/xususi-satis/page.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
+  "/modullar/lisenziya-senedler/xususi-satis/yeni/page": "app/modullar/lisenziya-senedler/xususi-satis/yeni/page.js",
+  "/modullar/lisenziya-senedler/xususi-satis/[id]/page": "app/modullar/lisenziya-senedler/xususi-satis/[id]/page.js"
 }

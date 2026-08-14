@@ -68,6 +68,12 @@ export default function Page() {
                 ]);
                 setSchema(schemaRes.data);
 
+                const defaults = {};
+                (schemaRes.data?.form_fields || []).forEach((f) => {
+                    if (f.default !== undefined) defaults[f.key] = f.default;
+                });
+                setFormValues((prev) => ({...defaults, ...prev}));
+
                 const org = applicantRes.data?.organization;
                 const personList = applicantRes.data?.authorized_persons || [];
                 setPersons(personList);

@@ -1,35 +1,15 @@
 {
   "pages": {
-    "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
-    ],
     "/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page.js"
     ],
-    "/modullar/[[...path]]/page": [
+    "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/[[...path]]/page.js"
-    ],
-    "/modullar/teskilatlar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/teskilatlar/page.js"
-    ],
-    "/modullar/teskilatlar/yeni/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/teskilatlar/yeni/page.js"
-    ],
-    "/modullar/teskilatlar/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/teskilatlar/[id]/page.js"
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/daxilol/page": [
       "static/chunks/webpack.js",
@@ -51,6 +31,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/idxal-ixrac/page.js"
     ],
+    "/modullar/[[...path]]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/[[...path]]/page.js"
+    ],
     "/modullar/lisenziya-senedler/idxal-ixrac/yeni/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -61,30 +46,40 @@
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/idxal-ixrac/[id]/page.js"
     ],
-    "/inzibatci-paneli/istifadeciler/page": [
+    "/modullar/lisenziya-senedler/istehsal/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/istifadeciler/page.js"
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/page.js"
     ],
-    "/inzibatci-paneli/istifadeciler/[id]/page": [
+    "/modullar/lisenziya-senedler/istehsal/yeni/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/istifadeciler/[id]/page.js"
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/yeni/page.js"
     ],
-    "/inzibatci-paneli/icazeler/page": [
+    "/modullar/lisenziya-senedler/istehsal/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/icazeler/page.js"
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
     ],
-    "/inzibatci-paneli/icazeler/icaze-yarat/page": [
+    "/modullar/teskilatlar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/icazeler/icaze-yarat/page.js"
+      "static/chunks/app/modullar/teskilatlar/page.js"
     ],
-    "/inzibatci-paneli/icazeler/[orgId]/page": [
+    "/modullar/lisenziya-senedler/xususi-satis/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/icazeler/[orgId]/page.js"
+      "static/chunks/app/modullar/lisenziya-senedler/xususi-satis/page.js"
+    ],
+    "/modullar/lisenziya-senedler/xususi-satis/yeni/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/xususi-satis/yeni/page.js"
+    ],
+    "/modullar/lisenziya-senedler/xususi-satis/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/xususi-satis/[id]/page.js"
     ]
   }
 }

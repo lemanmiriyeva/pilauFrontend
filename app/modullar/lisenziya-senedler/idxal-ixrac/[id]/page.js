@@ -16,10 +16,10 @@ import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import PermitStatusChip from "@/components/atoms/licenses/PermitStatusChip";
 
-function formatDate(value) {
-    if (!value) return '-';
+function formatDate(value, pendingText) {
+    if (!value) return pendingText || '-';
     const d = new Date(value);
-    if (isNaN(d.getTime())) return '-';
+    if (isNaN(d.getTime())) return pendingText || '-';
     return d.toLocaleDateString('az-AZ');
 }
 
@@ -52,6 +52,7 @@ export default function Page() {
     const params = useParams();
     const {enqueueSnackbar} = useSnackbar();
     const [doc, setDoc] = useState(null);
+    const [formFieldsSchema, setFormFieldsSchema] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -60,6 +61,16 @@ export default function Page() {
             try {
                 const res = await service_api.get(NEXT_API_ENDPOINTS.LICENSES.PERMIT_DETAIL(params.id));
                 setDoc(res.data);
+                if (res.data?.doc_type) {
+                    try {
+                        const schemaRes = await service_api.get(
+                            `${NEXT_API_ENDPOINTS.LICENSES.PERMIT_SCHEMA}?doc_type=${res.data.doc_type}`
+                        );
+                        setFormFieldsSchema(schemaRes.data?.form_fields || []);
+                    } catch (e) {
+                        // Sxem gətirilə bilmədisə, anket sahələri açar adları ilə göstəriləcək.
+                    }
+                }
             } catch (e) {
                 enqueueSnackbar(handleError(e), {variant: 'error'});
             } finally {
@@ -119,9 +130,8 @@ export default function Page() {
 
                 <SectionCard title="Sənəd məlumatları">
                     <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr 1fr'}}}>
-                        <InfoRow label="Verilmə tarixi" value={formatDate(doc.issue_date)}/>
-                        <InfoRow label="Bitmə tarixi" value={formatDate(doc.expiry_date)}/>
-                        <InfoRow label="Müraciət üsulu" value={doc.submission_mode === 'file' ? 'Fayl yüklə' : 'Elektron müraciət forması'}/>
+                        <InfoRow label="Verilmə tarixi" value={formatDate(doc.issue_date, 'Status təsdiqləndikdən sonra görünəcək')}/>
+                        <InfoRow label="Bitmə tarixi" value={formatDate(doc.expiry_date, 'Status təsdiqləndikdən sonra görünəcək')}/>
                     </Box>
                 </SectionCard>
 
@@ -137,45 +147,48 @@ export default function Page() {
                     </Box>
                 </SectionCard>
 
-                {doc.submission_mode === 'file' ? (
-                    <SectionCard title="Yüklənmiş sənədlər">
-                        {(doc.files || []).length === 0 ? (
-                            <Typography sx={{fontSize: 13, color: GOV.textMuted}}>Fayl yüklənməyib.</Typography>
-                        ) : (
-                            <Box sx={{display: 'grid', gap: 1.25}}>
-                                {doc.files.map((f) => (
-                                    <Box key={f.id} sx={{
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        border: `1px solid ${GOV.cardBorder}`, borderRadius: 1.5, px: 2, py: 1.25,
-                                    }}>
-                                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1.25}}>
-                                            <InsertDriveFileIcon sx={{fontSize: 17, color: GOV.navySoft}}/>
-                                            <Box>
-                                                <Typography sx={{fontSize: 12.5, fontWeight: 600, color: GOV.textPrimary}}>
-                                                    {f.field_label}
-                                                </Typography>
-                                                <Typography sx={{fontSize: 11.5, color: GOV.textMuted}}>
-                                                    {f.original_name}
-                                                </Typography>
-                                            </Box>
+                <SectionCard title="Lisenziya anketi">
+                    <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
+                        {Object.entries(doc.form_data || {}).map(([key, value]) => {
+                            const fieldDef = formFieldsSchema.find((f) => f.key === key);
+                            const label = fieldDef?.label || key.replaceAll('_', ' ');
+                            const displayValue = fieldDef?.type === 'date' ? formatDate(value) : value;
+                            return <InfoRow key={key} label={label} value={displayValue}/>;
+                        })}
+                    </Box>
+                </SectionCard>
+
+                <SectionCard title="Yüklənmiş sənədlər">
+                    {(doc.files || []).length === 0 ? (
+                        <Typography sx={{fontSize: 13, color: GOV.textMuted}}>
+                            {doc.is_confidential ? 'Məxfi lisenziya - fayl yüklənməyib.' : 'Fayl yüklənməyib.'}
+                        </Typography>
+                    ) : (
+                        <Box sx={{display: 'grid', gap: 1.25}}>
+                            {doc.files.map((f) => (
+                                <Box key={f.id} sx={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    border: `1px solid ${GOV.cardBorder}`, borderRadius: 1.5, px: 2, py: 1.25,
+                                }}>
+                                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1.25}}>
+                                        <InsertDriveFileIcon sx={{fontSize: 17, color: GOV.navySoft}}/>
+                                        <Box>
+                                            <Typography sx={{fontSize: 12.5, fontWeight: 600, color: GOV.textPrimary}}>
+                                                {f.field_label}
+                                            </Typography>
+                                            <Typography sx={{fontSize: 11.5, color: GOV.textMuted}}>
+                                                {f.original_name}
+                                            </Typography>
                                         </Box>
-                                        <Link href={f.file} target="_blank" rel="noopener noreferrer">
-                                            <DownloadIcon sx={{fontSize: 18, color: GOV.textMuted}}/>
-                                        </Link>
                                     </Box>
-                                ))}
-                            </Box>
-                        )}
-                    </SectionCard>
-                ) : (
-                    <SectionCard title="Lisenziya anketi">
-                        <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
-                            {Object.entries(doc.form_data || {}).map(([key, value]) => (
-                                <InfoRow key={key} label={key.replaceAll('_', ' ')} value={value}/>
+                                    <Link href={f.file} target="_blank" rel="noopener noreferrer">
+                                        <DownloadIcon sx={{fontSize: 18, color: GOV.textMuted}}/>
+                                    </Link>
+                                </Box>
                             ))}
                         </Box>
-                    </SectionCard>
-                )}
+                    )}
+                </SectionCard>
             </Box>
         </AppShell>
     );
