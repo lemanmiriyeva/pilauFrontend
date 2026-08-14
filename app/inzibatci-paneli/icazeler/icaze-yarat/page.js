@@ -23,10 +23,12 @@ export default function Page() {
     const [employees, setEmployees] = useState([]);
     const [employee, setEmployee] = useState('');
     const [modules, setModules] = useState([]);
+    const [initialModules, setInitialModules] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState({});
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
+    const preselectedEmployee = searchParams.get('employee') || '';
 
     useEffect(() => {
         setEmployee('');
@@ -39,12 +41,31 @@ export default function Page() {
                 const res = await service_api.get(
                     `${NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USERS_LIST}?organization=${organization}`
                 );
-                setEmployees(Array.isArray(res.data) ? res.data : []);
+                const emps = Array.isArray(res.data) ? res.data : [];
+                setEmployees(emps);
+                if (preselectedEmployee && emps.some((e) => String(e.id) === String(preselectedEmployee))) {
+                    setEmployee(preselectedEmployee);
+                }
             } catch (e) {
                 enqueueSnackbar(handleError(e), {variant: 'error'});
             }
         })();
     }, [organization]);
+
+    useEffect(() => {
+        if (!employee) {
+            setInitialModules([]);
+            return;
+        }
+        (async () => {
+            try {
+                const res = await service_api.get(`${NEXT_API_ENDPOINTS.PERMISSIONS.USER_PERMISSIONS}?user=${employee}`);
+                setInitialModules(Array.isArray(res.data) ? res.data : []);
+            } catch (e) {
+                setInitialModules([]);
+            }
+        })();
+    }, [employee]);
 
     const handleSubmit = async () => {
         const next = {};
@@ -109,7 +130,7 @@ export default function Page() {
                     </TextField>
                 </Box>
 
-                <ModulePermissionsPicker onChange={setModules}/>
+                <ModulePermissionsPicker key={employee || 'new'} initialModules={initialModules} onChange={setModules}/>
 
                 <Box sx={{display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 4}}>
                     <Button

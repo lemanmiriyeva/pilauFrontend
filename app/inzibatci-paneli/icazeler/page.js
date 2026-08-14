@@ -91,7 +91,7 @@ export default function Page() {
                         orgs.map((o) => (
                             <Box
                                 key={o.id}
-                                onClick={() => router.push(`${APP_ROUTES.INZIBATCI_ICAZELER}/yeni?organization=${o.id}`)}
+                                onClick={() => router.push(`${APP_ROUTES.INZIBATCI_ICAZELER}/${o.id}`)}
                                 sx={{
                                     display: 'grid', gridTemplateColumns: '1fr 60px', alignItems: 'center',
                                     px: 2.5, py: 1.75, cursor: 'pointer',

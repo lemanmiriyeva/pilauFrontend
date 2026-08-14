@@ -3,7 +3,12 @@ import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -17,17 +22,29 @@ const OPTIONS = [
         type: 'ixrac', title: 'İxrac',
         icon: UploadFileIcon,
         info: 'Azərbaycandan xaricə mal/məhsul çıxarılması üçün icazə sənədi.',
+        infoDetails: [
+            'Azərbaycan ərazisindən xarici dövlətə hərbi təyinatlı və ya xüsusi nəzarətdə olan malların çıxarılması üçün tələb olunur.',
+            'Müraciətçi müəssisə haqqında məlumatlar və müqavilə/son istifadəçi sənədləri təqdim olunmalıdır.',
+            'Məxfi lisenziyalar üçün sənəd yükləmə mərhələsi könüllüdür, adi (açıq) lisenziyalarda isə məcburidir.',
+        ],
     },
     {
         type: 'idxal', title: 'İdxal',
         icon: DownloadIcon,
         info: 'Xaricdən Azərbaycana mal/məhsul gətirilməsi üçün icazə sənədi.',
+        infoDetails: [
+            'Xarici dövlətdən Azərbaycana hərbi təyinatlı və ya xüsusi nəzarətdə olan malların gətirilməsi üçün tələb olunur.',
+            'Göndərici tərəfin son istifadəçi öhdəliyi və mənşə sənədləri təqdim olunmalıdır.',
+            'Məxfi lisenziyalar üçün sənəd yükləmə mərhələsi könüllüdür, adi (açıq) lisenziyalarda isə məcburidir.',
+        ],
     },
 ];
 
 export default function Page() {
     const router = useRouter();
     const [hovered, setHovered] = useState('ixrac');
+    const [infoType, setInfoType] = useState(null);
+    const activeInfo = OPTIONS.find((o) => o.type === infoType);
 
     return (
         <AppShell>
@@ -70,9 +87,16 @@ export default function Page() {
                                     '&:hover': {borderColor: GOV.navySoft, boxShadow: '0 8px 24px rgba(20, 27, 51, 0.10)'},
                                 }}
                             >
-                                <Tooltip title={opt.info}>
-                                    <InfoOutlinedIcon sx={{position: 'absolute', top: 14, right: 14, fontSize: 17, color: GOV.textMuted}}/>
-                                </Tooltip>
+                                <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setInfoType(opt.type);
+                                    }}
+                                    sx={{position: 'absolute', top: 8, right: 8}}
+                                >
+                                    <InfoOutlinedIcon sx={{fontSize: 17, color: GOV.textMuted}}/>
+                                </IconButton>
                                 <Box sx={{
                                     width: 44, height: 44, borderRadius: '50%', backgroundColor: GOV.navySoft,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -87,6 +111,46 @@ export default function Page() {
                     })}
                 </Box>
             </Box>
+
+            <Dialog open={!!activeInfo} onClose={() => setInfoType(null)} maxWidth="xs" fullWidth>
+                {activeInfo && (
+                    <>
+                        <DialogTitle sx={{fontSize: 16, fontWeight: 800, color: GOV.textPrimary}}>
+                            {activeInfo.title} icazə sənədi haqqında
+                        </DialogTitle>
+                        <DialogContent>
+                            <Typography sx={{fontSize: 13, color: GOV.textPrimary, mb: 1.5}}>
+                                {activeInfo.info}
+                            </Typography>
+                            <Box component="ul" sx={{m: 0, pl: 2.5, display: 'grid', gap: 0.75}}>
+                                {activeInfo.infoDetails.map((line, i) => (
+                                    <Typography key={i} component="li" sx={{fontSize: 12.5, color: GOV.textMuted}}>
+                                        {line}
+                                    </Typography>
+                                ))}
+                            </Box>
+                        </DialogContent>
+                        <DialogActions sx={{px: 3, pb: 2.5}}>
+                            <Button
+                                onClick={() => setInfoType(null)}
+                                sx={{textTransform: 'none', fontWeight: 600, fontSize: 13, color: GOV.textMuted}}
+                            >
+                                Bağla
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => router.push(`${APP_ROUTES.IDXAL_IXRAC_YENI}/${activeInfo.type}`)}
+                                sx={{
+                                    backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13,
+                                    '&:hover': {backgroundColor: GOV.navyMid},
+                                }}
+                            >
+                                {activeInfo.title} sənədi yarat
+                            </Button>
+                        </DialogActions>
+                    </>
+                )}
+            </Dialog>
         </AppShell>
     );
 }

@@ -7,9 +7,9 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {useRouter, useParams} from "next/navigation";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
@@ -19,11 +19,14 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import FileDropField from "@/components/atoms/licenses/FileDropField";
+import GovAccordionSection from "@/components/atoms/GovAccordionSection";
 
 const TYPE_META = {
     ixrac: {title: 'İxrac icazə sənədi yarat'},
     idxal: {title: 'İdxal icazə sənədi yarat'},
 };
+
+const STEPS = ['applicant', 'anket', 'files'];
 
 export default function Page() {
     const router = useRouter();
@@ -37,13 +40,16 @@ export default function Page() {
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState({});
 
+    const [isConfidential, setIsConfidential] = useState(false);
+    const [expanded, setExpanded] = useState('applicant');
+    const [touched, setTouched] = useState({applicant: false, anket: false, files: false});
+
     const [applicant, setApplicant] = useState({
         organization: null, applicant_name: '', voen: '',
         authorized_person: '', fin_kod: '', department: '', position: '',
         phone: '', email: '',
     });
 
-    const [mode, setMode] = useState('file'); // 'file' | 'form'
     const [files, setFiles] = useState({});
     const [formValues, setFormValues] = useState({});
 
@@ -96,22 +102,58 @@ export default function Page() {
 
     const breadcrumbTitle = useMemo(() => TYPE_META[docType].title, [docType]);
 
+    const applicantComplete = !!(applicant.applicant_name && applicant.voen);
+    const anketComplete = useMemo(() => {
+        if (!schema) return false;
+        return schema.form_fields
+            .filter((f) => f.required && !f.auto)
+            .every((f) => String(formValues[f.key] ?? '').trim());
+    }, [schema, formValues]);
+    const filesComplete = useMemo(() => {
+        if (!schema) return false;
+        if (isConfidential) return true;
+        return schema.file_fields.filter((f) => f.required).every((f) => !!files[f.key]);
+    }, [schema, files, isConfidential]);
+
+    // Növbəti addımı avtomatik aç - müraciətçi məlumatları doldurulan kimi anket, o da doldurulan kimi sənəd yükləmə açılır.
+    useEffect(() => {
+        if (applicantComplete && expanded === 'applicant' && !touched.anket) {
+            setExpanded('anket');
+        }
+    }, [applicantComplete]);
+
+    useEffect(() => {
+        if (anketComplete && expanded === 'anket' && !touched.files) {
+            setExpanded('files');
+        }
+    }, [anketComplete]);
+
+    const toggle = (panel) => (e, isExpanded) => {
+        setTouched((prev) => ({...prev, [panel]: true}));
+        setExpanded(isExpanded ? panel : false);
+    };
+
     const validate = () => {
         const next = {};
         if (!applicant.applicant_name) next.applicant_name = 'Tələb olunur';
         if (!applicant.voen) next.voen = 'Tələb olunur';
 
-        if (mode === 'file' && schema) {
-            schema.file_fields.forEach((f) => {
-                if (f.required && !files[f.key]) next[`file__${f.key}`] = true;
-            });
-        }
-        if (mode === 'form' && schema) {
+        if (schema) {
             schema.form_fields.forEach((f) => {
                 if (f.required && !f.auto && !formValues[f.key]) next[`form__${f.key}`] = 'Tələb olunur';
             });
+            if (!isConfidential) {
+                schema.file_fields.forEach((f) => {
+                    if (f.required && !files[f.key]) next[`file__${f.key}`] = true;
+                });
+            }
         }
         setErrors(next);
+
+        if (next.applicant_name || next.voen) setExpanded('applicant');
+        else if (Object.keys(next).some((k) => k.startsWith('form__'))) setExpanded('anket');
+        else if (Object.keys(next).some((k) => k.startsWith('file__'))) setExpanded('files');
+
         return Object.keys(next).length === 0;
     };
 
@@ -123,41 +165,25 @@ export default function Page() {
 
         setSubmitting(true);
         try {
-            if (mode === 'file') {
-                const fd = new FormData();
-                fd.append('doc_type', docType);
-                fd.append('submission_mode', 'file');
-                fd.append('applicant_name', applicant.applicant_name);
-                fd.append('voen', applicant.voen);
-                if (applicant.organization) fd.append('organization', applicant.organization);
-                if (applicant.authorized_person) fd.append('authorized_person', applicant.authorized_person);
-                fd.append('fin_kod', applicant.fin_kod);
-                fd.append('department', applicant.department);
-                fd.append('position', applicant.position);
-                fd.append('phone', applicant.phone);
-                fd.append('email', applicant.email);
-                Object.entries(files).forEach(([key, file]) => {
-                    if (file) fd.append(`file__${key}`, file);
-                });
-                await service_api.post(NEXT_API_ENDPOINTS.LICENSES.PERMIT_CREATE, fd, {
-                    headers: {'Content-Type': 'multipart/form-data'},
-                });
-            } else {
-                await service_api.post(NEXT_API_ENDPOINTS.LICENSES.PERMIT_CREATE, {
-                    doc_type: docType,
-                    submission_mode: 'form',
-                    applicant_name: applicant.applicant_name,
-                    voen: applicant.voen,
-                    organization: applicant.organization,
-                    authorized_person: applicant.authorized_person || null,
-                    fin_kod: applicant.fin_kod,
-                    department: applicant.department,
-                    position: applicant.position,
-                    phone: applicant.phone,
-                    email: applicant.email,
-                    form_data: formValues,
-                });
-            }
+            const fd = new FormData();
+            fd.append('doc_type', docType);
+            fd.append('is_confidential', isConfidential ? 'true' : 'false');
+            fd.append('applicant_name', applicant.applicant_name);
+            fd.append('voen', applicant.voen);
+            if (applicant.organization) fd.append('organization', applicant.organization);
+            if (applicant.authorized_person) fd.append('authorized_person', applicant.authorized_person);
+            fd.append('fin_kod', applicant.fin_kod);
+            fd.append('department', applicant.department);
+            fd.append('position', applicant.position);
+            fd.append('phone', applicant.phone);
+            fd.append('email', applicant.email);
+            fd.append('form_data', JSON.stringify(formValues));
+            Object.entries(files).forEach(([key, file]) => {
+                if (file) fd.append(`file__${key}`, file);
+            });
+            await service_api.post(NEXT_API_ENDPOINTS.LICENSES.PERMIT_CREATE, fd, {
+                headers: {'Content-Type': 'multipart/form-data'},
+            });
             enqueueSnackbar('İcazə sənədi yoxlamaya göndərildi.', {variant: 'success'});
             router.push(APP_ROUTES.IDXAL_IXRAC);
         } catch (e) {
@@ -202,208 +228,172 @@ export default function Page() {
                 <Typography sx={{fontSize: 24, fontWeight: 800, color: GOV.textPrimary, mb: 0.5}}>
                     {breadcrumbTitle}
                 </Typography>
-                <Typography sx={{fontSize: 13, color: GOV.textMuted, mb: 3}}>
-                    İcazə sənədini yükləyin və ya məlumatları manual sürət formasıyla doldurun.
+                <Typography sx={{fontSize: 13, color: GOV.textMuted, mb: 2.5}}>
+                    Aşağıdakı addımları sırayla doldurun. Hər bölmə doldurulduqca növbəti bölmə avtomatik açılır,
+                    istəsəniz özünüz də istənilən bölməni aça/bağlaya bilərsiniz.
                 </Typography>
 
-                {/* Step 1 - Müraciətçi məlumatları */}
                 <Box sx={{
-                    display: 'flex', alignItems: 'center', gap: 1.5, backgroundColor: '#EEF1F7',
-                    border: `1px solid ${GOV.cardBorder}`, borderRadius: '8px 8px 0 0', px: 2.5, py: 1.75,
+                    display: 'flex', alignItems: 'center', gap: 1.25, backgroundColor: '#FCF6E8',
+                    border: `1px solid ${GOV.goldSoft}`, borderRadius: 2, px: 2.5, py: 1.5, mb: 3,
                 }}>
-                    <Box sx={{
-                        width: 26, height: 26, borderRadius: 1, backgroundColor: GOV.navySoft,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                        <PersonOutlineIcon sx={{fontSize: 15, color: GOV.gold}}/>
-                    </Box>
-                    <Typography sx={{fontSize: 13.5, fontWeight: 700, color: GOV.textPrimary}}>
-                        Müraciətçi məlumatları
-                    </Typography>
+                    <LockOutlinedIcon sx={{fontSize: 18, color: GOV.goldDark}}/>
+                    <FormControlLabel
+                        sx={{m: 0}}
+                        control={
+                            <Checkbox
+                                checked={isConfidential}
+                                onChange={(e) => setIsConfidential(e.target.checked)}
+                                sx={{color: GOV.goldDark, '&.Mui-checked': {color: GOV.goldDark}}}
+                            />
+                        }
+                        label={
+                            <Box>
+                                <Typography sx={{fontSize: 13, fontWeight: 700, color: GOV.textPrimary}}>
+                                    Bu, məxfi lisenziyadır
+                                </Typography>
+                                <Typography sx={{fontSize: 11.5, color: GOV.textMuted}}>
+                                    {isConfidential
+                                        ? 'Məxfi lisenziyalarda sənəd yükləmə mərhələsi könüllüdür.'
+                                        : 'İşarələnməzsə, açıq lisenziya hesab olunur və sənəd yükləmə mərhələsi məcburidir.'}
+                                </Typography>
+                            </Box>
+                        }
+                    />
                 </Box>
 
-                <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderTop: 'none', borderRadius: '0 0 8px 8px', p: 3, mb: 3}}>
-                    <Typography sx={{fontSize: 14, fontWeight: 700, color: GOV.textPrimary, mb: 2}}>
-                        Müraciətçi məlumatları
-                    </Typography>
-                    <Box sx={{display: 'grid', gap: 2, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
-                        <TextField
-                            size="small" label="Müraciətçi müəssisənin tam adı" required
-                            value={applicant.applicant_name}
-                            onChange={(e) => setApplicant((p) => ({...p, applicant_name: e.target.value}))}
-                            error={!!errors.applicant_name} helperText={errors.applicant_name}
-                        />
-                        <TextField
-                            size="small" label="VÖEN" required
-                            value={applicant.voen}
-                            onChange={(e) => setApplicant((p) => ({...p, voen: e.target.value}))}
-                            error={!!errors.voen} helperText={errors.voen}
-                        />
-                        <TextField
-                            select size="small" label="Səlahiyyətli şəxs"
-                            value={applicant.authorized_person}
-                            onChange={(e) => handlePersonChange(e.target.value)}
-                        >
-                            {persons.map((p) => (
-                                <MenuItem key={p.id} value={p.id}>{p.full_name}</MenuItem>
+                <Box sx={{mb: 3}}>
+                    <GovAccordionSection
+                        title="1. Müraciətçi məlumatları"
+                        expanded={expanded === 'applicant'} onChange={toggle('applicant')}
+                        complete={applicantComplete}
+                    >
+                        <Box sx={{display: 'grid', gap: 2, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
+                            <TextField
+                                size="small" label="Müraciətçi müəssisənin tam adı" required
+                                value={applicant.applicant_name}
+                                onChange={(e) => setApplicant((p) => ({...p, applicant_name: e.target.value}))}
+                                error={!!errors.applicant_name} helperText={errors.applicant_name}
+                            />
+                            <TextField
+                                size="small" label="VÖEN" required
+                                value={applicant.voen}
+                                onChange={(e) => setApplicant((p) => ({...p, voen: e.target.value}))}
+                                error={!!errors.voen} helperText={errors.voen}
+                            />
+                            <TextField
+                                select size="small" label="Səlahiyyətli şəxs"
+                                value={applicant.authorized_person}
+                                onChange={(e) => handlePersonChange(e.target.value)}
+                            >
+                                {persons.map((p) => (
+                                    <MenuItem key={p.id} value={p.id}>{p.full_name}</MenuItem>
+                                ))}
+                                {persons.length === 0 && (
+                                    <MenuItem disabled value="">Səlahiyyətli şəxs tapılmadı</MenuItem>
+                                )}
+                            </TextField>
+                            <TextField
+                                size="small" label="FİN kod"
+                                value={applicant.fin_kod}
+                                onChange={(e) => setApplicant((p) => ({...p, fin_kod: e.target.value}))}
+                            />
+                            <TextField
+                                size="small" label="Telefon nömrəsi"
+                                value={applicant.phone}
+                                onChange={(e) => setApplicant((p) => ({...p, phone: e.target.value}))}
+                            />
+                            <TextField
+                                size="small" label="Elektron poçt ünvanı"
+                                value={applicant.email}
+                                onChange={(e) => setApplicant((p) => ({...p, email: e.target.value}))}
+                            />
+                            <TextField
+                                size="small" label="Departament/Şöbə"
+                                value={applicant.department}
+                                onChange={(e) => setApplicant((p) => ({...p, department: e.target.value}))}
+                            />
+                            <TextField
+                                size="small" label="Vəzifə"
+                                value={applicant.position}
+                                onChange={(e) => setApplicant((p) => ({...p, position: e.target.value}))}
+                            />
+                        </Box>
+                    </GovAccordionSection>
+
+                    <GovAccordionSection
+                        title="2. Lisenziya anketi"
+                        expanded={expanded === 'anket'} onChange={toggle('anket')}
+                        complete={anketComplete}
+                    >
+                        <Typography sx={{fontSize: 11.5, color: GOV.textMuted, mb: 2.5}}>
+                            Bütün sahələri doldurun.
+                        </Typography>
+                        <Box sx={{display: 'grid', gap: 2, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
+                            {schema.form_fields.map((f, idx) => (
+                                <TextField
+                                    key={f.key}
+                                    size="small"
+                                    select={f.type === 'select'}
+                                    type={f.type === 'date' ? 'date' : (f.type === 'number' ? 'number' : 'text')}
+                                    label={`${String(idx + 1).padStart(2, '0')}. ${f.label}`}
+                                    required={f.required}
+                                    disabled={!!f.auto}
+                                    value={formValues[f.key] ?? ''}
+                                    onChange={(e) => setFormValues((prev) => ({...prev, [f.key]: e.target.value}))}
+                                    error={!!errors[`form__${f.key}`]}
+                                    helperText={errors[`form__${f.key}`]}
+                                    InputLabelProps={f.type === 'date' ? {shrink: true} : undefined}
+                                >
+                                    {f.type === 'select' && (f.options || []).map(([val, label]) => (
+                                        <MenuItem key={val} value={val}>{label}</MenuItem>
+                                    ))}
+                                </TextField>
                             ))}
-                            {persons.length === 0 && (
-                                <MenuItem disabled value="">Səlahiyyətli şəxs tapılmadı</MenuItem>
-                            )}
-                        </TextField>
-                        <TextField
-                            size="small" label="FİN kod"
-                            value={applicant.fin_kod}
-                            onChange={(e) => setApplicant((p) => ({...p, fin_kod: e.target.value}))}
-                        />
-                        <TextField
-                            size="small" label="Telefon nömrəsi"
-                            value={applicant.phone}
-                            onChange={(e) => setApplicant((p) => ({...p, phone: e.target.value}))}
-                        />
-                        <TextField
-                            size="small" label="Elektron poçt ünvanı"
-                            value={applicant.email}
-                            onChange={(e) => setApplicant((p) => ({...p, email: e.target.value}))}
-                        />
-                        <TextField
-                            size="small" label="Departament/Şöbə"
-                            value={applicant.department}
-                            onChange={(e) => setApplicant((p) => ({...p, department: e.target.value}))}
-                        />
-                        <TextField
-                            size="small" label="Vəzifə"
-                            value={applicant.position}
-                            onChange={(e) => setApplicant((p) => ({...p, position: e.target.value}))}
-                        />
-                    </Box>
+                        </Box>
+                    </GovAccordionSection>
+
+                    <GovAccordionSection
+                        title="3. Sənəd yüklə"
+                        expanded={expanded === 'files'} onChange={toggle('files')}
+                        complete={filesComplete}
+                        optional={isConfidential}
+                    >
+                        <Typography sx={{fontSize: 11.5, color: GOV.textMuted, mb: 2.5}}>
+                            {isConfidential
+                                ? 'Məxfi lisenziya seçildiyi üçün bu bölmə könüllüdür. Sənədləri əlavə kanalla təqdim edə bilərsiniz.'
+                                : 'Dəstəklənən formatlar: PDF, JPG, PNG'}
+                        </Typography>
+                        <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
+                            {schema.file_fields.map((f) => (
+                                <FileDropField
+                                    key={f.key}
+                                    field={isConfidential ? {...f, required: false} : f}
+                                    file={files[f.key]}
+                                    error={!!errors[`file__${f.key}`]}
+                                    onChange={(file) => setFiles((prev) => ({...prev, [f.key]: file}))}
+                                />
+                            ))}
+                        </Box>
+                    </GovAccordionSection>
                 </Box>
 
-                {/* Step 2 - Sənəd yükləmə / Elektron müraciət forması */}
-                <Box sx={{
-                    display: 'flex', alignItems: 'center', gap: 1.5, backgroundColor: '#EEF1F7',
-                    border: `1px solid ${GOV.cardBorder}`, borderRadius: '8px 8px 0 0', px: 2.5, py: 1.75,
-                }}>
-                    <Box sx={{
-                        width: 26, height: 26, borderRadius: 1, backgroundColor: GOV.navySoft,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                        <DescriptionOutlinedIcon sx={{fontSize: 15, color: GOV.gold}}/>
-                    </Box>
-                    <Typography sx={{fontSize: 13.5, fontWeight: 700, color: GOV.textPrimary}}>
-                        Sənəd yüklə
-                    </Typography>
-                </Box>
-
-                <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderTop: 'none', borderRadius: '0 0 8px 8px', overflow: 'hidden'}}>
-                    <Box sx={{display: 'flex', borderBottom: `1px solid ${GOV.cardBorder}`}}>
-                        <Box
-                            onClick={() => setMode('file')}
-                            sx={{
-                                flex: 1, display: 'flex', alignItems: 'center', gap: 1.25, px: 2.5, py: 1.75,
-                                cursor: 'pointer', backgroundColor: mode === 'file' ? '#fff' : '#EEF1F7',
-                                borderRight: `1px solid ${GOV.cardBorder}`,
-                            }}
-                        >
-                            <Box sx={{
-                                width: 26, height: 26, borderRadius: 1, backgroundColor: GOV.navySoft,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                                <UploadFileIcon sx={{fontSize: 15, color: GOV.gold}}/>
-                            </Box>
-                            <Typography sx={{fontSize: 13, fontWeight: 700, color: GOV.textPrimary}}>
-                                Fayl yüklə
-                            </Typography>
-                        </Box>
-                        <Box
-                            onClick={() => setMode('form')}
-                            sx={{
-                                flex: 1, display: 'flex', alignItems: 'center', gap: 1.25, px: 2.5, py: 1.75,
-                                cursor: 'pointer', backgroundColor: mode === 'form' ? '#fff' : '#EEF1F7',
-                            }}
-                        >
-                            <Box sx={{
-                                width: 26, height: 26, borderRadius: 1, backgroundColor: GOV.navySoft,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                                <DescriptionOutlinedIcon sx={{fontSize: 15, color: GOV.gold}}/>
-                            </Box>
-                            <Typography sx={{fontSize: 13, fontWeight: 700, color: GOV.textPrimary}}>
-                                Elektron müraciət forması
-                            </Typography>
-                        </Box>
-                    </Box>
-
-                    <Box sx={{p: 3}}>
-                        {mode === 'file' ? (
-                            <>
-                                <Typography sx={{fontSize: 14, fontWeight: 700, color: GOV.textPrimary}}>
-                                    Sənəd yüklə
-                                </Typography>
-                                <Typography sx={{fontSize: 11.5, color: GOV.textMuted, mb: 2.5}}>
-                                    Dəstəklənən formatlar: PDF, JPG, PNG
-                                </Typography>
-                                <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
-                                    {schema.file_fields.map((f) => (
-                                        <FileDropField
-                                            key={f.key} field={f} file={files[f.key]}
-                                            error={!!errors[`file__${f.key}`]}
-                                            onChange={(file) => setFiles((prev) => ({...prev, [f.key]: file}))}
-                                        />
-                                    ))}
-                                </Box>
-                            </>
-                        ) : (
-                            <>
-                                <Typography sx={{fontSize: 14, fontWeight: 700, color: GOV.textPrimary}}>
-                                    Lisenziya anketi
-                                </Typography>
-                                <Typography sx={{fontSize: 11.5, color: GOV.textMuted, mb: 2.5}}>
-                                    Bütün sahələri doldurub yadda saxlayın.
-                                </Typography>
-                                <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
-                                    {schema.form_fields.map((f, idx) => (
-                                        <TextField
-                                            key={f.key}
-                                            size="small"
-                                            select={f.type === 'select'}
-                                            type={f.type === 'date' ? 'date' : (f.type === 'number' ? 'number' : 'text')}
-                                            label={`${String(idx + 1).padStart(2, '0')}. ${f.label}`}
-                                            required={f.required}
-                                            disabled={!!f.auto}
-                                            value={formValues[f.key] ?? ''}
-                                            onChange={(e) => setFormValues((prev) => ({...prev, [f.key]: e.target.value}))}
-                                            error={!!errors[`form__${f.key}`]}
-                                            helperText={errors[`form__${f.key}`]}
-                                            InputLabelProps={f.type === 'date' ? {shrink: true} : undefined}
-                                        >
-                                            {f.type === 'select' && (f.options || []).map(([val, label]) => (
-                                                <MenuItem key={val} value={val}>{label}</MenuItem>
-                                            ))}
-                                        </TextField>
-                                    ))}
-                                </Box>
-                            </>
-                        )}
-
-                        <Box sx={{display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 4, borderTop: `1px solid ${GOV.cardBorder}`, pt: 3}}>
-                            <Button
-                                onClick={() => router.push(APP_ROUTES.IDXAL_IXRAC)} disabled={submitting}
-                                sx={{textTransform: 'none', fontWeight: 600, fontSize: 13, color: GOV.textMuted}}
-                            >
-                                Ləğv et
-                            </Button>
-                            <Button
-                                variant="contained" onClick={handleSubmit} disabled={submitting}
-                                sx={{
-                                    backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13,
-                                    '&:hover': {backgroundColor: GOV.navyMid},
-                                }}
-                            >
-                                {submitting ? 'Göndərilir...' : 'Yoxlamağa göndər'}
-                            </Button>
-                        </Box>
-                    </Box>
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', gap: 1.5}}>
+                    <Button
+                        onClick={() => router.push(APP_ROUTES.IDXAL_IXRAC)} disabled={submitting}
+                        sx={{textTransform: 'none', fontWeight: 600, fontSize: 13, color: GOV.textMuted}}
+                    >
+                        Ləğv et
+                    </Button>
+                    <Button
+                        variant="contained" onClick={handleSubmit} disabled={submitting}
+                        sx={{
+                            backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13,
+                            '&:hover': {backgroundColor: GOV.navyMid},
+                        }}
+                    >
+                        {submitting ? 'Göndərilir...' : 'Yoxlamağa göndər'}
+                    </Button>
                 </Box>
             </Box>
         </AppShell>

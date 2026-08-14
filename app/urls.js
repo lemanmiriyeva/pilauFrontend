@@ -25,8 +25,9 @@ export const DJANGO_API_ENDPOINTS = {
     ORGANIZATIONS: {
         TREE: API_URL + "/api/organizations/tree/",
         SUMMARY: API_URL + "/api/organizations/summary/",
+        TABLE: API_URL + "/api/organizations/table/",
         LIST: API_URL + "/api/organizations/",
-        DETAIL: API_URL + "/api/organizations/",
+        DETAIL: (id) => API_URL + `/api/organizations/${id}/`,
     },
     PERMISSIONS: {
         MODULES: API_URL + "/api/permissions/modules/",
@@ -64,8 +65,9 @@ export const NEXT_API_ENDPOINTS = {
     ORGANIZATIONS: {
         TREE: "organizations/tree/",
         SUMMARY: "organizations/summary/",
+        TABLE: "organizations/table/",
         LIST: "organizations/",
-        DETAIL: "organizations/",
+        DETAIL: (id) => `organizations/${id}/`,
     },
     PERMISSIONS: {
         MODULES: "permissions/modules/",
