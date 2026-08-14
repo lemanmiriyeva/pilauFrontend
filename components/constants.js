@@ -18,7 +18,7 @@ export const APP_ROUTES = {
     PROFILE: "/sexsi-kabinet",
     MODULES: "/modullar",
     ICAZELER: "/icazeler",
-    TESKILATLAR: "/teskilatlar",
+    TESKILATLAR: "/modullar/teskilatlar",
     INZIBATCI: "/inzibatci-paneli",
     INZIBATCI_ISTIFADECILER: "/inzibatci-paneli/istifadeciler",
     INZIBATCI_ICAZELER: "/inzibatci-paneli/icazeler",

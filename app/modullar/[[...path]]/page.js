@@ -23,7 +23,7 @@ export default function Page() {
 
                 if (!result) {
                     return (
-                        <Box sx={{maxWidth: 1080, mx: 'auto', px: {xs: 2, md: 4}, py: 10, textAlign: 'center'}}>
+                        <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: 10, textAlign: 'center'}}>
                             <InfoOutlinedIcon sx={{fontSize: 32, color: GOV.textMuted, mb: 1}}/>
                             <Typography sx={{fontSize: 16, fontWeight: 700, color: GOV.textPrimary, mb: 0.5}}>
                                 Bu bölmə tapılmadı və ya girişiniz yoxdur
@@ -39,7 +39,7 @@ export default function Page() {
                 const {node, breadcrumb} = result;
 
                 return (
-                    <Box sx={{maxWidth: 1080, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
+                    <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                         <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 3}}>
                             <Link component="button" onClick={() => router.push(APP_ROUTES.HOME)}
                                   sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>

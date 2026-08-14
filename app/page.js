@@ -47,7 +47,7 @@ export default function Page() {
         <Box sx={{minHeight: '100vh', backgroundColor: GOV.pageBg}}>
             <AppHeader user={user}/>
 
-            <Box sx={{maxWidth: 1080, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 5, md: 8}}}>
+            <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 5, md: 8}}}>
                 <Box sx={{textAlign: 'center', mb: 6}}>
                     <Typography sx={{
                         fontSize: {xs: 26, md: 34}, fontWeight: 800, letterSpacing: 1,

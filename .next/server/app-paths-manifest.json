@@ -1,15 +1,18 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/api/auth/totp-verify/route": "app/api/auth/totp-verify/route.js",
-  "/daxilol/page": "app/daxilol/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
+  "/modullar/teskilatlar/yeni/page": "app/modullar/teskilatlar/yeni/page.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page.js",
+  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
   "/modullar/lisenziya-senedler/idxal-ixrac/page": "app/modullar/lisenziya-senedler/idxal-ixrac/page.js",
+  "/inzibatci-paneli/icazeler/icaze-yarat/page": "app/inzibatci-paneli/icazeler/icaze-yarat/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
+  "/api/organizations/[id]/route": "app/api/organizations/[id]/route.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/api/licenses/permit-documents/[id]/route": "app/api/licenses/permit-documents/[id]/route.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/[id]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/[id]/page.js",
   "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
   "/modullar/lisenziya-senedler/idxal-ixrac/yeni/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/page.js",
-  "/modullar/lisenziya-senedler/idxal-ixrac/[id]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/[id]/page.js"
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js"
 }

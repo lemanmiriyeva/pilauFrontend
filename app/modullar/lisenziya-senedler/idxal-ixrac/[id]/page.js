@@ -90,7 +90,7 @@ export default function Page() {
 
     return (
         <AppShell>
-            <Box sx={{maxWidth: 1080, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
+            <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 3}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.HOME)}
                           sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>

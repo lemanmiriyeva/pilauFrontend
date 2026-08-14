@@ -12,7 +12,7 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
-import OrganizationForm from "@/components/atoms/OrganizationForm";
+import OrganizationForm from "@/components/atoms/organizations/OrganizationForm";
 
 export default function Page() {
     const router = useRouter();
@@ -51,7 +51,7 @@ export default function Page() {
 
     return (
         <AppShell>
-            <Box sx={{maxWidth: 900, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
+            <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 1}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.TESKILATLAR)}
                           sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>

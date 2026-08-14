@@ -19,7 +19,7 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import FileDropField from "@/components/atoms/licenses/FileDropField";
-import GovAccordionSection from "@/components/atoms/GovAccordionSection";
+import GovAccordionSection from "@/components/atoms/organizations/GovAccordionSection";
 
 const TYPE_META = {
     ixrac: {title: 'İxrac icazə sənədi yarat'},
@@ -44,6 +44,11 @@ export default function Page() {
     const [expanded, setExpanded] = useState('applicant');
     const [touched, setTouched] = useState({applicant: false, anket: false, files: false});
 
+    // MSN (Müdafiə Sənayesi Nazirliyi) istifadəçiləri müraciətçi məlumatlarını sərbəst redaktə edə bilər.
+    // Digər təşkilatların istifadəçiləri isə yalnız öz təşkilatlarının səlahiyyətli şəxsləri arasından seçim edə bilər,
+    // qalan sahələr (təşkilat adı, VÖEN, seçilmiş şəxsin detalları) avtomatik doldurulur və redaktə olunmur.
+    const [isMsn, setIsMsn] = useState(false);
+
     const [applicant, setApplicant] = useState({
         organization: null, applicant_name: '', voen: '',
         authorized_person: '', fin_kod: '', department: '', position: '',
@@ -66,6 +71,8 @@ export default function Page() {
                 const org = applicantRes.data?.organization;
                 const personList = applicantRes.data?.authorized_persons || [];
                 setPersons(personList);
+                setIsMsn(org?.code === 'msn');
+                // authorized_persons artıq backend-də "əsas" şəxs birinci gələcək şəkildə sıralanır.
                 const firstPerson = personList[0];
                 setApplicant((prev) => ({
                     ...prev,
@@ -205,7 +212,7 @@ export default function Page() {
 
     return (
         <AppShell>
-            <Box sx={{maxWidth: 1080, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
+            <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 3}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.HOME)}
                           sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>
@@ -268,18 +275,25 @@ export default function Page() {
                         expanded={expanded === 'applicant'} onChange={toggle('applicant')}
                         complete={applicantComplete}
                     >
+                        <Typography sx={{fontSize: 11.5, color: GOV.textMuted, mb: 2}}>
+                            {isMsn
+                                ? 'Müdafiə Sənayesi Nazirliyi istifadəçisi olduğunuz üçün bütün sahələr sərbəst redaktə olunur.'
+                                : 'Təşkilat və VÖEN məlumatları öz təşkilatınıza əsasən avtomatik doldurulub. Səlahiyyətli şəxsi siyahıdan seçə bilərsiniz, digər sahələr seçiminə görə avtomatik dolur.'}
+                        </Typography>
                         <Box sx={{display: 'grid', gap: 2, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
                             <TextField
                                 size="small" label="Müraciətçi müəssisənin tam adı" required
                                 value={applicant.applicant_name}
                                 onChange={(e) => setApplicant((p) => ({...p, applicant_name: e.target.value}))}
                                 error={!!errors.applicant_name} helperText={errors.applicant_name}
+                                disabled={!isMsn}
                             />
                             <TextField
                                 size="small" label="VÖEN" required
                                 value={applicant.voen}
                                 onChange={(e) => setApplicant((p) => ({...p, voen: e.target.value}))}
                                 error={!!errors.voen} helperText={errors.voen}
+                                disabled={!isMsn}
                             />
                             <TextField
                                 select size="small" label="Səlahiyyətli şəxs"
@@ -287,7 +301,9 @@ export default function Page() {
                                 onChange={(e) => handlePersonChange(e.target.value)}
                             >
                                 {persons.map((p) => (
-                                    <MenuItem key={p.id} value={p.id}>{p.full_name}</MenuItem>
+                                    <MenuItem key={p.id} value={p.id}>
+                                        {p.full_name}{p.person_type === 'main' ? ' (Əsas)' : ''}
+                                    </MenuItem>
                                 ))}
                                 {persons.length === 0 && (
                                     <MenuItem disabled value="">Səlahiyyətli şəxs tapılmadı</MenuItem>
@@ -297,26 +313,31 @@ export default function Page() {
                                 size="small" label="FİN kod"
                                 value={applicant.fin_kod}
                                 onChange={(e) => setApplicant((p) => ({...p, fin_kod: e.target.value}))}
+                                disabled={!isMsn}
                             />
                             <TextField
                                 size="small" label="Telefon nömrəsi"
                                 value={applicant.phone}
                                 onChange={(e) => setApplicant((p) => ({...p, phone: e.target.value}))}
+                                disabled={!isMsn}
                             />
                             <TextField
                                 size="small" label="Elektron poçt ünvanı"
                                 value={applicant.email}
                                 onChange={(e) => setApplicant((p) => ({...p, email: e.target.value}))}
+                                disabled={!isMsn}
                             />
                             <TextField
                                 size="small" label="Departament/Şöbə"
                                 value={applicant.department}
                                 onChange={(e) => setApplicant((p) => ({...p, department: e.target.value}))}
+                                disabled={!isMsn}
                             />
                             <TextField
                                 size="small" label="Vəzifə"
                                 value={applicant.position}
                                 onChange={(e) => setApplicant((p) => ({...p, position: e.target.value}))}
+                                disabled={!isMsn}
                             />
                         </Box>
                     </GovAccordionSection>

@@ -2,25 +2,37 @@
 import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import {GOV} from "@/components/theme/govColors";
-import GovAccordionSection from "@/components/atoms/GovAccordionSection";
+import GovAccordionSection from "@/components/atoms/organizations/GovAccordionSection";
 
-const emptyPerson = () => ({
+const CODE_OPTIONS = [
+    {value: 'other', label: 'Digər'},
+    {value: 'msn', label: 'Müdafiə Sənayesi Nazirliyi (MSN)'},
+];
+
+const PERSON_TYPE_OPTIONS = [
+    {value: 'main', label: 'Əsas'},
+    {value: 'other', label: 'Digər'},
+];
+
+const emptyPerson = (isFirst) => ({
+    person_type: isFirst ? 'main' : 'other',
     full_name: '', fin_kod: '', department: '', position: '', email: '', phone: '',
 });
 
 export default function OrganizationForm({mode = 'create', initialData, onSubmit, onCancel, submitting}) {
     const [form, setForm] = useState({
-        full_name: '', voen: '', state_reg_number: '',
+        full_name: '', voen: '', state_reg_number: '', code: 'other',
         email: '', phone: '', address: '', notes: '',
         ...(initialData || {}),
     });
     const [persons, setPersons] = useState(
-        initialData?.authorized_persons?.length ? initialData.authorized_persons : [emptyPerson()]
+        initialData?.authorized_persons?.length ? initialData.authorized_persons : [emptyPerson(true)]
     );
     const [expanded, setExpanded] = useState('identification');
     const [errors, setErrors] = useState({});
@@ -31,7 +43,7 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
         setPersons((prev) => prev.map((p, i) => (i === idx ? {...p, [field]: e.target.value} : p)));
     };
 
-    const addPerson = () => setPersons((prev) => [...prev, emptyPerson()]);
+    const addPerson = () => setPersons((prev) => [emptyPerson(prev.length === 0), ...prev]);
     const removePerson = (idx) => setPersons((prev) => prev.filter((_, i) => i !== idx));
 
     const toggle = (panel) => (e, isExpanded) => setExpanded(isExpanded ? panel : false);
@@ -76,6 +88,14 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                             size="small" label="Dövlət qeydiyyat nömrəsi" placeholder="Daxil edin"
                             value={form.state_reg_number} onChange={set('state_reg_number')}
                         />
+                        <TextField
+                            select size="small" label="Kod" value={form.code || 'other'} onChange={set('code')}
+                            helperText="MSN seçilərsə, bu təşkilatın istifadəçiləri icazə sənədi formasında müraciətçi məlumatlarını sərbəst redaktə edə bilər."
+                        >
+                            {CODE_OPTIONS.map((o) => (
+                                <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>
+                            ))}
+                        </TextField>
                     </Box>
                 </GovAccordionSection>
 
@@ -110,8 +130,16 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                             <Box key={idx} sx={{display: 'flex', gap: 1.5, alignItems: 'flex-start'}}>
                                 <Box sx={{
                                     flexGrow: 1, display: 'grid', gap: 1.5,
-                                    gridTemplateColumns: {xs: '1fr 1fr', md: 'repeat(6, 1fr)'},
+                                    gridTemplateColumns: {xs: '1fr 1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)'},
                                 }}>
+                                    <TextField
+                                        select size="small" label="Növ"
+                                        value={p.person_type || 'other'} onChange={setPerson(idx, 'person_type')}
+                                    >
+                                        {PERSON_TYPE_OPTIONS.map((o) => (
+                                            <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>
+                                        ))}
+                                    </TextField>
                                     <TextField size="small" label="Tam adı" placeholder="Daxil edin"
                                                value={p.full_name} onChange={setPerson(idx, 'full_name')}/>
                                     <TextField size="small" label="FİN kod" placeholder="Daxil edin"
@@ -126,7 +154,7 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                                                value={p.phone} onChange={setPerson(idx, 'phone')}/>
                                 </Box>
                                 <Box sx={{display: 'flex', pt: 0.5}}>
-                                    {idx === persons.length - 1 ? (
+                                    {idx === 0 ? (
                                         <IconButton size="small" onClick={addPerson}>
                                             <AddCircleOutlineIcon sx={{fontSize: 20, color: GOV.navySoft}}/>
                                         </IconButton>

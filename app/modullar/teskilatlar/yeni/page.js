@@ -11,7 +11,7 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
-import OrganizationForm from "@/components/atoms/OrganizationForm";
+import OrganizationForm from "@/components/atoms/organizations/OrganizationForm";
 
 export default function Page() {
     const router = useRouter();
@@ -33,12 +33,11 @@ export default function Page() {
 
     return (
         <AppShell>
-            <Box sx={{maxWidth: 900, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
+            <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 1}}>
-                    <Link component="button" onClick={() => router.push(APP_ROUTES.TESKILATLAR)}
-                          sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>
-                        Giriş nəzarəti
-                    </Link>
+                    <Typography sx={{fontSize: 11.5, fontWeight: 700, letterSpacing: 0.6, color: GOV.gold, mb: 0.5}}>
+                        HÜQUQİ ŞƏXSLƏR
+                    </Typography>
                 </Typography>
 
                 <Typography sx={{fontSize: 22, fontWeight: 800, color: GOV.textPrimary, mb: 3}}>
