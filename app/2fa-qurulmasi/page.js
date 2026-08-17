@@ -72,6 +72,31 @@ export default function Page() {
         })();
     }, []);
 
+    // const handleVerify = async (event) => {
+    //     event.preventDefault();
+    //     setVerifying(true);
+    //     setError(null);
+    //     try {
+    //         const res = await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.TOTP_SETUP_CONFIRM, {code});
+    //         enqueueSnackbar('2FA uğurla quruldu.', {variant: 'success'});
+    //
+    //         const nextStep = res.data?.step;
+    //         if (nextStep === 'password_change_required') {
+    //             router.push(APP_ROUTES.FIRST_PASSWORD_SET);
+    //             return;
+    //         }
+    //         router.push(APP_ROUTES.HOME);
+    //     } catch (e) {
+    //         const msg = e?.response?.data?.detail || handleError(e);
+    //         setError(msg);
+    //         setCode('');
+    //     } finally {
+    //         setVerifying(false);
+    //     }
+    // };
+
+
+    // handleVerify funksiyasını bu şəkildə yeniləyin:
     const handleVerify = async (event) => {
         event.preventDefault();
         setVerifying(true);
@@ -80,8 +105,11 @@ export default function Page() {
             const res = await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.TOTP_SETUP_CONFIRM, {code});
             enqueueSnackbar('2FA uğurla quruldu.', {variant: 'success'});
 
-            const nextStep = res.data?.step;
-            if (nextStep === 'password_change_required') {
+            const { step, temp_token } = res.data;
+
+            if (step === 'password_change_required') {
+                // Tokeni yadda saxlayırıq
+                sessionStorage.setItem('password_change_token', temp_token);
                 router.push(APP_ROUTES.FIRST_PASSWORD_SET);
                 return;
             }

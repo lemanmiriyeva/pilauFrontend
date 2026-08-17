@@ -13,6 +13,7 @@ export const APP_ROUTES = {
     SIGNIN: "/daxilol",
     SIGNOUT: "/chixish",
     PASSWORD_RESET: "/shifre-teyini",
+    FIRST_PASSWORD_SET: "/ilk-sifre-teyini",
     TWO_FA_SETUP: "/2fa-qurulmasi",
     TWO_FA_VERIFY: "/2fa-tesdiq",
     PROFILE: "/sexsi-kabinet",

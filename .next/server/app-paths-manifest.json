@@ -1,6 +1,14 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
   "/daxilol/page": "app/daxilol/page.js",
-  "/2fa-qurulmasi/page": "app/2fa-qurulmasi/page.js"
+  "/2fa-qurulmasi/page": "app/2fa-qurulmasi/page.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/page": "app/page.js",
+  "/api/auth/totp-setup-confirm/route": "app/api/auth/totp-setup-confirm/route.js",
+  "/api/auth/totp-setup-begin/route": "app/api/auth/totp-setup-begin/route.js",
+  "/ilk-sifre-teyini/page": "app/ilk-sifre-teyini/page.js",
+  "/api/auth/first-login-set/route": "app/api/auth/first-login-set/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js"
 }

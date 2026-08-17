@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -26,6 +26,14 @@ export default function Page() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Səhifə açılan kimi tokenin olub-olmadığını yoxlayırıq
+    useEffect(() => {
+        const token = sessionStorage.getItem('password_change_token');
+        if (!token) {
+            router.push(APP_ROUTES.SIGNIN);
+        }
+    }, [router]);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setError(null);
@@ -39,11 +47,29 @@ export default function Page() {
             return;
         }
 
+        const token = sessionStorage.getItem('password_change_token');
+        if (!token) {
+            enqueueSnackbar('Sessiya bitib, yenidən daxil olun.', {variant: 'error'});
+            router.push(APP_ROUTES.SIGNIN);
+            return;
+        }
+
         setLoading(true);
         try {
-            await service_api.post(
-                NEXT_API_ENDPOINTS.AUTHENTICATION.FIRST_LOGIN_PASSWORD_SET, {new_password: newPassword}
+            const res = await service_api.post(
+                NEXT_API_ENDPOINTS.AUTHENTICATION.FIRST_LOGIN_PASSWORD_SET,
+                {
+                    new_password: newPassword,
+                    temp_token: token // Tokeni bura əlavə edirik
+                }
             );
+
+            // İstifadədən sonra tokeni təmizləyirik
+            sessionStorage.removeItem('password_change_token');
+
+            // Backend-dən qayıdan access/refresh tokenləri ehtiyac olarsa saxlaya bilərsiniz
+            // (Adətən service_api və ya interceptorlar bunu avtomatik idarə edir)
+
             enqueueSnackbar('Yeni şifrəniz təyin edildi. Giriş uğurludur.', {variant: 'success', autoHideDuration: 2000});
             router.push(APP_ROUTES.HOME);
         } catch (e) {
@@ -51,6 +77,7 @@ export default function Page() {
             setError(msg);
             enqueueSnackbar(msg, {variant: 'error', autoHideDuration: 5000});
             if (e?.response?.status === 401) {
+                sessionStorage.removeItem('password_change_token');
                 router.push(APP_ROUTES.SIGNIN);
             }
         } finally {
