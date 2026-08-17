@@ -35,6 +35,7 @@ export const APP_ROUTES = {
 
 export const LOGIN_STEPS = {
     CREDENTIALS: "credentials",
+    PASSWORD_CHANGE: "password_change_required",
     TOTP_SETUP: "totp_setup_required",
     TOTP_VERIFY: "totp_required",
 }

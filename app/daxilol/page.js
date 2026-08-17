@@ -55,8 +55,12 @@ export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({username: null, password: null, common: null});
     const [capsLockOn, setCapsLockOn] = useState(false);
-    const [twoFaStep, setTwoFaStep] = useState(false);
+    // 'credentials' | 'password_change' | 'totp' - ilk giriş üçün kodsuz şifrə təyinatı addımı da var
+    const [step, setStep] = useState('credentials');
     const [code, setCode] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showNewPassword, setShowNewPassword] = useState(false);
     const [showPasswordReset, setShowPasswordReset] = useState(false);
     const [showTwoFaResetDialog, setShowTwoFaResetDialog] = useState(false);
     const [pendingUsername, setPendingUsername] = useState('');
@@ -70,16 +74,32 @@ export default function Page() {
     const handleCapsLock = (e) => setCapsLockOn(e.getModifierState && e.getModifierState('CapsLock'));
 
     const handleBackToCredentials = () => {
-        setTwoFaStep(false);
+        setStep('credentials');
         setCode('');
+        setNewPassword('');
+        setConfirmPassword('');
         setErrors({username: null, password: null, common: null});
+    };
+
+    const applyNextStep = (nextStep) => {
+        if (nextStep === LOGIN_STEPS.TOTP_SETUP) {
+            router.push(APP_ROUTES.TWO_FA_SETUP);
+            return;
+        }
+        if (nextStep === LOGIN_STEPS.PASSWORD_CHANGE) {
+            setStep('password_change');
+            return;
+        }
+        if (nextStep === LOGIN_STEPS.TOTP_VERIFY) {
+            setStep('totp');
+        }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setErrors({username: null, password: null, common: null});
 
-        if (!twoFaStep) {
+        if (step === 'credentials') {
             const data = new FormData(event.currentTarget);
             const username = data.get('username');
             const password = data.get('password');
@@ -97,14 +117,7 @@ export default function Page() {
             try {
                 const res = await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.LOGIN, {username, password});
                 setPendingUsername(username);
-
-                if (res.data.step === LOGIN_STEPS.TOTP_SETUP) {
-                    router.push(APP_ROUTES.TWO_FA_SETUP);
-                    return;
-                }
-                if (res.data.step === LOGIN_STEPS.TOTP_VERIFY) {
-                    setTwoFaStep(true);
-                }
+                applyNextStep(res.data.step);
             } catch (error) {
                 if (error?.response?.status === 423) {
                     const msg = error?.response?.data?.detail || 'Hesabınız bloklanıb.';
@@ -116,6 +129,32 @@ export default function Page() {
                     enqueueSnackbar(msg, {variant: 'error', autoHideDuration: 5000});
                 }
                 formRef.current?.reset();
+            } finally {
+                setLoading(false);
+            }
+        } else if (step === 'password_change') {
+            if (!newPassword) {
+                setErrors((e) => ({...e, common: 'Yeni şifrə boş ola bilməz'}));
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                setErrors((e) => ({...e, common: 'Şifrələr üst-üstə düşmür'}));
+                return;
+            }
+
+            setLoading(true);
+            try {
+                const res = await service_api.post(
+                    NEXT_API_ENDPOINTS.AUTHENTICATION.FIRST_LOGIN_PASSWORD_SET, {new_password: newPassword}
+                );
+                enqueueSnackbar('Yeni şifrəniz təyin edildi.', {variant: 'success', autoHideDuration: 2000});
+                setNewPassword('');
+                setConfirmPassword('');
+                applyNextStep(res.data.step);
+            } catch (error) {
+                const msg = error?.response?.data?.detail || handleError(error);
+                setErrors((e) => ({...e, common: msg}));
+                enqueueSnackbar(msg, {variant: 'error', autoHideDuration: 5000});
             } finally {
                 setLoading(false);
             }
@@ -199,13 +238,15 @@ export default function Page() {
                             Sistemə giriş
                         </Typography>
                         <Typography sx={{fontSize: 14, color: '#6B7280', mb: 3}}>
-                            {twoFaStep
+                            {step === 'totp'
                                 ? 'Autentifikasiya tətbiqinizdəki 6 rəqəmli kodu daxil edin.'
-                                : 'Davam etmək üçün istifadəçi adı və şifrənizi daxil edin.'}
+                                : step === 'password_change'
+                                    ? 'İlk girişiniz olduğu üçün davam etməzdən əvvəl yeni şifrə təyin edin.'
+                                    : 'Davam etmək üçün istifadəçi adı və şifrənizi daxil edin.'}
                         </Typography>
 
                         <Box component="form" ref={formRef} onSubmit={handleSubmit} noValidate>
-                            {!twoFaStep ? (
+                            {step === 'credentials' ? (
                                 <>
                                     <Typography sx={{fontSize: 13, fontWeight: 600, color: '#374151', mb: 0.75}}>
                                         İstifadəçi adı
@@ -247,6 +288,46 @@ export default function Page() {
                                             Şifrənizi unutmusunuz?
                                         </Link>
                                     </Box>
+                                </>
+                            ) : step === 'password_change' ? (
+                                <>
+                                    <Typography sx={{fontSize: 13, fontWeight: 600, color: '#374151', mb: 0.75}}>
+                                        Yeni şifrə
+                                    </Typography>
+                                    <TextField
+                                        fullWidth required size="small" id="new_password"
+                                        name="new_password" placeholder="Yeni şifrə" autoFocus
+                                        type={showNewPassword ? 'text' : 'password'}
+                                        autoComplete="new-password" disabled={loading}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton size="small" disabled={loading}
+                                                                onClick={() => setShowNewPassword((s) => !s)}
+                                                                edge="end">
+                                                        {showNewPassword ? <VisibilityOff fontSize="small"/> :
+                                                            <Visibility fontSize="small"/>}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{mb: 2}}
+                                    />
+
+                                    <Typography sx={{fontSize: 13, fontWeight: 600, color: '#374151', mb: 0.75}}>
+                                        Yeni şifrə (təkrar)
+                                    </Typography>
+                                    <TextField
+                                        fullWidth required size="small" id="confirm_password"
+                                        name="confirm_password" placeholder="Yeni şifrə (təkrar)"
+                                        type={showNewPassword ? 'text' : 'password'}
+                                        autoComplete="new-password" disabled={loading}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        sx={{mb: 2.5}}
+                                    />
                                 </>
                             ) : (
                                 <>
@@ -291,7 +372,9 @@ export default function Page() {
                                     py: 1.1, borderRadius: 1.5, '&:hover': {backgroundColor: GOV.navy},
                                 }}
                             >
-                                {loading ? 'Yoxlanılır…' : (twoFaStep ? 'Təsdiqlə' : 'Daxil ol')}
+                                {loading ? 'Yoxlanılır…' : (
+                                    step === 'totp' ? 'Təsdiqlə' : step === 'password_change' ? 'Şifrəni təyin et' : 'Daxil ol'
+                                )}
                             </Button>
                         </Box>
 

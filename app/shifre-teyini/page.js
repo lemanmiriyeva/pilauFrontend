@@ -26,7 +26,7 @@ export default function Page() {
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
     const [step, setStep] = useState(STEP.USERNAME);
-    const [username, setUsername] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [code, setCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +38,7 @@ export default function Page() {
         setLoading(true);
         setError(null);
         try {
-            const res = await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.PASSWORD_FORGOT, {username});
+            const res = await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.PASSWORD_FORGOT, {identifier});
             enqueueSnackbar(res.data?.detail || 'Kod göndərildi.', {variant: 'success', autoHideDuration: 4000});
             setStep(STEP.RESET);
         } catch (e) {
@@ -54,7 +54,7 @@ export default function Page() {
         setError(null);
         try {
             await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.PASSWORD_FORGOT_CONFIRM, {
-                username, code, new_password: newPassword,
+                identifier, code, new_password: newPassword,
             });
             setStep(STEP.DONE);
         } catch (e) {

@@ -15,6 +15,7 @@ export const DJANGO_API_ENDPOINTS = {
         PASSWORD_FORGOT: API_URL + "/api/auth/password/forgot/",
         PASSWORD_FORGOT_CONFIRM: API_URL + "/api/auth/password/forgot/confirm/",
         PASSWORD_CHANGE: API_URL + "/api/auth/password/change/",
+        FIRST_LOGIN_PASSWORD_SET: API_URL + "/api/auth/password/first-login-set/",
 
         ADMIN_USERS_LIST: API_URL + "/api/auth/admin/users/",
         ADMIN_CREATE_USER: API_URL + "/api/auth/admin/users/create/",
@@ -57,6 +58,7 @@ export const NEXT_API_ENDPOINTS = {
 
         PASSWORD_FORGOT: "auth/password-forgot/",
         PASSWORD_FORGOT_CONFIRM: "auth/password-forgot-confirm/",
+        FIRST_LOGIN_PASSWORD_SET: "auth/first-login-password-set/",
 
         ADMIN_USERS_LIST: "auth/admin/users/",
         ADMIN_CREATE_USER: "auth/admin/users-create/",
