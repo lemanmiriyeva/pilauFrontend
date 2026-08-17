@@ -1,9 +1,6 @@
 {
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/auth/totp-verify/route": "app/api/auth/totp-verify/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/daxilol/page": "app/daxilol/page.js",
-  "/page": "app/page.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js"
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/sexsi-kabinet/page": "app/sexsi-kabinet/page.js",
+  "/page": "app/page.js"
 }

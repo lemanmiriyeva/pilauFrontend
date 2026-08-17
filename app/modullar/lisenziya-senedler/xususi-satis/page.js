@@ -97,7 +97,7 @@ export default function Page() {
                             px: 2.5, '&:hover': {backgroundColor: GOV.navyMid},
                         }}
                     >
-                        + Sənəd yarat
+                         Sənəd yarat
                     </Button>
                 </Box>
 

@@ -16,15 +16,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/inzibatci-paneli/page": [
+    "/modullar/[[...path]]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/page.js"
+      "static/chunks/app/modullar/[[...path]]/page.js"
     ],
-    "/chixish/page": [
+    "/sexsi-kabinet/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/chixish/page.js"
+      "static/chunks/app/sexsi-kabinet/page.js"
     ]
   }
 }
