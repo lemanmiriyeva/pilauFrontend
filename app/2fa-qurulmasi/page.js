@@ -5,8 +5,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import DownloadIcon from '@mui/icons-material/Download';
 import {useRouter} from "next/navigation";
 import {useSnackbar} from "notistack";
 import QRCode from "qrcode";
@@ -50,7 +48,6 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [verifying, setVerifying] = useState(false);
     const [error, setError] = useState(null);
-    const [backupCodes, setBackupCodes] = useState(null);
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
 
@@ -82,7 +79,13 @@ export default function Page() {
         try {
             const res = await service_api.post(NEXT_API_ENDPOINTS.AUTHENTICATION.TOTP_SETUP_CONFIRM, {code});
             enqueueSnackbar('2FA uğurla quruldu.', {variant: 'success'});
-            setBackupCodes(res.data.backup_codes || []);
+
+            const nextStep = res.data?.step;
+            if (nextStep === 'password_change_required') {
+                router.push(APP_ROUTES.FIRST_PASSWORD_SET);
+                return;
+            }
+            router.push(APP_ROUTES.HOME);
         } catch (e) {
             const msg = e?.response?.data?.detail || handleError(e);
             setError(msg);
@@ -90,31 +93,6 @@ export default function Page() {
         } finally {
             setVerifying(false);
         }
-    };
-
-    const handleCopyBackupCodes = () => {
-        navigator.clipboard.writeText((backupCodes || []).join('\n'));
-        enqueueSnackbar('Kodlar kopyalandı.', {variant: 'success', autoHideDuration: 2000});
-    };
-
-    const handleDownloadBackupCodes = () => {
-        const blob = new Blob(
-            [(backupCodes || []).join('\n') + '\n'],
-            {type: 'text/plain;charset=utf-8'}
-        );
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'ehtiyat-kodlari.txt';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-        enqueueSnackbar('Kodlar yükləndi.', {variant: 'success', autoHideDuration: 2000});
-    };
-
-    const handleContinue = () => {
-        router.push(APP_ROUTES.HOME);
     };
 
     return (
@@ -167,138 +145,65 @@ export default function Page() {
                         boxShadow: {xs: '0 20px 45px rgba(15, 23, 55, 0.18)', md: 'none'},
                         px: {xs: 3, sm: 4}, py: 5,
                     }}>
-                        {backupCodes ? (
-                            <>
-                                <Typography sx={{fontSize: 22, fontWeight: 700, color: '#111827', mb: 0.5}}>
-                                    Ehtiyat kodlarınızı saxlayın
-                                </Typography>
-                                <Typography sx={{fontSize: 13, color: '#D32F2F', mb: 2, fontWeight: 600}}>
-                                    Bu kodlar YALNIZ İNDİ göstərilir. Telefonunuzu itirsəniz, bu kodlarla giriş
-                                    edə bilərsiniz. Təhlükəsiz yerdə saxlayın (məs. parol meneceri).
-                                </Typography>
+                        <Typography sx={{fontSize: 22, fontWeight: 700, color: '#111827', mb: 0.5}}>
+                            İki addımlı təsdiqləmə
+                        </Typography>
+                        <Typography sx={{fontSize: 14, color: '#6B7280', mb: 3}}>
+                            Google Authenticator və ya Microsoft Authenticator tətbiqi ilə aşağıdakı QR
+                            kodu skan edin, sonra tətbiqdə göstərilən 6 rəqəmli kodu daxil edin.
+                        </Typography>
 
-                                <Box sx={{
-                                    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1,
-                                    backgroundColor: '#F3F4F8', borderRadius: 1.5, p: 2, mb: 2,
-                                }}>
-                                    {backupCodes.map((c, i) => (
-                                        <Box
-                                            key={c}
-                                            sx={{
-                                                display: 'flex', alignItems: 'center', gap: 1,
-                                                backgroundColor: '#FFFFFF', border: `1px solid ${GOV.cardBorder}`,
-                                                borderRadius: 1, px: 1.25, py: 0.75,
-                                            }}
-                                        >
-                                            <Typography sx={{fontSize: 11, color: '#9CA3AF', minWidth: 14}}>
-                                                {i + 1}
-                                            </Typography>
-                                            <Typography sx={{
-                                                fontFamily: 'monospace', fontSize: 14, letterSpacing: 0.5,
-                                                color: GOV.textPrimary,
-                                            }}>
-                                                {c}
-                                            </Typography>
-                                        </Box>
-                                    ))}
-                                </Box>
-
-                                <Box sx={{display: 'flex', gap: 1, mb: 2.5}}>
-                                    <Button
-                                        fullWidth size="small" variant="outlined" startIcon={<ContentCopyIcon/>}
-                                        onClick={handleCopyBackupCodes}
-                                        sx={{
-                                            textTransform: 'none', borderColor: GOV.cardBorder,
-                                            color: GOV.textPrimary, fontSize: 13,
-                                        }}
-                                    >
-                                        Kopyala
-                                    </Button>
-                                    <Button
-                                        fullWidth size="small" variant="outlined" startIcon={<DownloadIcon/>}
-                                        onClick={handleDownloadBackupCodes}
-                                        sx={{
-                                            textTransform: 'none', borderColor: GOV.cardBorder,
-                                            color: GOV.textPrimary, fontSize: 13,
-                                        }}
-                                    >
-                                        Yüklə (.txt)
-                                    </Button>
-                                </Box>
-
-                                <Button
-                                    fullWidth variant="contained" onClick={handleContinue}
-                                    sx={{
-                                        backgroundColor: GOV.navySoft, textTransform: 'none', fontWeight: 600,
-                                        py: 1.1, borderRadius: 1.5, '&:hover': {backgroundColor: GOV.navy},
-                                    }}
-                                >
-                                    Kodları saxladım, davam et
-                                </Button>
-                            </>
+                        {loading ? (
+                            <Box sx={{display: 'flex', justifyContent: 'center', py: 4}}>
+                                <CircularProgress size={28}/>
+                            </Box>
                         ) : (
                             <>
-                                <Typography sx={{fontSize: 22, fontWeight: 700, color: '#111827', mb: 0.5}}>
-                                    İki addımlı təsdiqləmə
-                                </Typography>
-                                <Typography sx={{fontSize: 14, color: '#6B7280', mb: 3}}>
-                                    Google Authenticator və ya Microsoft Authenticator tətbiqi ilə aşağıdakı QR
-                                    kodu skan edin, sonra tətbiqdə göstərilən 6 rəqəmli kodu daxil edin.
-                                </Typography>
-
-                                {loading ? (
-                                    <Box sx={{display: 'flex', justifyContent: 'center', py: 4}}>
-                                        <CircularProgress size={28}/>
+                                {qrDataUrl && (
+                                    <Box sx={{display: 'flex', justifyContent: 'center', mb: 1}}>
+                                        <img src={qrDataUrl} alt="2FA QR kod" width={200} height={200}/>
                                     </Box>
-                                ) : (
-                                    <>
-                                        {qrDataUrl && (
-                                            <Box sx={{display: 'flex', justifyContent: 'center', mb: 1}}>
-                                                <img src={qrDataUrl} alt="2FA QR kod" width={200} height={200}/>
-                                            </Box>
-                                        )}
-                                        {manualKey && (
-                                            <Typography sx={{
-                                                fontSize: 12, color: '#9CA3AF', textAlign: 'center',
-                                                mb: 3, fontFamily: 'monospace', wordBreak: 'break-all',
-                                            }}>
-                                                QR oxunmursa, əl ilə daxil edin: {manualKey}
-                                            </Typography>
-                                        )}
-
-                                        <Box component="form" onSubmit={handleVerify}>
-                                            <TextField
-                                                fullWidth required size="small" placeholder="000000"
-                                                value={code}
-                                                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                                disabled={verifying}
-                                                inputProps={{
-                                                    inputMode: 'numeric', maxLength: 6,
-                                                    style: {letterSpacing: 4, textAlign: 'center', fontSize: 18},
-                                                }}
-                                                sx={{mb: 2}}
-                                            />
-
-                                            {error && (
-                                                <Typography sx={{fontSize: 13, color: '#D32F2F', mb: 2}}>
-                                                    {error}
-                                                </Typography>
-                                            )}
-
-                                            <Button
-                                                type="submit" fullWidth variant="contained"
-                                                disabled={verifying || code.length !== 6}
-                                                sx={{
-                                                    backgroundColor: GOV.navySoft, textTransform: 'none',
-                                                    fontWeight: 600, py: 1.1, borderRadius: 1.5,
-                                                    '&:hover': {backgroundColor: GOV.navy},
-                                                }}
-                                            >
-                                                {verifying ? 'Yoxlanılır…' : 'Təsdiqlə'}
-                                            </Button>
-                                        </Box>
-                                    </>
                                 )}
+                                {manualKey && (
+                                    <Typography sx={{
+                                        fontSize: 12, color: '#9CA3AF', textAlign: 'center',
+                                        mb: 3, fontFamily: 'monospace', wordBreak: 'break-all',
+                                    }}>
+                                        QR oxunmursa, əl ilə daxil edin: {manualKey}
+                                    </Typography>
+                                )}
+
+                                <Box component="form" onSubmit={handleVerify}>
+                                    <TextField
+                                        fullWidth required size="small" placeholder="000000"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                        disabled={verifying}
+                                        inputProps={{
+                                            inputMode: 'numeric', maxLength: 6,
+                                            style: {letterSpacing: 4, textAlign: 'center', fontSize: 18},
+                                        }}
+                                        sx={{mb: 2}}
+                                    />
+
+                                    {error && (
+                                        <Typography sx={{fontSize: 13, color: '#D32F2F', mb: 2}}>
+                                            {error}
+                                        </Typography>
+                                    )}
+
+                                    <Button
+                                        type="submit" fullWidth variant="contained"
+                                        disabled={verifying || code.length !== 6}
+                                        sx={{
+                                            backgroundColor: GOV.navySoft, textTransform: 'none',
+                                            fontWeight: 600, py: 1.1, borderRadius: 1.5,
+                                            '&:hover': {backgroundColor: GOV.navy},
+                                        }}
+                                    >
+                                        {verifying ? 'Yoxlanılır…' : 'Təsdiqlə'}
+                                    </Button>
+                                </Box>
                             </>
                         )}
                     </Box>

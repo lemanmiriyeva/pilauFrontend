@@ -58,7 +58,7 @@ export const NEXT_API_ENDPOINTS = {
 
         PASSWORD_FORGOT: "auth/password-forgot/",
         PASSWORD_FORGOT_CONFIRM: "auth/password-forgot-confirm/",
-        FIRST_LOGIN_PASSWORD_SET: "auth/first-login-password-set/",
+        FIRST_LOGIN_PASSWORD_SET: "auth/first-login-set/",
 
         ADMIN_USERS_LIST: "auth/admin/users/",
         ADMIN_CREATE_USER: "auth/admin/users-create/",

@@ -14,7 +14,6 @@ import {handleError} from "@/app/utils";
 import {NEXT_API_ENDPOINTS} from "@/app/urls";
 import {APP_ROUTES, LOGIN_STEPS} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
-import ResetPassword from "@/app/daxilol/ResetPassword";
 import TwoFaResetDialog from "@/components/atoms/TwoFaResetDialog";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
@@ -55,13 +54,10 @@ export default function Page() {
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({username: null, password: null, common: null});
     const [capsLockOn, setCapsLockOn] = useState(false);
-    // 'credentials' | 'password_change' | 'totp' - ilk giriş üçün kodsuz şifrə təyinatı addımı da var
+    // 'credentials' | 'totp' - ilk giriş üçün şifrə təyinatı artıq 2FA-dan SONRA soruşulur
+    // (bax /2fa-qurulmasi), ona görə bu səhifədə ayrıca addım kimi yoxdur.
     const [step, setStep] = useState('credentials');
     const [code, setCode] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showPasswordReset, setShowPasswordReset] = useState(false);
     const [showTwoFaResetDialog, setShowTwoFaResetDialog] = useState(false);
     const [pendingUsername, setPendingUsername] = useState('');
 
@@ -76,18 +72,12 @@ export default function Page() {
     const handleBackToCredentials = () => {
         setStep('credentials');
         setCode('');
-        setNewPassword('');
-        setConfirmPassword('');
         setErrors({username: null, password: null, common: null});
     };
 
     const applyNextStep = (nextStep) => {
         if (nextStep === LOGIN_STEPS.TOTP_SETUP) {
             router.push(APP_ROUTES.TWO_FA_SETUP);
-            return;
-        }
-        if (nextStep === LOGIN_STEPS.PASSWORD_CHANGE) {
-            setStep('password_change');
             return;
         }
         if (nextStep === LOGIN_STEPS.TOTP_VERIFY) {
@@ -132,32 +122,6 @@ export default function Page() {
             } finally {
                 setLoading(false);
             }
-        } else if (step === 'password_change') {
-            if (!newPassword) {
-                setErrors((e) => ({...e, common: 'Yeni şifrə boş ola bilməz'}));
-                return;
-            }
-            if (newPassword !== confirmPassword) {
-                setErrors((e) => ({...e, common: 'Şifrələr üst-üstə düşmür'}));
-                return;
-            }
-
-            setLoading(true);
-            try {
-                const res = await service_api.post(
-                    NEXT_API_ENDPOINTS.AUTHENTICATION.FIRST_LOGIN_PASSWORD_SET, {new_password: newPassword}
-                );
-                enqueueSnackbar('Yeni şifrəniz təyin edildi.', {variant: 'success', autoHideDuration: 2000});
-                setNewPassword('');
-                setConfirmPassword('');
-                applyNextStep(res.data.step);
-            } catch (error) {
-                const msg = error?.response?.data?.detail || handleError(error);
-                setErrors((e) => ({...e, common: msg}));
-                enqueueSnackbar(msg, {variant: 'error', autoHideDuration: 5000});
-            } finally {
-                setLoading(false);
-            }
         } else {
             setLoading(true);
             try {
@@ -197,7 +161,7 @@ export default function Page() {
             }}>
                 {/* LEFT — Brand Panel */}
                 <Box sx={{
-                    position: 'relative', flex: {xs: '0 0 0%', md: '0 0 52%'},
+                    position: 'relative', flex: {xs: '0 0 0%', md: '0 0 44%'},
                     display: {xs: 'none', md: 'flex'}, flexDirection: 'column',
                     justifyContent: 'space-between', backgroundColor: GOV.navyMid,
                     color: GOV.textOnNavy, overflow: 'hidden', px: {md: 6, lg: 8}, py: 5,
@@ -226,23 +190,22 @@ export default function Page() {
 
                 {/* RIGHT — Form Panel */}
                 <Box sx={{
-                    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    height: '100%', overflowY: 'auto', px: 3, pt: {xs: 12, sm: 3, md: 0},
+                    flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    height: '100%', overflowY: 'auto', px: {xs: 3, md: 6, lg: 8}, pt: {xs: 12, sm: 3, md: 0},
                 }}>
                     <Box sx={{
-                        width: '100%', maxWidth: 420, backgroundColor: '#FFFFFF', borderRadius: 3,
+                        width: '100%', maxWidth: {xs: '100%', sm: 460, md: 560, lg: 640, xl: 720},
+                        backgroundColor: '#FFFFFF', borderRadius: 3,
                         boxShadow: {xs: '0 20px 45px rgba(15, 23, 55, 0.18)', md: 'none'},
-                        px: {xs: 3, sm: 4}, py: 5,
+                        px: {xs: 3, sm: 5, md: 6}, py: {xs: 5, md: 7},
                     }}>
-                        <Typography sx={{fontSize: 22, fontWeight: 700, color: '#111827', mb: 0.5}}>
+                        <Typography sx={{fontSize: {xs: 22}, fontWeight: 700, color: '#111827', mb: 0.5}}>
                             Sistemə giriş
                         </Typography>
-                        <Typography sx={{fontSize: 14, color: '#6B7280', mb: 3}}>
+                        <Typography sx={{fontSize: {xs: 13}, color: '#6B7280', mb: 4}}>
                             {step === 'totp'
                                 ? 'Autentifikasiya tətbiqinizdəki 6 rəqəmli kodu daxil edin.'
-                                : step === 'password_change'
-                                    ? 'İlk girişiniz olduğu üçün davam etməzdən əvvəl yeni şifrə təyin edin.'
-                                    : 'Davam etmək üçün istifadəçi adı və şifrənizi daxil edin.'}
+                                : 'Davam etmək üçün istifadəçi adı və şifrənizi daxil edin.'}
                         </Typography>
 
                         <Box component="form" ref={formRef} onSubmit={handleSubmit} noValidate>
@@ -254,7 +217,7 @@ export default function Page() {
                                     <TextField
                                         fullWidth required id="username" name="username"
                                         placeholder="İstifadəçi adı" autoComplete="username" autoFocus
-                                        size="small" error={!!errors.username} helperText={errors.username}
+                                        size="medium" error={!!errors.username} helperText={errors.username}
                                         disabled={loading} sx={{mb: 2}}
                                     />
 
@@ -262,7 +225,7 @@ export default function Page() {
                                         Şifrə
                                     </Typography>
                                     <TextField
-                                        fullWidth required size="small"
+                                        fullWidth required size="medium"
                                         onKeyDown={handleCapsLock} onKeyUp={handleCapsLock}
                                         error={!!errors.password}
                                         helperText={errors.password ? errors.password : (capsLockOn ? "Caps Lock açıqdır" : "")}
@@ -283,57 +246,17 @@ export default function Page() {
                                     />
 
                                     <Box sx={{display: 'flex', justifyContent: 'flex-end', mt: 0.75, mb: 2.5}}>
-                                        <Link onClick={() => setShowPasswordReset(true)} component="button"
+                                        <Link onClick={() => router.push(APP_ROUTES.PASSWORD_RESET)} component="button"
                                               type="button" underline="hover" sx={{fontSize: 13, color: GOV.navyMid}}>
                                             Şifrənizi unutmusunuz?
                                         </Link>
                                     </Box>
                                 </>
-                            ) : step === 'password_change' ? (
-                                <>
-                                    <Typography sx={{fontSize: 13, fontWeight: 600, color: '#374151', mb: 0.75}}>
-                                        Yeni şifrə
-                                    </Typography>
-                                    <TextField
-                                        fullWidth required size="small" id="new_password"
-                                        name="new_password" placeholder="Yeni şifrə" autoFocus
-                                        type={showNewPassword ? 'text' : 'password'}
-                                        autoComplete="new-password" disabled={loading}
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <IconButton size="small" disabled={loading}
-                                                                onClick={() => setShowNewPassword((s) => !s)}
-                                                                edge="end">
-                                                        {showNewPassword ? <VisibilityOff fontSize="small"/> :
-                                                            <Visibility fontSize="small"/>}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                        sx={{mb: 2}}
-                                    />
-
-                                    <Typography sx={{fontSize: 13, fontWeight: 600, color: '#374151', mb: 0.75}}>
-                                        Yeni şifrə (təkrar)
-                                    </Typography>
-                                    <TextField
-                                        fullWidth required size="small" id="confirm_password"
-                                        name="confirm_password" placeholder="Yeni şifrə (təkrar)"
-                                        type={showNewPassword ? 'text' : 'password'}
-                                        autoComplete="new-password" disabled={loading}
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        sx={{mb: 2.5}}
-                                    />
-                                </>
                             ) : (
                                 <>
                                     <TextField
                                         fullWidth required id="code" name="code" placeholder="000000"
-                                        autoComplete="one-time-code" autoFocus size="small" value={code}
+                                        autoComplete="one-time-code" autoFocus size="medium" value={code}
                                         onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                         error={!!errors.common} disabled={loading}
                                         inputProps={{
@@ -369,11 +292,11 @@ export default function Page() {
                                 type="submit" fullWidth variant="contained" disabled={loading}
                                 sx={{
                                     backgroundColor: GOV.navySoft, textTransform: 'none', fontWeight: 600,
-                                    py: 1.1, borderRadius: 1.5, '&:hover': {backgroundColor: GOV.navy},
+                                    fontSize: 15, py: 1.4, borderRadius: 1.5, '&:hover': {backgroundColor: GOV.navy},
                                 }}
                             >
                                 {loading ? 'Yoxlanılır…' : (
-                                    step === 'totp' ? 'Təsdiqlə' : step === 'password_change' ? 'Şifrəni təyin et' : 'Daxil ol'
+                                    step === 'totp' ? 'Təsdiqlə' : 'Daxil ol'
                                 )}
                             </Button>
                         </Box>
@@ -384,8 +307,6 @@ export default function Page() {
                     </Box>
                 </Box>
             </Box>
-
-            <ResetPassword open={showPasswordReset} handleClose={() => setShowPasswordReset(false)}/>
 
             <TwoFaResetDialog
                 open={showTwoFaResetDialog}

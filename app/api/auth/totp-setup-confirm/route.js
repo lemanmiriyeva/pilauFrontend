@@ -19,10 +19,22 @@ export async function POST(req) {
         })
         const data = await res.json()
 
+        if (res.status === 200 && data.step === 'password_change_required' && data.temp_token) {
+            // 2FA tesdiqlendi, amma bu ilk giriş idi - istifadəçi indi öz yeni şifrəsini təyin etməlidir.
+            // Novbeti addim ucun temp_token-i eyni cookie-de (yeni purpose ile) saxlayirig.
+            cookies().set(PENDING_2FA_COOKIE, data.temp_token, {
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                sameSite: 'strict',
+                maxAge: 300,
+            })
+            return Response.json({step: data.step, backup_codes: data.backup_codes}, {status: 200})
+        }
+
         if (res.status === 200 && data.access && data.refresh) {
             await setTokenCookies(data.access, data.refresh)
             cookies().delete(PENDING_2FA_COOKIE)
-            return Response.json({backup_codes: data.backup_codes, user: data.user}, {status: 200})
+            return Response.json({step: 'done', backup_codes: data.backup_codes, user: data.user}, {status: 200})
         }
         return Response.json(data, {status: res.status})
     } catch (e) {

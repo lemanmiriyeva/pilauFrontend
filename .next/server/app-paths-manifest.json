@@ -1,11 +1,6 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/modullar/lisenziya-senedler/edv-guzesti/page": "app/modullar/lisenziya-senedler/edv-guzesti/page.js",
   "/page": "app/page.js",
   "/daxilol/page": "app/daxilol/page.js",
-  "/chixish/page": "app/chixish/page.js",
-  "/modullar/lisenziya-senedler/edv-guzesti/yeni/page": "app/modullar/lisenziya-senedler/edv-guzesti/yeni/page.js",
-  "/api/auth/logout/route": "app/api/auth/logout/route.js",
-  "/api/auth/password-forgot/route": "app/api/auth/password-forgot/route.js"
+  "/2fa-qurulmasi/page": "app/2fa-qurulmasi/page.js"
 }

@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/modullar/[[...path]]/page": [
+    "/2fa-qurulmasi/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/[[...path]]/page.js"
+      "static/chunks/app/2fa-qurulmasi/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,35 +11,20 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/modullar/lisenziya-senedler/edv-guzesti/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/edv-guzesti/page.js"
-    ],
-    "/daxilol/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/daxilol/page.js"
-    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/modullar/lisenziya-senedler/edv-guzesti/yeni/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/edv-guzesti/yeni/page.js"
-    ],
-    "/modullar/lisenziya-senedler/edv-guzesti/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/edv-guzesti/[id]/page.js"
-    ],
     "/chixish/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/chixish/page.js"
+    ],
+    "/daxilol/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/daxilol/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",

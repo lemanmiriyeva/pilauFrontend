@@ -54,7 +54,7 @@ export default function AuthLayout({children}) {
             }}>
                 {/* LEFT — Brand Panel */}
                 <Box sx={{
-                    position: 'relative', flex: {xs: '0 0 0%', md: '0 0 52%'},
+                    position: 'relative', flex: {xs: '0 0 0%', md: '0 0 44%'},
                     display: {xs: 'none', md: 'flex'}, flexDirection: 'column',
                     justifyContent: 'space-between', backgroundColor: GOV.navyMid,
                     color: GOV.textOnNavy, overflow: 'hidden', px: {md: 6, lg: 8}, py: 5,
@@ -83,11 +83,11 @@ export default function AuthLayout({children}) {
 
                 {/* RIGHT — Form Panel */}
                 <Box sx={{
-                    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    height: '100%', overflowY: 'auto', px: 3, pt: {xs: 12, sm: 3, md: 0},
+                    flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    height: '100%', overflowY: 'auto', px: {xs: 3, md: 6, lg: 8}, pt: {xs: 12, sm: 3, md: 0},
                 }}>
                     <Box sx={{
-                        width: '100%', maxWidth: 420, backgroundColor: '#FFFFFF', borderRadius: 3,
+                        width: '100%', maxWidth: 480, backgroundColor: '#FFFFFF', borderRadius: 3,
                         boxShadow: {xs: '0 20px 45px rgba(15, 23, 55, 0.18)', md: 'none'},
                         px: {xs: 3, sm: 4}, py: 5,
                     }}>
