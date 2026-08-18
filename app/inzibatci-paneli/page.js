@@ -43,6 +43,14 @@ export default function Page() {
                         icon: 'gavel',
                         href: APP_ROUTES.TESDIQ_HUQUQLARI,
                     });
+                    extraCards.push({
+                        id: 'tesdiq-axini',
+                        key: 'tesdiq-axini',
+                        title: 'Təsdiq axını',
+                        description: 'Hər sənəd növü üçün 1-ci mərhələni (Qurum/MSN) və hər iki mərhələnin konkret icraçısını təyin edin.',
+                        icon: 'gavel',
+                        href: APP_ROUTES.TESDIQ_AXINI,
+                    });
                 }
 
                 return (

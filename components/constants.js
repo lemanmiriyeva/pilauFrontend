@@ -33,6 +33,7 @@ export const APP_ROUTES = {
     EDV_GUZESTI_YENI: "/modullar/lisenziya-senedler/edv-guzesti/yeni",
     QURUM_YOXLAMASI_ICAZELERI: "/lisenziya-icazeleri/qurum-yoxlamasi",
     TESDIQ_HUQUQLARI: "/lisenziya-icazeleri/tesdiq-huquqlari",
+    TESDIQ_AXINI: "/lisenziya-icazeleri/tesdiq-axini",
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
 }
 

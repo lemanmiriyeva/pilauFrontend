@@ -11,11 +11,13 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import {useRouter} from "next/navigation";
 import {GOV} from "@/components/theme/govColors";
 import {APP_ROUTES} from "@/components/constants";
 import Image from "next/image";
 import logo from "@/app/logo.svg";
+import NotificationBell from "@/components/atoms/NotificationBell";
 
 function initialsOf(user) {
     const a = (user?.first_name || '')[0] || '';
@@ -39,21 +41,25 @@ export default function AppHeader({user}) {
                 <Image src={logo} alt="" height={44} style={{width: 'auto', height: 44}}/>
             </Box>
 
-            <Box
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                sx={{
-                    display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer',
-                    backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 5, px: 1, py: 0.5,
-                    '&:hover': {backgroundColor: 'rgba(255,255,255,0.1)'},
-                }}
-            >
-                <Avatar sx={{width: 26, height: 26, fontSize: 12, backgroundColor: GOV.gold, color: GOV.navy}}>
-                    {initialsOf(user)}
-                </Avatar>
-                <Typography sx={{fontSize: 13, fontWeight: 600, textTransform: 'uppercase'}}>
-                    {user?.first_name} {user?.last_name}
-                </Typography>
-                <KeyboardArrowDownIcon sx={{fontSize: 18, color: GOV.textOnNavyMuted}}/>
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5}}>
+                <NotificationBell/>
+
+                <Box
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    sx={{
+                        display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer',
+                        backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 5, px: 1, py: 0.5,
+                        '&:hover': {backgroundColor: 'rgba(255,255,255,0.1)'},
+                    }}
+                >
+                    <Avatar sx={{width: 26, height: 26, fontSize: 12, backgroundColor: GOV.gold, color: GOV.navy}}>
+                        {initialsOf(user)}
+                    </Avatar>
+                    <Typography sx={{fontSize: 13, fontWeight: 600, textTransform: 'uppercase'}}>
+                        {user?.first_name} {user?.last_name}
+                    </Typography>
+                    <KeyboardArrowDownIcon sx={{fontSize: 18, color: GOV.textOnNavyMuted}}/>
+                </Box>
             </Box>
 
             <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}
@@ -82,6 +88,15 @@ export default function AppHeader({user}) {
                     }}>
                         <ListItemIcon><VerifiedUserOutlinedIcon fontSize="small"/></ListItemIcon>
                         Təsdiq hüquqları
+                    </MenuItem>
+                )}
+                {(user?.is_staff) && (
+                    <MenuItem onClick={() => {
+                        setAnchorEl(null);
+                        router.push(APP_ROUTES.TESDIQ_AXINI);
+                    }}>
+                        <ListItemIcon><AccountTreeOutlinedIcon fontSize="small"/></ListItemIcon>
+                        Təsdiq axını
                     </MenuItem>
                 )}
                 <MenuItem onClick={() => {

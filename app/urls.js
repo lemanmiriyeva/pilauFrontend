@@ -47,6 +47,10 @@ export const DJANGO_API_ENDPOINTS = {
         STAGE1_PERMISSIONS: API_URL + "/api/workflow/stage1-permissions/",
         STAGE2_PERMISSIONS: API_URL + "/api/workflow/stage2-permissions/",
         APPROVERS: API_URL + "/api/workflow/approvers/",
+        WORKFLOW_CONFIG: API_URL + "/api/workflow/workflow-config/",
+        NOTIFICATIONS: API_URL + "/api/workflow/notifications/",
+        NOTIFICATIONS_READ_ALL: API_URL + "/api/workflow/notifications/read-all/",
+        NOTIFICATIONS_READ: (id) => API_URL + `/api/workflow/notifications/${id}/read/`,
     },
 }
 
@@ -93,5 +97,9 @@ export const NEXT_API_ENDPOINTS = {
         STAGE1_PERMISSIONS: "workflow/stage1-permissions/",
         STAGE2_PERMISSIONS: "workflow/stage2-permissions/",
         APPROVERS: "workflow/approvers/",
+        WORKFLOW_CONFIG: "workflow/workflow-config/",
+        NOTIFICATIONS: "workflow/notifications/",
+        NOTIFICATIONS_READ_ALL: "workflow/notifications/read-all/",
+        NOTIFICATIONS_READ: (id) => `workflow/notifications/${id}/read/`,
     },
 }

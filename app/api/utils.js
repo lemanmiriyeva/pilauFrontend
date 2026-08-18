@@ -82,6 +82,10 @@ export async function post_request(url, data, access_token, refresh_token) {
     return __base_request(url, METHODS.POST, data, access_token, refresh_token)
 }
 
+export async function put_request(url, data, access_token, refresh_token) {
+    return __base_request(url, METHODS.PUT, data, access_token, refresh_token)
+}
+
 export async function patch_request(url, data, access_token, refresh_token) {
     return __base_request(url, METHODS.PATCH, data, access_token, refresh_token)
 }
