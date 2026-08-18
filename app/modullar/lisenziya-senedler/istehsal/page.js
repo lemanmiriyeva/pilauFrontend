@@ -38,6 +38,23 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('');
+    const [organization, setOrganization] = useState('');
+    const [orgOptions, setOrgOptions] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        if (!currentUser) return;
+        if (!(currentUser.is_staff || currentUser.is_superuser || currentUser.is_org_admin)) return;
+        (async () => {
+            try {
+                const res = await service_api.get(NEXT_API_ENDPOINTS.ORGANIZATIONS.SUMMARY);
+                const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+                if (list.length > 1) setOrgOptions(list);
+            } catch (e) {
+                // sakit fail
+            }
+        })();
+    }, [currentUser]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -48,6 +65,7 @@ export default function Page() {
                     params.set('doc_type', DOC_TYPE);
                     if (search) params.set('search', search);
                     if (status) params.set('status', status);
+                    if (organization) params.set('organization', organization);
                     const res = await service_api.get(
                         `${NEXT_API_ENDPOINTS.LICENSES.PERMIT_LIST}?${params.toString()}`
                     );
@@ -60,10 +78,10 @@ export default function Page() {
             })();
         }, 300);
         return () => clearTimeout(timeout);
-    }, [search, status]);
+    }, [search, status, organization]);
 
     return (
-        <AppShell>
+        <AppShell onReady={({user}) => setCurrentUser(user)}>
             <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 1}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.HOME)}
@@ -97,7 +115,7 @@ export default function Page() {
                             px: 2.5, '&:hover': {backgroundColor: GOV.navyMid},
                         }}
                     >
-                         Lisenziya yarat
+                        Lisenziya yarat
                     </Button>
                 </Box>
 
@@ -123,6 +141,18 @@ export default function Page() {
                             <MenuItem key={key} value={key}>{meta.label}</MenuItem>
                         ))}
                     </TextField>
+                    {orgOptions.length > 0 && (
+                        <TextField
+                            select size="small" value={organization}
+                            onChange={(e) => setOrganization(e.target.value)}
+                            sx={{minWidth: 200, backgroundColor: '#fff'}}
+                        >
+                            <MenuItem value="">Bütün təşkilatlar</MenuItem>
+                            {orgOptions.map((org) => (
+                                <MenuItem key={org.id} value={org.id}>{org.full_name}</MenuItem>
+                            ))}
+                        </TextField>
+                    )}
                 </Box>
 
                 <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, overflow: 'hidden'}}>
@@ -174,7 +204,7 @@ export default function Page() {
                                                 {formatDate(row.issue_date)}
                                             </Box>
                                             <Box component="td" sx={{px: 2.5, py: 1.75, fontSize: 13, color: GOV.textPrimary}}>
-                                                {row.applicant_name || '-'}
+                                                {row.organization_name || row.applicant_name || '-'}
                                             </Box>
                                             <Box component="td" sx={{px: 2.5, py: 1.75}}>
                                                 <PermitStatusChip status={row.status}/>

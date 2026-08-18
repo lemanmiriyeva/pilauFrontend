@@ -1,10 +1,19 @@
 {
-  "/bildirisler/page": "app/bildirisler/page.js",
-  "/lisenziya-icazeleri/tesdiq-axini/page": "app/lisenziya-icazeleri/tesdiq-axini/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/page": "app/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/page": "app/modullar/lisenziya-senedler/idxal-ixrac/page.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js"
+  "/modullar/lisenziya-senedler/edv-guzesti/yeni/page": "app/modullar/lisenziya-senedler/edv-guzesti/yeni/page.js",
+  "/modullar/lisenziya-senedler/edv-guzesti/yeni/[type]/page": "app/modullar/lisenziya-senedler/edv-guzesti/yeni/[type]/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
+  "/page": "app/page.js",
+  "/modullar/lisenziya-senedler/edv-guzesti/[id]/page": "app/modullar/lisenziya-senedler/edv-guzesti/[id]/page.js",
+  "/modullar/lisenziya-senedler/edv-guzesti/page": "app/modullar/lisenziya-senedler/edv-guzesti/page.js",
+  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
+  "/modullar/lisenziya-senedler/xususi-satis/page": "app/modullar/lisenziya-senedler/xususi-satis/page.js",
+  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
+  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js"
 }

@@ -22,8 +22,6 @@ import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import PermitStatusChip, {STATUS_META} from "@/components/atoms/licenses/PermitStatusChip";
 
-const DOC_TYPE = 'edv_guzest';
-
 function formatDate(value) {
     if (!value) return '-';
     const d = new Date(value);
@@ -45,7 +43,7 @@ export default function Page() {
                 setLoading(true);
                 try {
                     const params = new URLSearchParams();
-                    params.set('doc_type', DOC_TYPE);
+                    params.set('doc_type', 'gomrukden_azadolma,edvden_azadolma');
                     if (search) params.set('search', search);
                     if (status) params.set('status', status);
                     const res = await service_api.get(
