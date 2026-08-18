@@ -36,19 +36,34 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('');
+    const [docType, setDocType] = useState('');
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             (async () => {
                 setLoading(true);
                 try {
-                    const params = new URLSearchParams();
-                    if (search) params.set('search', search);
-                    if (status) params.set('status', status);
-                    const res = await service_api.get(
-                        `${NEXT_API_ENDPOINTS.LICENSES.PERMIT_LIST}?${params.toString()}`
+                    // Bu səhifə "İdxal/İxrac icazə sənədi" kateqoriyasıdır - yalnız 'idxal' və 'ixrac'
+                    // doc_type-larını göstərməlidir. doc_type filtri göndərilməzsə backend BÜTÜN
+                    // kateqoriyaları (istehsal, xüsusi satış, ƏDV güzəşt və s.) qaytarır - əvvəlki
+                    // bug bu idi.
+                    const results = await Promise.all(
+                        ['ixrac', 'idxal'].map(async (dt) => {
+                            const params = new URLSearchParams();
+                            params.set('doc_type', dt);
+                            if (search) params.set('search', search);
+                            if (status) params.set('status', status);
+                            const res = await service_api.get(
+                                `${NEXT_API_ENDPOINTS.LICENSES.PERMIT_LIST}?${params.toString()}`
+                            );
+                            return Array.isArray(res.data) ? res.data : (res.data?.results || []);
+                        })
                     );
-                    setRows(Array.isArray(res.data) ? res.data : (res.data?.results || []));
+                    const merged = results.flat().sort(
+                        (a, b) => new Date(b.issue_date || 0) - new Date(a.issue_date || 0)
+                    );
+                    const filtered = docType ? merged.filter((r) => r.doc_type === docType) : merged;
+                    setRows(filtered);
                 } catch (e) {
                     enqueueSnackbar(handleError(e), {variant: 'error'});
                 } finally {
@@ -57,7 +72,7 @@ export default function Page() {
             })();
         }, 300);
         return () => clearTimeout(timeout);
-    }, [search, status]);
+    }, [search, status, docType]);
 
     return (
         <AppShell>
@@ -111,6 +126,14 @@ export default function Page() {
                             ),
                         }}
                     />
+                    <TextField
+                        select size="small" value={docType} onChange={(e) => setDocType(e.target.value)}
+                        sx={{minWidth: 160, backgroundColor: '#fff'}}
+                    >
+                        <MenuItem value="">Bütün kateqoriyalar</MenuItem>
+                        <MenuItem value="ixrac">İxrac</MenuItem>
+                        <MenuItem value="idxal">İdxal</MenuItem>
+                    </TextField>
                     <TextField
                         select size="small" value={status} onChange={(e) => setStatus(e.target.value)}
                         sx={{minWidth: 180, backgroundColor: '#fff'}}

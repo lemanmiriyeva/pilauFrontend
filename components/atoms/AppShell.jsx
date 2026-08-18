@@ -44,11 +44,34 @@ export default function AppShell({children, onReady}) {
         );
     }
 
+    // Mərhələli təsdiqləmə icazə ekranları (Qurum yoxlaması / Təsdiq hüquqları) DB modul
+    // ağacında deyil - istifadəçi rolundan (is_org_admin / is_staff) asılı olaraq "İnzibatçı
+    // Paneli" budağına sadəcə sidebar-da görünmək üçün əlavə olunur. Real icazə yoxlaması
+    // backend-də olur (bax: workflow app) - bu, yalnız naviqasiyadır.
+    const sidebarTree = tree.map((module) => {
+        if (module.key !== 'inzibatci-paneli') return module;
+        const extraChildren = [];
+        if (user?.is_org_admin) {
+            extraChildren.push({
+                id: 'qurum-yoxlamasi-icazeleri', key: 'qurum-yoxlamasi-icazeleri',
+                title: 'Qurum yoxlaması icazələri', children: [],
+            });
+        }
+        if (user?.is_staff) {
+            extraChildren.push({
+                id: 'tesdiq-huquqlari', key: 'tesdiq-huquqlari',
+                title: 'Təsdiq hüquqları', children: [],
+            });
+        }
+        if (extraChildren.length === 0) return module;
+        return {...module, children: [...(module.children || []), ...extraChildren]};
+    });
+
     return (
         <Box sx={{minHeight: '100vh', backgroundColor: GOV.pageBg}}>
             <AppHeader user={user}/>
             <Box sx={{display: 'flex', alignItems: 'stretch', minHeight: 'calc(100vh - 62px)'}}>
-                <AdminSidebar tree={tree} collapsed={collapsed} onToggleCollapsed={() => setCollapsed((c) => !c)}/>
+                <AdminSidebar tree={sidebarTree} collapsed={collapsed} onToggleCollapsed={() => setCollapsed((c) => !c)}/>
                 <Box sx={{flexGrow: 1, minWidth: 0}}>
                     {typeof children === 'function' ? children({user, tree}) : children}
                 </Box>

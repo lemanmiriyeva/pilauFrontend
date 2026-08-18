@@ -9,6 +9,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
+import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
 import {useRouter} from "next/navigation";
 import {GOV} from "@/components/theme/govColors";
 import {APP_ROUTES} from "@/components/constants";
@@ -64,6 +66,24 @@ export default function AppHeader({user}) {
                     <ListItemIcon><PersonOutlineIcon fontSize="small"/></ListItemIcon>
                     Şəxsi kabinet
                 </MenuItem>
+                {user?.is_org_admin && (
+                    <MenuItem onClick={() => {
+                        setAnchorEl(null);
+                        router.push(APP_ROUTES.QURUM_YOXLAMASI_ICAZELERI);
+                    }}>
+                        <ListItemIcon><FactCheckOutlinedIcon fontSize="small"/></ListItemIcon>
+                        Qurum yoxlaması icazələri
+                    </MenuItem>
+                )}
+                {(user?.is_staff) && (
+                    <MenuItem onClick={() => {
+                        setAnchorEl(null);
+                        router.push(APP_ROUTES.TESDIQ_HUQUQLARI);
+                    }}>
+                        <ListItemIcon><VerifiedUserOutlinedIcon fontSize="small"/></ListItemIcon>
+                        Təsdiq hüquqları
+                    </MenuItem>
+                )}
                 <MenuItem onClick={() => {
                     setAnchorEl(null);
                     router.push(APP_ROUTES.SIGNOUT);

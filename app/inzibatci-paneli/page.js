@@ -15,9 +15,35 @@ export default function Page() {
 
     return (
         <AppShell>
-            {({tree}) => {
+            {({tree, user}) => {
                 const result = findModuleByPath(tree, ['inzibatci-paneli']);
                 const children = result?.node?.children || [];
+
+                // Mərhələli təsdiqləmə icazə ekranları modul ağacı/DB-icazə sistemindən deyil,
+                // birbaşa istifadəçi rollarından (is_org_admin / is_staff) asılıdır - ona görə
+                // burada statik olaraq əlavə olunur (bax: workflow app, backend icazə yoxlaması
+                // real qapıdır, bu kartlar sadəcə naviqasiya üçündür).
+                const extraCards = [];
+                if (user?.is_org_admin) {
+                    extraCards.push({
+                        id: 'qurum-yoxlamasi-icazeleri',
+                        key: 'qurum-yoxlamasi-icazeleri',
+                        title: 'Qurum yoxlaması icazələri',
+                        description: 'Təşkilatınızın işçilərinə lisenziya kateqoriyaları üzrə yoxlama icazəsi verin (1-ci mərhələ).',
+                        icon: 'gavel',
+                        href: APP_ROUTES.QURUM_YOXLAMASI_ICAZELERI,
+                    });
+                }
+                if (user?.is_staff) {
+                    extraCards.push({
+                        id: 'tesdiq-huquqlari',
+                        key: 'tesdiq-huquqlari',
+                        title: 'Təsdiq hüquqları',
+                        description: 'İstifadəçilərə lisenziya kateqoriyaları üzrə yoxlama və son təsdiq hüququ verin (2-ci mərhələ).',
+                        icon: 'gavel',
+                        href: APP_ROUTES.TESDIQ_HUQUQLARI,
+                    });
+                }
 
                 return (
                     <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
@@ -56,9 +82,15 @@ export default function Page() {
                                     />
                                 );
                             })}
+                            {extraCards.map((card) => (
+                                <ModuleCard
+                                    key={card.id} module={card} variant="sub"
+                                    onClick={() => router.push(card.href)}
+                                />
+                            ))}
                         </Box>
 
-                        {children.length === 0 && (
+                        {children.length === 0 && extraCards.length === 0 && (
                             <Typography sx={{fontSize: 13, color: GOV.textMuted, textAlign: 'center', py: 4}}>
                                 Bu bölməyə girişiniz yoxdur.
                             </Typography>

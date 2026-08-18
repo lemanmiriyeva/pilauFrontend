@@ -43,6 +43,11 @@ export const DJANGO_API_ENDPOINTS = {
         PERMIT_DETAIL: (id) => API_URL + `/api/licenses/permit-documents/${id}/`,
         PERMIT_CREATE: API_URL + "/api/licenses/permit-documents/",
     },
+    WORKFLOW: {
+        STAGE1_PERMISSIONS: API_URL + "/api/workflow/stage1-permissions/",
+        STAGE2_PERMISSIONS: API_URL + "/api/workflow/stage2-permissions/",
+        APPROVERS: API_URL + "/api/workflow/approvers/",
+    },
 }
 
 export const NEXT_API_ENDPOINTS = {
@@ -83,5 +88,10 @@ export const NEXT_API_ENDPOINTS = {
         PERMIT_LIST: "licenses/permit-documents/",
         PERMIT_DETAIL: (id) => `licenses/permit-documents/${id}/`,
         PERMIT_CREATE: "licenses/permit-documents-create/",
+    },
+    WORKFLOW: {
+        STAGE1_PERMISSIONS: "workflow/stage1-permissions/",
+        STAGE2_PERMISSIONS: "workflow/stage2-permissions/",
+        APPROVERS: "workflow/approvers/",
     },
 }
