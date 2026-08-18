@@ -78,8 +78,17 @@ export default function Page() {
                     }}>
                         {modules.map((m) => (
                             <ModuleCard
-                                key={m.id} module={m} variant="home"
-                                onClick={() => router.push(`modullar/${m.key}`)}
+                                key={m.id}
+                                module={m}
+                                variant="home"
+                                onClick={() => {
+                                    const path = m.key.startsWith('/') ? m.key : `modullar/${m.key}`;
+                                    const finalRoute = m.key.includes('inzibatci-paneli')
+                                        ? `/${m.key.replace(/^\/+/, '')}`
+                                        : `modullar/${m.key}`;
+
+                                    router.push(finalRoute);
+                                }}
                             />
                         ))}
                     </Box>

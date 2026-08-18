@@ -35,6 +35,7 @@ export const APP_ROUTES = {
     TESDIQ_HUQUQLARI: "/lisenziya-icazeleri/tesdiq-huquqlari",
     TESDIQ_AXINI: "/lisenziya-icazeleri/tesdiq-axini",
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
+    BILDIRISLER:"/bildirisler"
 }
 
 export const LOGIN_STEPS = {

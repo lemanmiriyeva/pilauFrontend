@@ -12,6 +12,7 @@ import {useRouter} from "next/navigation";
 import {service_api} from "@/app/service";
 import {NEXT_API_ENDPOINTS} from "@/app/urls";
 import {GOV} from "@/components/theme/govColors";
+import {APP_ROUTES} from "@/components/constants";
 
 const POLL_MS = 30000;
 
@@ -168,6 +169,20 @@ export default function NotificationBell() {
                         </Box>
                     ))
                 )}
+
+                <Box
+                    onClick={() => {
+                        setAnchorEl(null);
+                        router.push(APP_ROUTES.BILDIRISLER);
+                    }}
+                    sx={{
+                        textAlign: 'center', py: 1.25, cursor: 'pointer', fontSize: 12.5,
+                        fontWeight: 700, color: GOV.navyMid, borderTop: `1px solid ${GOV.cardBorder}`,
+                        '&:hover': {backgroundColor: GOV.pageBg},
+                    }}
+                >
+                    Bütün bildirişlərə bax
+                </Box>
             </Menu>
         </>
     );

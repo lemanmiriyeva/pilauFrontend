@@ -8,7 +8,8 @@ export async function GET(req) {
     const access = cookies().get("access")
     const refresh = cookies().get("refresh")
     try {
-        const res = await get_request(DJANGO_API_ENDPOINTS.WORKFLOW.NOTIFICATIONS, access, refresh)
+        const search = new URL(req.url).search
+        const res = await get_request(DJANGO_API_ENDPOINTS.WORKFLOW.NOTIFICATIONS + search, access, refresh)
         const data = await res.json()
         return Response.json(data, {status: res.status})
     } catch (e) {
