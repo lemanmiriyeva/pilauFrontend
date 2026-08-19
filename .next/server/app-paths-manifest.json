@@ -1,9 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
   "/modullar/lisenziya-senedler/istehsal/[id]/page": "app/modullar/lisenziya-senedler/istehsal/[id]/page.js",
+  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
   "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/lisenziya-icazeleri/yoxlamalarim/page": "app/lisenziya-icazeleri/yoxlamalarim/page.js",
-  "/lisenziya-icazeleri/sened/[id]/page": "app/lisenziya-icazeleri/sened/[id]/page.js"
+  "/lisenziya-icazeleri/sened/[id]/page": "app/lisenziya-icazeleri/sened/[id]/page.js",
+  "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
+  "/lisenziya-icazeleri/yoxlamalarim/page": "app/lisenziya-icazeleri/yoxlamalarim/page.js"
 }

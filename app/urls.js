@@ -7,9 +7,9 @@ export const DJANGO_API_ENDPOINTS = {
         REFRESH: API_URL + "/api/auth/token/refresh/",
         USER: API_URL + "/api/auth/me/",
 
-        TOTP_SETUP_BEGIN: API_URL + "/api/auth/totp/setup/begin/",
-        TOTP_SETUP_CONFIRM: API_URL + "/api/auth/totp/setup/confirm/",
-        TOTP_VERIFY: API_URL + "/api/auth/totp/verify/",
+        TOTP_SETUP_BEGIN: API_URL + "/api/auth/totp-setup-begin/",
+        TOTP_SETUP_CONFIRM: API_URL + "/api/auth/totp-setup-confirm/",
+        TOTP_VERIFY: API_URL + "/api/auth/totp-verify/",
         TOTP_REQUEST_ADMIN_HELP: API_URL + "/api/auth/totp/request-admin-help/",
 
         PASSWORD_FORGOT: API_URL + "/api/auth/password/forgot/",
