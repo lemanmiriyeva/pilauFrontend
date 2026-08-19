@@ -26,7 +26,8 @@ export async function POST(req) {
                 // secure: process.env.NODE_ENV === 'production',
                 secure:false,
                 httpOnly: true,
-                sameSite: 'strict',
+                sameSite: 'lax',
+                path: '/',
                 maxAge: 300,
             })
             return Response.json({step: data.step, backup_codes: data.backup_codes}, {status: 200})
