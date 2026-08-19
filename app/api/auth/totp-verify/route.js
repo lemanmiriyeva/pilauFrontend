@@ -6,11 +6,16 @@ import {DJANGO_API_ENDPOINTS} from "@/app/urls";
 import {PENDING_2FA_COOKIE} from "@/components/constants";
 
 export async function POST(req) {
-    const pending = cookies().get(PENDING_2FA_COOKIE)
+    // 1. cookies() funksiyasını await edirik
+    const cookieStore = await cookies()
+    const pending = cookieStore.get(PENDING_2FA_COOKIE)
+
     if (!pending?.value) {
         return Response.json({detail: "Sessiya bitib, yenidən daxil olun."}, {status: 401})
     }
+
     const {code} = await req.json()
+
     try {
         const res = await fetch(DJANGO_API_ENDPOINTS.AUTHENTICATION.TOTP_VERIFY, {
             method: 'POST',
@@ -21,7 +26,10 @@ export async function POST(req) {
 
         if (res.status === 200 && data.access && data.refresh) {
             await setTokenCookies(data.access, data.refresh)
-            cookies().delete(PENDING_2FA_COOKIE)
+
+            // 2. Kukini silərkən də cookieStore istifadə edirik
+            cookieStore.delete(PENDING_2FA_COOKIE)
+
             return Response.json({user: data.user}, {status: 200})
         }
         return Response.json(data, {status: res.status})
