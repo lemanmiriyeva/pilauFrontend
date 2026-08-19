@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/modullar/lisenziya-senedler/istehsal/[id]/page": [
+    "/lisenziya-icazeleri/sened/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
+      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,50 +11,30 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/lisenziya-icazeleri/senedlerim/page": [
+    "/sexsi-kabinet/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+      "static/chunks/app/sexsi-kabinet/page.js"
     ],
-    "/modullar/lisenziya-senedler/istehsal/page": [
+    "/chixish/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/page.js"
+      "static/chunks/app/chixish/page.js"
     ],
-    "/modullar/[[...path]]/page": [
+    "/daxilol/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/[[...path]]/page.js"
+      "static/chunks/app/daxilol/page.js"
     ],
-    "/lisenziya-icazeleri/tesdiq-axini/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/tesdiq-axini/page.js"
+      "static/chunks/app/page.js"
     ],
-    "/modullar/lisenziya-senedler/istehsal/yeni/page": [
+    "/inzibatci-paneli/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/yeni/page.js"
-    ],
-    "/lisenziya-icazeleri/sened/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
-    ],
-    "/lisenziya-icazeleri/tesdiq-huquqlari/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/tesdiq-huquqlari/page.js"
-    ],
-    "/lisenziya-icazeleri/yoxlamalarim/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/yoxlamalarim/page.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/inzibatci-paneli/page.js"
     ]
   }
 }

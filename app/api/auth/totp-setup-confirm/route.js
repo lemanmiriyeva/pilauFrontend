@@ -23,7 +23,8 @@ export async function POST(req) {
             // 2FA tesdiqlendi, amma bu ilk giriş idi - istifadəçi indi öz yeni şifrəsini təyin etməlidir.
             // Novbeti addim ucun temp_token-i eyni cookie-de (yeni purpose ile) saxlayirig.
             cookies().set(PENDING_2FA_COOKIE, data.temp_token, {
-                secure: process.env.NODE_ENV === 'production',
+                // secure: process.env.NODE_ENV === 'production',
+                secure:false,
                 httpOnly: true,
                 sameSite: 'strict',
                 maxAge: 300,
