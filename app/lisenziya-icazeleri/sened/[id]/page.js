@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import {useRouter, useParams} from "next/navigation";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
@@ -168,7 +169,21 @@ export default function Page() {
                             </Typography>
                         </Box>
                     </Box>
-                    <CertificateStatusChip status={cert.status}/>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5}}>
+                        <CertificateStatusChip status={cert.status}/>
+                        <Button
+                            component="a"
+                            href={`/api/${NEXT_API_ENDPOINTS.LICENSES.CERTIFICATE_PDF(cert.id)}?download=1`}
+                            target="_blank" rel="noopener noreferrer"
+                            startIcon={<PictureAsPdfIcon sx={{fontSize: 17}}/>}
+                            sx={{
+                                textTransform: 'none', fontWeight: 700, fontSize: 12.5,
+                                color: GOV.textPrimary, border: `1px solid ${GOV.cardBorder}`, px: 1.75,
+                            }}
+                        >
+                            PDF yüklə
+                        </Button>
+                    </Box>
                 </Box>
 
                 <SectionCard title="Əsas məlumatlar">

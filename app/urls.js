@@ -7,9 +7,9 @@ export const DJANGO_API_ENDPOINTS = {
         REFRESH: API_URL + "/api/auth/token/refresh/",
         USER: API_URL + "/api/auth/me/",
 
-        TOTP_SETUP_BEGIN: API_URL + "/api/auth/totp-setup-begin/",
-        TOTP_SETUP_CONFIRM: API_URL + "/api/auth/totp-setup-confirm/",
-        TOTP_VERIFY: API_URL + "/api/auth/totp-verify/",
+        TOTP_SETUP_BEGIN: API_URL + "/api/auth/totp/setup/begin/",
+        TOTP_SETUP_CONFIRM: API_URL + "/api/auth/totp/setup/confirm/",
+        TOTP_VERIFY: API_URL + "/api/auth/totp/verify/",
         TOTP_REQUEST_ADMIN_HELP: API_URL + "/api/auth/totp/request-admin-help/",
 
         PASSWORD_FORGOT: API_URL + "/api/auth/password/forgot/",
@@ -42,6 +42,7 @@ export const DJANGO_API_ENDPOINTS = {
         PERMIT_LIST: API_URL + "/api/licenses/permit-documents/",
         PERMIT_DETAIL: (id) => API_URL + `/api/licenses/permit-documents/${id}/`,
         PERMIT_CREATE: API_URL + "/api/licenses/permit-documents/",
+        PERMIT_PDF: (id) => API_URL + `/api/licenses/permit-documents/${id}/pdf/`,
         PERMIT_APPROVE: (id) => API_URL + `/api/licenses/permit-documents/${id}/approve/`,
         PERMIT_REJECT: (id) => API_URL + `/api/licenses/permit-documents/${id}/reject/`,
         APPROVAL_SETTINGS: API_URL + "/api/licenses/approval-settings/",
@@ -49,15 +50,6 @@ export const DJANGO_API_ENDPOINTS = {
         CERTIFICATE_DETAIL: (id) => API_URL + `/api/licenses/certificates/${id}/`,
         CERTIFICATE_COMPLETE: (id) => API_URL + `/api/licenses/certificates/${id}/complete/`,
         CERTIFICATE_PDF: (id) => API_URL + `/api/licenses/certificates/${id}/pdf/`,
-    },
-    WORKFLOW: {
-        STAGE1_PERMISSIONS: API_URL + "/api/workflow/stage1-permissions/",
-        STAGE2_PERMISSIONS: API_URL + "/api/workflow/stage2-permissions/",
-        APPROVERS: API_URL + "/api/workflow/approvers/",
-        WORKFLOW_CONFIG: API_URL + "/api/workflow/workflow-config/",
-        NOTIFICATIONS: API_URL + "/api/workflow/notifications/",
-        NOTIFICATIONS_READ_ALL: API_URL + "/api/workflow/notifications/read-all/",
-        NOTIFICATIONS_READ: (id) => API_URL + `/api/workflow/notifications/${id}/read/`,
     },
 }
 
@@ -99,6 +91,7 @@ export const NEXT_API_ENDPOINTS = {
         PERMIT_LIST: "licenses/permit-documents/",
         PERMIT_DETAIL: (id) => `licenses/permit-documents/${id}/`,
         PERMIT_CREATE: "licenses/permit-documents-create/",
+        PERMIT_PDF: (id) => `licenses/permit-documents/${id}/pdf/`,
         PERMIT_APPROVE: (id) => `licenses/permit-documents/${id}/approve/`,
         PERMIT_REJECT: (id) => `licenses/permit-documents/${id}/reject/`,
         APPROVAL_SETTINGS: "licenses/approval-settings/",
@@ -106,14 +99,5 @@ export const NEXT_API_ENDPOINTS = {
         CERTIFICATE_DETAIL: (id) => `licenses/certificates/${id}/`,
         CERTIFICATE_COMPLETE: (id) => `licenses/certificates/${id}/complete/`,
         CERTIFICATE_PDF: (id) => `licenses/certificates/${id}/pdf/`,
-    },
-    WORKFLOW: {
-        STAGE1_PERMISSIONS: "workflow/stage1-permissions/",
-        STAGE2_PERMISSIONS: "workflow/stage2-permissions/",
-        APPROVERS: "workflow/approvers/",
-        WORKFLOW_CONFIG: "workflow/workflow-config/",
-        NOTIFICATIONS: "workflow/notifications/",
-        NOTIFICATIONS_READ_ALL: "workflow/notifications/read-all/",
-        NOTIFICATIONS_READ: (id) => `workflow/notifications/${id}/read/`,
     },
 }
