@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import CircularProgress from '@mui/material/CircularProgress';
+import Switch from '@mui/material/Switch';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -44,6 +45,46 @@ export default function Page() {
     const [rows, setRows] = useState(null);
     const [loading, setLoading] = useState(true);
     const [savingKey, setSavingKey] = useState(null);
+    // doc_type -> boolean. Hər kateqoriya öz ayrıca açar/bağlıdır (bir-birinə təsir etmir).
+    const [settingsByDocType, setSettingsByDocType] = useState({});
+    const [settingsLoading, setSettingsLoading] = useState(true);
+    const [settingsSavingKey, setSettingsSavingKey] = useState(null);
+
+    const loadSettings = async () => {
+        setSettingsLoading(true);
+        try {
+            const res = await service_api.get(NEXT_API_ENDPOINTS.LICENSES.APPROVAL_SETTINGS);
+            const map = {};
+            (res.data || []).forEach((row) => {
+                map[row.doc_type] = !!row.staged_approval_enabled;
+            });
+            setSettingsByDocType(map);
+        } catch (e) {
+            enqueueSnackbar(handleError(e), {variant: 'error'});
+        } finally {
+            setSettingsLoading(false);
+        }
+    };
+
+    const handleToggleStagedApproval = async (docType, e) => {
+        const value = e.target.checked;
+        setSettingsSavingKey(docType);
+        setSettingsByDocType((prev) => ({...prev, [docType]: value}));
+        try {
+            await service_api.patch(NEXT_API_ENDPOINTS.LICENSES.APPROVAL_SETTINGS, {
+                doc_type: docType, staged_approval_enabled: value,
+            });
+            enqueueSnackbar(
+                value ? 'Bu kateqoriyada mərhələli təsdiq aktivləşdirildi.' : 'Bu kateqoriyada mərhələli təsdiq söndürüldü.',
+                {variant: 'success', autoHideDuration: 2500}
+            );
+        } catch (e) {
+            enqueueSnackbar(handleError(e), {variant: 'error'});
+            setSettingsByDocType((prev) => ({...prev, [docType]: !value}));
+        } finally {
+            setSettingsSavingKey(null);
+        }
+    };
 
     const load = async () => {
         setLoading(true);
@@ -59,6 +100,7 @@ export default function Page() {
 
     useEffect(() => {
         load();
+        loadSettings();
     }, []);
 
     const patchRow = (docType, patch) => {
@@ -116,10 +158,12 @@ export default function Page() {
                 <Typography sx={{fontSize: 24, fontWeight: 800, color: GOV.textPrimary}}>
                     Təsdiq axını
                 </Typography>
-                <Typography sx={{fontSize: 13, color: GOV.textMuted, mt: 0.5, mb: 3, maxWidth: 720}}>
+                <Typography sx={{fontSize: 13, color: GOV.textMuted, mt: 0.5, mb: 3, maxWidth: 780}}>
                     Hər sənəd növü üçün 1-ci mərhələnin kimə (Qurum admininə, ya da təyin etdiyiniz konkret
                     MSN işçisinə) və 2-ci mərhələnin (həmişə MSN) hansı işçiyə gedəcəyini seçin. Sənəd
-                    göndəriləndə müvafiq şəxsə həm bildiriş, həm də e-poçt avtomatik göndərilir.
+                    göndəriləndə müvafiq şəxsə həm bildiriş, həm də e-poçt avtomatik göndərilir. "Mərhələli
+                    təsdiq" sütunundan hər kateqoriyanı ayrı-ayrılıqda söndürə bilərsiniz - digər
+                    kateqoriyalara təsir etmir.
                 </Typography>
 
                 <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, overflow: 'hidden'}}>
@@ -139,7 +183,7 @@ export default function Page() {
                             <Box component="table" sx={{width: '100%', borderCollapse: 'collapse', minWidth: 780}}>
                                 <Box component="thead">
                                     <Box component="tr" sx={{borderBottom: `1px solid ${GOV.cardBorder}`}}>
-                                        {['Sənəd növü', '1-ci mərhələ', '1-ci mərhələ icraçısı', '2-ci mərhələ icraçısı (MSN)'].map((h) => (
+                                        {['Sənəd növü', 'Mərhələli təsdiq', '1-ci mərhələ', '1-ci mərhələ icraçısı', '2-ci mərhələ icraçısı (MSN)'].map((h) => (
                                             <Box component="th" key={h} sx={{
                                                 textAlign: 'left', fontSize: 11, fontWeight: 700, color: GOV.textMuted,
                                                 textTransform: 'uppercase', letterSpacing: 0.4, px: 2.5, py: 1.5,
@@ -153,6 +197,8 @@ export default function Page() {
                                     {rows.map((row) => {
                                         const eligible = row.eligible_users || [];
                                         const saving = savingKey === row.doc_type;
+                                        const stagedEnabled = settingsByDocType[row.doc_type] ?? true;
+                                        const settingsSaving = settingsSavingKey === row.doc_type;
                                         return (
                                             <Box component="tr" key={row.doc_type} sx={{
                                                 borderBottom: `1px solid ${GOV.cardBorder}`,
@@ -163,9 +209,35 @@ export default function Page() {
                                                     <Typography sx={{fontSize: 13.5, fontWeight: 700, color: GOV.textPrimary}}>
                                                         {row.label}
                                                     </Typography>
+                                                    {!stagedEnabled && (
+                                                        <Typography sx={{fontSize: 11, color: GOV.textMuted, mt: 0.3}}>
+                                                            Sənədlər birbaşa aktiv olur
+                                                        </Typography>
+                                                    )}
                                                 </Box>
 
                                                 <Box component="td" sx={{px: 2.5, py: 2}}>
+                                                    {settingsLoading ? (
+                                                        <CircularProgress size={16}/>
+                                                    ) : (
+                                                        <Switch
+                                                            size="small" checked={stagedEnabled} disabled={settingsSaving}
+                                                            onChange={(e) => handleToggleStagedApproval(row.doc_type, e)}
+                                                            sx={{
+                                                                '& .MuiSwitch-switchBase.Mui-checked': {color: GOV.navy},
+                                                                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                                    backgroundColor: GOV.navySoft,
+                                                                },
+                                                            }}
+                                                        />
+                                                    )}
+                                                </Box>
+
+                                                <Box component="td" sx={{
+                                                    px: 2.5, py: 2,
+                                                    opacity: stagedEnabled ? 1 : 0.4,
+                                                    pointerEvents: stagedEnabled ? 'auto' : 'none',
+                                                }}>
                                                     <FormControl size="small" sx={{minWidth: 150}}>
                                                         <Select
                                                             value={row.stage1_mode} disabled={saving}
@@ -182,7 +254,11 @@ export default function Page() {
                                                     </FormControl>
                                                 </Box>
 
-                                                <Box component="td" sx={{px: 2.5, py: 2}}>
+                                                <Box component="td" sx={{
+                                                    px: 2.5, py: 2,
+                                                    opacity: stagedEnabled ? 1 : 0.4,
+                                                    pointerEvents: stagedEnabled ? 'auto' : 'none',
+                                                }}>
                                                     {row.stage1_mode === 'msn' ? (
                                                         <FormControl size="small" sx={{minWidth: 220}}>
                                                             <Select
@@ -217,7 +293,11 @@ export default function Page() {
                                                     )}
                                                 </Box>
 
-                                                <Box component="td" sx={{px: 2.5, py: 2}}>
+                                                <Box component="td" sx={{
+                                                    px: 2.5, py: 2,
+                                                    opacity: stagedEnabled ? 1 : 0.4,
+                                                    pointerEvents: stagedEnabled ? 'auto' : 'none',
+                                                }}>
                                                     <FormControl size="small" sx={{minWidth: 220}}>
                                                         <Select
                                                             displayEmpty value={row.stage2_user || ''} disabled={saving}

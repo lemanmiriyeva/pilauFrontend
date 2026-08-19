@@ -34,6 +34,7 @@ export const APP_ROUTES = {
     QURUM_YOXLAMASI_ICAZELERI: "/lisenziya-icazeleri/qurum-yoxlamasi",
     TESDIQ_HUQUQLARI: "/lisenziya-icazeleri/tesdiq-huquqlari",
     TESDIQ_AXINI: "/lisenziya-icazeleri/tesdiq-axini",
+    YOXLAMALARIM: "/lisenziya-icazeleri/yoxlamalarim",
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
     BILDIRISLER:"/bildirisler"
 }

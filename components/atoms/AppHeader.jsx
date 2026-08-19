@@ -12,6 +12,7 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import RuleOutlinedIcon from '@mui/icons-material/RuleOutlined';
 import {useRouter} from "next/navigation";
 import {GOV} from "@/components/theme/govColors";
 import {APP_ROUTES} from "@/components/constants";
@@ -71,6 +72,13 @@ export default function AppHeader({user}) {
                 }}>
                     <ListItemIcon><PersonOutlineIcon fontSize="small"/></ListItemIcon>
                     Şəxsi kabinet
+                </MenuItem>
+                <MenuItem onClick={() => {
+                    setAnchorEl(null);
+                    router.push(APP_ROUTES.YOXLAMALARIM);
+                }}>
+                    <ListItemIcon><RuleOutlinedIcon fontSize="small"/></ListItemIcon>
+                    Yoxlamalarım
                 </MenuItem>
                 {user?.is_org_admin && (
                     <MenuItem onClick={() => {
