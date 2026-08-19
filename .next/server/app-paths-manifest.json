@@ -1,15 +1,12 @@
 {
-  "/lisenziya-icazeleri/sened/[id]/page": "app/lisenziya-icazeleri/sened/[id]/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/api/licenses/certificates/[id]/route": "app/api/licenses/certificates/[id]/route.js",
-  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/sexsi-kabinet/page": "app/sexsi-kabinet/page.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/chixish/page": "app/chixish/page.js",
-  "/api/auth/logout/route": "app/api/auth/logout/route.js",
-  "/daxilol/page": "app/daxilol/page.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
-  "/api/auth/totp-verify/route": "app/api/auth/totp-verify/route.js",
-  "/page": "app/page.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js"
+  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
+  "/api/licenses/certificates/route": "app/api/licenses/certificates/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/api/licenses/certificates/[id]/route": "app/api/licenses/certificates/[id]/route.js",
+  "/lisenziya-icazeleri/senedlerim/page": "app/lisenziya-icazeleri/senedlerim/page.js",
+  "/lisenziya-icazeleri/sened/[id]/page": "app/lisenziya-icazeleri/sened/[id]/page.js"
 }

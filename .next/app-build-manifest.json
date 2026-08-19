@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/lisenziya-icazeleri/sened/[id]/page": [
+    "/inzibatci-paneli/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
+      "static/chunks/app/inzibatci-paneli/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,30 +11,20 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/sexsi-kabinet/page": [
+    "/lisenziya-icazeleri/senedlerim/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/sexsi-kabinet/page.js"
+      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
     ],
-    "/chixish/page": [
+    "/lisenziya-icazeleri/sened/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/chixish/page.js"
+      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
     ],
-    "/daxilol/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/daxilol/page.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/inzibatci-paneli/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }
