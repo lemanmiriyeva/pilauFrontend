@@ -1,24 +1,9 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/modullar/lisenziya-senedler/istehsal/[id]/page": "app/modullar/lisenziya-senedler/istehsal/[id]/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
-  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
   "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
-  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
-  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
-  "/api/licenses/permit-documents-create/route": "app/api/licenses/permit-documents-create/route.js",
-  "/lisenziya-icazeleri/sened/[id]/page": "app/lisenziya-icazeleri/sened/[id]/page.js",
-  "/api/workflow/notifications/[id]/read/route": "app/api/workflow/notifications/[id]/read/route.js",
-  "/api/licenses/certificates/[id]/route": "app/api/licenses/certificates/[id]/route.js",
-  "/lisenziya-icazeleri/tesdiq-huquqlari/page": "app/lisenziya-icazeleri/tesdiq-huquqlari/page.js",
-  "/api/workflow/stage2-permissions/route": "app/api/workflow/stage2-permissions/route.js",
+  "/modullar/lisenziya-senedler/istehsal/[id]/page": "app/modullar/lisenziya-senedler/istehsal/[id]/page.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
   "/lisenziya-icazeleri/yoxlamalarim/page": "app/lisenziya-icazeleri/yoxlamalarim/page.js",
-  "/api/licenses/permit-documents/[id]/route": "app/api/licenses/permit-documents/[id]/route.js",
-  "/lisenziya-icazeleri/senedlerim/page": "app/lisenziya-icazeleri/senedlerim/page.js",
-  "/api/licenses/certificates/route": "app/api/licenses/certificates/route.js",
-  "/api/licenses/certificates/[id]/complete/route": "app/api/licenses/certificates/[id]/complete/route.js"
+  "/lisenziya-icazeleri/sened/[id]/page": "app/lisenziya-icazeleri/sened/[id]/page.js"
 }
