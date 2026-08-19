@@ -35,6 +35,8 @@ export const APP_ROUTES = {
     TESDIQ_HUQUQLARI: "/lisenziya-icazeleri/tesdiq-huquqlari",
     TESDIQ_AXINI: "/lisenziya-icazeleri/tesdiq-axini",
     YOXLAMALARIM: "/lisenziya-icazeleri/yoxlamalarim",
+    SENEDLERIM: "/lisenziya-icazeleri/senedlerim",
+    SENED: (id) => `/lisenziya-icazeleri/sened/${id}`,
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
     BILDIRISLER:"/bildirisler"
 }

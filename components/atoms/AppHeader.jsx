@@ -9,6 +9,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
@@ -72,6 +73,13 @@ export default function AppHeader({user}) {
                 }}>
                     <ListItemIcon><PersonOutlineIcon fontSize="small"/></ListItemIcon>
                     Şəxsi kabinet
+                </MenuItem>
+                <MenuItem onClick={() => {
+                    setAnchorEl(null);
+                    router.push(APP_ROUTES.SENEDLERIM);
+                }}>
+                    <ListItemIcon><DescriptionOutlinedIcon fontSize="small"/></ListItemIcon>
+                    Sənədlərim
                 </MenuItem>
                 <MenuItem onClick={() => {
                     setAnchorEl(null);
