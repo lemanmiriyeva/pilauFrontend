@@ -16,9 +16,10 @@ export async function POST(req) {
 
         if (res.status === 200 && data.temp_token) {
             cookies().set(PENDING_2FA_COOKIE, data.temp_token, {
-                secure: process.env.NODE_ENV === 'production',
+                // secure: process.env.NODE_ENV === 'production',
+                secure: false,
                 httpOnly: true,
-                sameSite: 'strict',
+                sameSite: 'lax',
                 maxAge: 300,
             })
             return Response.json({step: data.step}, {status: 200})
