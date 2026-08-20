@@ -1,10 +1,5 @@
 {
-  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js",
-  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
   "/page": "app/page.js",
+  "/daxilol/page": "app/daxilol/page.js",
   "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js"
 }

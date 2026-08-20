@@ -22,12 +22,17 @@ async function setTokenCookies(access, refresh) {
     const refresh_payload = await parseJwt(refresh)
     const now = Math.floor(Date.now() / 1000);
 
+    // QEYD: server hazırda sadəcə HTTP üzərindən (SSL/TLS-siz) işlədiyi üçün "secure: true"
+    // brauzerin bu kukiləri SƏSSİZCƏ rədd etməsinə səbəb olurdu (Secure kukilər yalnız HTTPS-də
+    // saxlanıla bilər) - bu da login-dən sonra HƏR bir sorğunun (məs. /api/permissions/my-modules)
+    // 401 qaytarmasının səbəbi idi, çünki access/refresh kukiləri heç vaxt faktiki
+    // saxlanmırdı. Server HTTPS-ə keçəndə bu, `secure: true`-ya qaytarılmalıdır.
     cookies().set(ACCESS_TOKEN_COOKIE, access, {
-        secure: process.env.NODE_ENV === 'production', httpOnly: true, sameSite: 'strict',
+        secure: false, httpOnly: true, sameSite: 'lax', path: '/',
         maxAge: access_payload.exp - now,
     })
     cookies().set(REFRESH_TOKEN_COOKIE, refresh, {
-        secure: process.env.NODE_ENV === 'production', httpOnly: true, sameSite: 'strict',
+        secure: false, httpOnly: true, sameSite: 'lax', path: '/',
         maxAge: refresh_payload.exp - now,
     })
 }
