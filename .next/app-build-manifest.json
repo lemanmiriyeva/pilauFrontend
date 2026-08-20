@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/lisenziya-icazeleri/sened/[id]/page": [
+    "/modullar/lisenziya-senedler/istehsal/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,20 +11,20 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/daxilol/page": [
+    "/modullar/[[...path]]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/daxilol/page.js"
+      "static/chunks/app/modullar/[[...path]]/page.js"
     ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/lisenziya-icazeleri/senedlerim/page": [
+    "/inzibatci-paneli/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+      "static/chunks/app/inzibatci-paneli/page.js"
     ]
   }
 }
