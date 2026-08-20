@@ -6,8 +6,8 @@ import {ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE} from "@/components/constants"
 
 const METHODS = {GET: "GET", POST: "POST", PUT: "PUT", PATCH: "PATCH", DELETE: "DELETE"}
 
-function getClientIp() {
-    const h = nextHeaders();
+async function getClientIp() {
+    const h = await nextHeaders(); // ASINXRON EDİLDİ
     const forwardedFor = h.get('x-forwarded-for');
     if (forwardedFor) return forwardedFor.split(',')[0].trim();
     return h.get('x-real-ip') || '';
@@ -21,25 +21,22 @@ async function setTokenCookies(access, refresh) {
     const access_payload = await parseJwt(access)
     const refresh_payload = await parseJwt(refresh)
     const now = Math.floor(Date.now() / 1000);
+    const cookieStore = await cookies(); // ASINXRON EDİLDİ
 
-    // QEYD: server hazırda sadəcə HTTP üzərindən (SSL/TLS-siz) işlədiyi üçün "secure: true"
-    // brauzerin bu kukiləri SƏSSİZCƏ rədd etməsinə səbəb olurdu (Secure kukilər yalnız HTTPS-də
-    // saxlanıla bilər) - bu da login-dən sonra HƏR bir sorğunun (məs. /api/permissions/my-modules)
-    // 401 qaytarmasının səbəbi idi, çünki access/refresh kukiləri heç vaxt faktiki
-    // saxlanmırdı. Server HTTPS-ə keçəndə bu, `secure: true`-ya qaytarılmalıdır.
-    cookies().set(ACCESS_TOKEN_COOKIE, access, {
+    cookieStore.set(ACCESS_TOKEN_COOKIE, access, {
         secure: false, httpOnly: true, sameSite: 'lax', path: '/',
         maxAge: access_payload.exp - now,
     })
-    cookies().set(REFRESH_TOKEN_COOKIE, refresh, {
+    cookieStore.set(REFRESH_TOKEN_COOKIE, refresh, {
         secure: false, httpOnly: true, sameSite: 'lax', path: '/',
         maxAge: refresh_payload.exp - now,
     })
 }
 
-function clearTokenCookies() {
-    cookies().delete(ACCESS_TOKEN_COOKIE)
-    cookies().delete(REFRESH_TOKEN_COOKIE)
+async function clearTokenCookies() {
+    const cookieStore = await cookies(); // ASINXRON EDİLDİ
+    cookieStore.delete(ACCESS_TOKEN_COOKIE)
+    cookieStore.delete(REFRESH_TOKEN_COOKIE)
 }
 
 const __refresh = async (refresh_token) => {
@@ -58,7 +55,7 @@ async function __base_request(url, method, data, access_token, refresh_token) {
     const _headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'})
     if (access_token?.value) _headers.set('Authorization', 'Bearer ' + access_token.value)
 
-    const clientIp = getClientIp();
+    const clientIp = await getClientIp(); // AWAIT ƏLAVƏ OLUNDU
     if (clientIp) _headers.set('X-Forwarded-For', clientIp);
 
     const config = {headers: _headers, method, body: JSON.stringify(data)}
@@ -72,7 +69,7 @@ async function __base_request(url, method, data, access_token, refresh_token) {
             _headers.set('Authorization', 'Bearer ' + access)
             return await fetch(url, {...config, headers: _headers})
         } catch (e) {
-            clearTokenCookies()
+            await clearTokenCookies()
             return res
         }
     }
@@ -99,16 +96,11 @@ export async function delete_request(url, access_token, refresh_token) {
     return __base_request(url, METHODS.DELETE, null, access_token, refresh_token)
 }
 
-/**
- * multipart/form-data (fayl yükləmə) sorğuları üçün - __base_request-dən fərqli olaraq
- * Content-Type təyin ETMİR (fetch FormData üçün bunu boundary ilə özü qoyur) və body-ni
- * JSON.stringify etmir, FormData-nı olduğu kimi ötürür.
- */
 async function __base_multipart_request(url, formData, access_token, refresh_token) {
     const _headers = new Headers({'Accept': 'application/json'})
     if (access_token?.value) _headers.set('Authorization', 'Bearer ' + access_token.value)
 
-    const clientIp = getClientIp();
+    const clientIp = await getClientIp(); // AWAIT ƏLAVƏ OLUNDU
     if (clientIp) _headers.set('X-Forwarded-For', clientIp);
 
     const config = {headers: _headers, method: METHODS.POST, body: formData}
@@ -120,7 +112,7 @@ async function __base_multipart_request(url, formData, access_token, refresh_tok
             _headers.set('Authorization', 'Bearer ' + access)
             return await fetch(url, {...config, headers: _headers})
         } catch (e) {
-            clearTokenCookies()
+            await clearTokenCookies()
             return res
         }
     }
