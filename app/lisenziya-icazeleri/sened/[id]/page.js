@@ -21,7 +21,7 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import CertificateSignDialog from "@/components/atoms/CertificateSignDialog";
-import PdfViewer from "@/components/atoms/PdfViewer";
+import PdfViewer from "../../../../components/atoms/PdfViewer";
 
 function formatDate(value) {
     if (!value) return '-';

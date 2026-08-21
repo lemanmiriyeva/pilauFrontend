@@ -15,7 +15,7 @@ import {NEXT_API_ENDPOINTS} from "@/app/urls";
 import {handleError} from "@/app/utils";
 import {GOV} from "@/components/theme/govColors";
 import {APP_ROUTES} from "@/components/constants";
-import PdfViewer from "@/components/atoms/PdfViewer";
+import PdfViewer from "./PdfViewer";
 
 /**
  * Lisenziya sənədinin (PermitDocument) öz detal səhifəsində ("İdxal/İxrac", "İstehsal" və s.
