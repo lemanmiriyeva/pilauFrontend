@@ -15,6 +15,7 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import PermitStatusChip from "@/components/atoms/licenses/PermitStatusChip";
+import CertificateEmbed from "@/components/atoms/CertificateEmbed";
 
 function formatDate(value, pendingText) {
     if (!value) return pendingText || '-';
@@ -133,6 +134,10 @@ export default function Page() {
                         <InfoRow label="Verilmə tarixi" value={formatDate(doc.issue_date, 'Status təsdiqləndikdən sonra görünəcək')}/>
                         <InfoRow label="Bitmə tarixi" value={formatDate(doc.expiry_date, 'Status təsdiqləndikdən sonra görünəcək')}/>
                     </Box>
+                </SectionCard>
+
+                <SectionCard title="Rəsmi sənəd">
+                    <CertificateEmbed certificateId={doc.certificate_id}/>
                 </SectionCard>
 
                 <SectionCard title="Müraciətçi məlumatları">

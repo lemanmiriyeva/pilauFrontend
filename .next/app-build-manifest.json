@@ -1,15 +1,35 @@
 {
   "pages": {
-    "/daxilol/page": [
+    "/modullar/lisenziya-senedler/istehsal/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/daxilol/page.js"
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
+    ],
+    "/modullar/[[...path]]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/[[...path]]/page.js"
+    ],
+    "/modullar/lisenziya-senedler/istehsal/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
+    ],
+    "/lisenziya-icazeleri/sened/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
+    ],
+    "/lisenziya-icazeleri/senedlerim/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
     ],
     "/page": [
       "static/chunks/webpack.js",
@@ -21,15 +41,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/inzibatci-paneli/page.js"
     ],
-    "/lisenziya-icazeleri/senedlerim/page": [
+    "/inzibatci-paneli/istifadeciler/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+      "static/chunks/app/inzibatci-paneli/istifadeciler/page.js"
     ],
-    "/lisenziya-icazeleri/sened/[id]/page": [
+    "/inzibatci-paneli/istifadeciler/istifadeci-yarat/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
+      "static/chunks/app/inzibatci-paneli/istifadeciler/istifadeci-yarat/page.js"
+    ],
+    "/inzibatci-paneli/istifadeciler/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inzibatci-paneli/istifadeciler/[id]/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

@@ -15,6 +15,7 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import PermitStatusChip from "@/components/atoms/licenses/PermitStatusChip";
+import CertificateEmbed from "@/components/atoms/CertificateEmbed";
 
 function formatDate(value) {
     if (!value) return '-';
@@ -123,6 +124,10 @@ export default function Page() {
                         <InfoRow label="Bitmə tarixi" value={formatDate(doc.expiry_date)}/>
                         <InfoRow label="Müraciət üsulu" value={doc.submission_mode === 'file' ? 'Fayl yüklə' : 'Elektron müraciət forması'}/>
                     </Box>
+                </SectionCard>
+
+                <SectionCard title="Rəsmi sənəd">
+                    <CertificateEmbed certificateId={doc.certificate_id}/>
                 </SectionCard>
 
                 <SectionCard title="Müraciətçi məlumatları">
