@@ -21,6 +21,7 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import CertificateSignDialog from "@/components/atoms/CertificateSignDialog";
+import PdfViewer from "@/components/atoms/PdfViewer";
 
 function formatDate(value) {
     if (!value) return '-';
@@ -294,26 +295,20 @@ export default function Page() {
                             <SignedBadge method={cert.signature_method} phone={cert.signed_phone} signedAt={cert.signed_at}/>
                         )}
 
-                        <Box sx={{
-                            border: `1px solid ${GOV.cardBorder}`, borderRadius: 1.5, overflow: 'hidden',
-                            height: {xs: 480, md: 720}, mb: 3,
-                        }}>
-                            <iframe
-                                src={pdfSrc} title={cert.number}
-                                style={{width: '100%', height: '100%', border: 'none'}}
-                            />
+                        <Box sx={{mb: 3}}>
+                            <PdfViewer src={pdfSrc} title={cert.number}/>
                         </Box>
 
                         <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1.5, justifyContent: 'center'}}>
                             <Button
                                 variant="contained" startIcon={<PhoneIphoneIcon/>}
-                                onClick={() => setSignDialogMethod('sim')}
+                                onClick={() => setSignDialogMethod('sima')}
                                 sx={{
                                     backgroundColor: GOV.navySoft, textTransform: 'none', fontWeight: 700,
                                     fontSize: 13, px: 3, py: 1.1, '&:hover': {backgroundColor: GOV.navy},
                                 }}
                             >
-                                SİM ilə imzala
+                                SİMA ilə imzala
                             </Button>
                             <Button
                                 variant="contained" startIcon={<FingerprintIcon/>}

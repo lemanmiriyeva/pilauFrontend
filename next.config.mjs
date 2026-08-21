@@ -13,6 +13,13 @@ const nextConfig = {
                     { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
                 ],
             },
+            {
+
+                source: "/api/licenses/certificates/:id/pdf",
+                headers: [
+                    { key: "X-Frame-Options", value: "SAMEORIGIN" },
+                ],
+            },
         ];
     },
 };
