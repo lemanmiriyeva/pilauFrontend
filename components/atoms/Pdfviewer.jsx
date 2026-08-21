@@ -24,7 +24,7 @@ const DEFAULT_SCALE = 1.15;
  * Brauzerin öz (kiçik, məhdud) PDF plaginini <iframe>-ə etibar etmək əvəzinə sənədi canvas-a
  * özümüz render edirik ki, görünüş həmişə eyni, tam ölçülü və idarə edilə bilən olsun.
  */
-export default function Pdfviewer({src, title}) {
+export default function PdfViewer({src, title}) {
     const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const pdfDocRef = useRef(null);
@@ -48,9 +48,12 @@ export default function Pdfviewer({src, title}) {
         (async () => {
             try {
                 const pdfjsLib = await import('pdfjs-dist');
-                pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-                    'pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url
-                ).toString();
+                // QEYD: əvvəllər `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url)`
+                // istifadə olunurdu - bu, Next.js-in production build-ini "import.meta cannot be
+                // used outside of module code" sintaksis xətası ilə sındırırdı. Worker faylı
+                // npm install zamanı public/-ə köçürülür (bax scripts/copy-pdf-worker.js) və
+                // buradan sadə statik yol kimi verilir - CDN-ə ehtiyac yoxdur, offline işləyir.
+                pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
                 const res = await fetch(src, {credentials: 'same-origin'});
                 if (!res.ok) throw new Error('Sənəd yüklənmədi.');

@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import {GOV} from "@/components/theme/govColors";
 
-const METHOD_LABEL = {sim: 'SİM İmza', asan: 'Asan İmza'};
+const METHOD_LABEL = {sima: 'SİMA İmza', asan: 'Asan İmza'};
 
 // SİM İmza / Asan İmza ilə imzalama - telefon nömrəsini alır, imzala düyməsini basanda
 // onConfirm(phone) çağırır (əsl API çağırışı və nəticə emalı sened/[id]/page.js-də olur).
@@ -83,7 +83,7 @@ export default function CertificateSignDialog({open, method, onClose, onConfirm}
                 ) : (
                     <Box sx={{pt: 0.5}}>
                         <Typography sx={{fontSize: 13, color: '#6B7280', mb: 2.5}}>
-                            {method === 'sim'
+                            {method === 'sima'
                                 ? 'SİM İmza ilə imzalamaq üçün SİM İmza aktiv olan mobil nömrənizi daxil edin. Təsdiq üçün telefonunuza PIN kodu göndəriləcək.'
                                 : 'Asan İmza ilə imzalamaq üçün Asan İmza-ya qeydiyyatdan keçmiş mobil nömrənizi daxil edin. Təsdiq üçün Asan İmza tətbiqinə bildiriş gedəcək.'}
                         </Typography>
