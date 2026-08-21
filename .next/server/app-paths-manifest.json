@@ -1,4 +1,20 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/daxilol/page": "app/daxilol/page.js",
-  "/api/auth/totp-request-admin-help/route": "app/api/auth/totp-request-admin-help/route.js"
+  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
+  "/2fa-qurulmasi/page": "app/2fa-qurulmasi/page.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/page": "app/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/inzibatci-paneli/icazeler/page": "app/inzibatci-paneli/icazeler/page.js",
+  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
+  "/inzibatci-paneli/icazeler/[orgId]/page": "app/inzibatci-paneli/icazeler/[orgId]/page.js",
+  "/api/permissions/user-permissions/route": "app/api/permissions/user-permissions/route.js",
+  "/api/organizations/[id]/route": "app/api/organizations/[id]/route.js",
+  "/inzibatci-paneli/icazeler/icaze-yarat/page": "app/inzibatci-paneli/icazeler/icaze-yarat/page.js",
+  "/api/auth/admin/users/route": "app/api/auth/admin/users/route.js",
+  "/api/permissions/modules/route": "app/api/permissions/modules/route.js",
+  "/api/organizations/tree/route": "app/api/organizations/tree/route.js"
 }

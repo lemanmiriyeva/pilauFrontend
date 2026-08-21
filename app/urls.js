@@ -11,6 +11,7 @@ export const DJANGO_API_ENDPOINTS = {
         TOTP_SETUP_CONFIRM: API_URL + "/api/auth/totp-setup-confirm/",
         TOTP_VERIFY: API_URL + "/api/auth/totp-verify/",
         TOTP_REQUEST_ADMIN_HELP: API_URL + "/api/auth/totp/request-admin-help/",
+        TOTP_REQUEST_ADMIN_HELP_CONFIRM: API_URL + "/api/auth/totp/request-admin-help/confirm/",
 
         PASSWORD_FORGOT: API_URL + "/api/auth/password/forgot/",
         PASSWORD_FORGOT_CONFIRM: API_URL + "/api/auth/password/forgot/confirm/",
@@ -71,6 +72,7 @@ export const NEXT_API_ENDPOINTS = {
         TOTP_SETUP_CONFIRM: "auth/totp-setup-confirm/",
         TOTP_VERIFY: "auth/totp-verify/",
         TOTP_REQUEST_ADMIN_HELP: "auth/totp-request-admin-help/",
+        TOTP_REQUEST_ADMIN_HELP_CONFIRM: "auth/totp-request-admin-help-confirm/",
 
         PASSWORD_FORGOT: "auth/password-forgot/",
         PASSWORD_FORGOT_CONFIRM: "auth/password-forgot-confirm/",

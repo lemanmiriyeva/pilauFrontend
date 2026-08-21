@@ -15,7 +15,7 @@ const STATUS_FIELDS = [
 ];
 
 export default function ModulePermissionsPicker({initialModules = [], onChange}) {
-    const [modules, setModules] = useState([]);
+    const [tree, setTree] = useState([]);
     const [loading, setLoading] = useState(true);
     const [enabled, setEnabled] = useState({});
     const [status, setStatus] = useState({can_view: true, can_edit: false, can_approve: false});
@@ -24,10 +24,17 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
         (async () => {
             try {
                 const res = await service_api.get(NEXT_API_ENDPOINTS.PERMISSIONS.MODULES);
-                const topLevel = (res.data || [])
-                    .filter((m) => !m.parent)
-                    .sort((a, b) => a.order - b.order);
-                setModules(topLevel);
+                const all = (res.data || []).slice().sort((a, b) => a.order - b.order);
+
+                const byParent = {};
+                all.forEach((m) => {
+                    const key = m.parent || null;
+                    if (!byParent[key]) byParent[key] = [];
+                    byParent[key].push(m);
+                });
+                const buildTree = (parentId) =>
+                    (byParent[parentId] || []).map((m) => ({...m, children: buildTree(m.id)}));
+                setTree(buildTree(null));
 
                 if (initialModules.length) {
                     const enabledMap = {};
@@ -56,6 +63,36 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
         onChange && onChange(payload);
     }, [enabled, status, loading]);
 
+    const renderRows = (nodes, depth = 0, path = {i: 0}) => {
+        const rows = [];
+        nodes.forEach((m) => {
+            const idx = path.i++;
+            rows.push(
+                <Box
+                    key={m.id}
+                    sx={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        pl: 2 + depth * 3, pr: 2, py: 1.25,
+                        borderTop: idx === 0 ? 'none' : `1px solid ${GOV.cardBorder}`,
+                        backgroundColor: idx % 2 === 0 ? '#FFFFFF' : '#FAFAFC',
+                    }}
+                >
+                    <Typography sx={{fontSize: 13, color: depth ? GOV.textMuted : GOV.textPrimary}}>
+                        {depth > 0 ? '— ' : ''}{m.title}
+                    </Typography>
+                    <Switch
+                        size="small" checked={!!enabled[m.id]}
+                        onChange={(e) => setEnabled((prev) => ({...prev, [m.id]: e.target.checked}))}
+                    />
+                </Box>
+            );
+            if (m.children && m.children.length) {
+                rows.push(...renderRows(m.children, depth + 1, path));
+            }
+        });
+        return rows;
+    };
+
     if (loading) {
         return (
             <Box sx={{display: 'flex', justifyContent: 'center', py: 3}}>
@@ -70,24 +107,8 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
                 İCAZƏ VERİLƏCƏK MODULLARI SEÇİN
             </Typography>
             <Box sx={{border: `1px solid ${GOV.cardBorder}`, borderRadius: 1.5, overflow: 'hidden', mb: 3}}>
-                {modules.map((m, i) => (
-                    <Box
-                        key={m.id}
-                        sx={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            px: 2, py: 1.25,
-                            borderTop: i === 0 ? 'none' : `1px solid ${GOV.cardBorder}`,
-                            backgroundColor: i % 2 === 0 ? '#FFFFFF' : '#FAFAFC',
-                        }}
-                    >
-                        <Typography sx={{fontSize: 13, color: GOV.textPrimary}}>{m.title}</Typography>
-                        <Switch
-                            size="small" checked={!!enabled[m.id]}
-                            onChange={(e) => setEnabled((prev) => ({...prev, [m.id]: e.target.checked}))}
-                        />
-                    </Box>
-                ))}
-                {modules.length === 0 && (
+                {renderRows(tree)}
+                {tree.length === 0 && (
                     <Typography sx={{fontSize: 12.5, color: GOV.textMuted, px: 2, py: 2}}>
                         Modul tapılmadı.
                     </Typography>
