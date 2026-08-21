@@ -5,9 +5,13 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
 import {useRouter, useParams} from "next/navigation";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
@@ -16,6 +20,7 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
+import CertificateSignDialog from "@/components/atoms/CertificateSignDialog";
 
 function formatDate(value) {
     if (!value) return '-';
@@ -80,6 +85,22 @@ function CertificateStatusChip({status}) {
     );
 }
 
+function SignedBadge({method, phone, signedAt}) {
+    const label = method === 'sima' ? 'SİMA İmza' : 'Asan İmza';
+    return (
+        <Box sx={{
+            display: 'flex', alignItems: 'center', gap: 1, px: 2, py: 1.25,
+            borderRadius: 1.5, backgroundColor: '#E8F5EC', mb: 2,
+        }}>
+            <CheckCircleOutlineIcon sx={{fontSize: 20, color: '#1E7A3C'}}/>
+            <Typography sx={{fontSize: 13, color: '#1E7A3C'}}>
+                Sənəd <strong>{label}</strong> ilə imzalanıb{phone ? ` · ${phone}` : ''}
+                {signedAt ? ` · ${formatDateTime(signedAt)}` : ''}
+            </Typography>
+        </Box>
+    );
+}
+
 export default function Page() {
     const router = useRouter();
     const params = useParams();
@@ -87,6 +108,8 @@ export default function Page() {
     const [cert, setCert] = useState(null);
     const [loading, setLoading] = useState(true);
     const [completing, setCompleting] = useState(false);
+    const [tab, setTab] = useState('melumatlar');
+    const [signDialogMethod, setSignDialogMethod] = useState(null);
 
     const load = async () => {
         setLoading(true);
@@ -118,6 +141,14 @@ export default function Page() {
         }
     };
 
+    const handleSignConfirm = async (phone) => {
+        const res = await service_api.post(NEXT_API_ENDPOINTS.LICENSES.CERTIFICATE_SIGN(params.id), {
+            method: signDialogMethod, phone,
+        });
+        setCert(res.data);
+        enqueueSnackbar('Sənəd uğurla imzalandı.', {variant: 'success'});
+    };
+
     if (loading) {
         return (
             <AppShell>
@@ -139,6 +170,7 @@ export default function Page() {
     }
 
     const schema = cert.schema || [];
+    const pdfSrc = `/api/${NEXT_API_ENDPOINTS.LICENSES.CERTIFICATE_PDF(cert.id)}`;
 
     return (
         <AppShell>
@@ -186,64 +218,123 @@ export default function Page() {
                     </Box>
                 </Box>
 
-                <SectionCard title="Əsas məlumatlar">
-                    <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr 1fr'}}}>
-                        <InfoRow label="Müəssisə" value={cert.applicant_name}/>
-                        <InfoRow label="Verilmə tarixi" value={formatDate(cert.issue_date)}/>
-                        <InfoRow label="Bitmə tarixi" value={formatDate(cert.expiry_date)}/>
+                <Tabs
+                    value={tab} onChange={(e, v) => setTab(v)}
+                    sx={{mb: 3, minHeight: 36, '& .MuiTab-root': {minHeight: 36, textTransform: 'none', fontWeight: 700, fontSize: 13}}}
+                >
+                    <Tab value="melumatlar" label="Məlumatlar"/>
+                    <Tab value="sened" label="Sənəd görünüşü"/>
+                </Tabs>
+
+                {tab === 'melumatlar' && (
+                    <>
+                        <SectionCard title="Əsas məlumatlar">
+                            <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr 1fr'}}}>
+                                <InfoRow label="Müəssisə" value={cert.applicant_name}/>
+                                <InfoRow label="Verilmə tarixi" value={formatDate(cert.issue_date)}/>
+                                <InfoRow label="Bitmə tarixi" value={formatDate(cert.expiry_date)}/>
+                            </Box>
+                        </SectionCard>
+
+                        <SectionCard title="Lisenziya anketi">
+                            {schema.length === 0 ? (
+                                <Typography sx={{fontSize: 13, color: GOV.textMuted}}>
+                                    Bu sənəd növü üçün anket sahələri təyin olunmayıb.
+                                </Typography>
+                            ) : (
+                                <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
+                                    {schema.map((field) => (
+                                        <InfoRow
+                                            key={field.key} label={field.label}
+                                            value={displayValue(field, cert.form_data?.[field.key])}
+                                        />
+                                    ))}
+                                </Box>
+                            )}
+                        </SectionCard>
+
+                        <Box sx={{
+                            backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, p: 3,
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2,
+                        }}>
+                            {cert.status === 'tamamlandi' ? (
+                                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                    <CheckCircleOutlineIcon sx={{fontSize: 20, color: '#1E7A3C'}}/>
+                                    <Typography sx={{fontSize: 13, color: GOV.textPrimary}}>
+                                        {cert.completed_by_name ? `${cert.completed_by_name} tərəfindən` : ''} tamamlandı
+                                        {cert.completed_at ? ` · ${formatDateTime(cert.completed_at)}` : ''}
+                                    </Typography>
+                                </Box>
+                            ) : (
+                                <Typography sx={{fontSize: 13, color: GOV.textMuted, maxWidth: 480}}>
+                                    Lisenziyanız artıq qüvvədədir. "Tamamlandı" düyməsi yalnız sənədi nəzərdən
+                                    keçirdiyinizi qeyd edir - basmasanız da lisenziya etibarlı olaraq qalır.
+                                </Typography>
+                            )}
+
+                            {cert.status !== 'tamamlandi' && (
+                                <Button
+                                    variant="contained" disabled={completing} onClick={handleComplete}
+                                    startIcon={completing ? <CircularProgress size={14} color="inherit"/> : <CheckCircleOutlineIcon/>}
+                                    sx={{
+                                        backgroundColor: GOV.navySoft, textTransform: 'none', fontWeight: 600,
+                                        px: 3, py: 1, '&:hover': {backgroundColor: GOV.navy},
+                                    }}
+                                >
+                                    Tamamlandı
+                                </Button>
+                            )}
+                        </Box>
+                    </>
+                )}
+
+                {tab === 'sened' && (
+                    <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, p: 3}}>
+                        {cert.is_signed && (
+                            <SignedBadge method={cert.signature_method} phone={cert.signed_phone} signedAt={cert.signed_at}/>
+                        )}
+
+                        <Box sx={{
+                            border: `1px solid ${GOV.cardBorder}`, borderRadius: 1.5, overflow: 'hidden',
+                            height: {xs: 480, md: 720}, mb: 3,
+                        }}>
+                            <iframe
+                                src={pdfSrc} title={cert.number}
+                                style={{width: '100%', height: '100%', border: 'none'}}
+                            />
+                        </Box>
+
+                        <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1.5, justifyContent: 'center'}}>
+                            <Button
+                                variant="contained" startIcon={<PhoneIphoneIcon/>}
+                                onClick={() => setSignDialogMethod('sim')}
+                                sx={{
+                                    backgroundColor: GOV.navySoft, textTransform: 'none', fontWeight: 700,
+                                    fontSize: 13, px: 3, py: 1.1, '&:hover': {backgroundColor: GOV.navy},
+                                }}
+                            >
+                                SİM ilə imzala
+                            </Button>
+                            <Button
+                                variant="contained" startIcon={<FingerprintIcon/>}
+                                onClick={() => setSignDialogMethod('asan')}
+                                sx={{
+                                    backgroundColor: GOV.goldDark, textTransform: 'none', fontWeight: 700,
+                                    fontSize: 13, px: 3, py: 1.1, '&:hover': {backgroundColor: GOV.gold},
+                                }}
+                            >
+                                Asan İmza ilə imzala
+                            </Button>
+                        </Box>
                     </Box>
-                </SectionCard>
-
-                <SectionCard title="Lisenziya anketi">
-                    {schema.length === 0 ? (
-                        <Typography sx={{fontSize: 13, color: GOV.textMuted}}>
-                            Bu sənəd növü üçün anket sahələri təyin olunmayıb.
-                        </Typography>
-                    ) : (
-                        <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}}}>
-                            {schema.map((field) => (
-                                <InfoRow
-                                    key={field.key} label={field.label}
-                                    value={displayValue(field, cert.form_data?.[field.key])}
-                                />
-                            ))}
-                        </Box>
-                    )}
-                </SectionCard>
-
-                <Box sx={{
-                    backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, p: 3,
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2,
-                }}>
-                    {cert.status === 'tamamlandi' ? (
-                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                            <CheckCircleOutlineIcon sx={{fontSize: 20, color: '#1E7A3C'}}/>
-                            <Typography sx={{fontSize: 13, color: GOV.textPrimary}}>
-                                {cert.completed_by_name ? `${cert.completed_by_name} tərəfindən` : ''} tamamlandı
-                                {cert.completed_at ? ` · ${formatDateTime(cert.completed_at)}` : ''}
-                            </Typography>
-                        </Box>
-                    ) : (
-                        <Typography sx={{fontSize: 13, color: GOV.textMuted, maxWidth: 480}}>
-                            Lisenziyanız artıq qüvvədədir. "Tamamlandı" düyməsi yalnız sənədi nəzərdən
-                            keçirdiyinizi qeyd edir - basmasanız da lisenziya etibarlı olaraq qalır.
-                        </Typography>
-                    )}
-
-                    {cert.status !== 'tamamlandi' && (
-                        <Button
-                            variant="contained" disabled={completing} onClick={handleComplete}
-                            startIcon={completing ? <CircularProgress size={14} color="inherit"/> : <CheckCircleOutlineIcon/>}
-                            sx={{
-                                backgroundColor: GOV.navySoft, textTransform: 'none', fontWeight: 600,
-                                px: 3, py: 1, '&:hover': {backgroundColor: GOV.navy},
-                            }}
-                        >
-                            Tamamlandı
-                        </Button>
-                    )}
-                </Box>
+                )}
             </Box>
+
+            <CertificateSignDialog
+                open={!!signDialogMethod} method={signDialogMethod}
+                onClose={() => setSignDialogMethod(null)}
+                onConfirm={handleSignConfirm}
+            />
         </AppShell>
     );
 }
