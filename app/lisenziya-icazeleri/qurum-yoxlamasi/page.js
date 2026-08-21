@@ -3,6 +3,8 @@ import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import Switch from '@mui/material/Switch';
+import CircularProgress from '@mui/material/CircularProgress';
 import {useRouter} from "next/navigation";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
@@ -20,6 +22,12 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [pendingKey, setPendingKey] = useState(null);
 
+    // 2-ci mərhələni (MSN son təsdiqi) hər lisenziya kateqoriyası üçün AYRILIQDA söndürmə/açma.
+    const [stage2Settings, setStage2Settings] = useState({});
+    const [stage2DocTypes, setStage2DocTypes] = useState([]);
+    const [stage2Loading, setStage2Loading] = useState(true);
+    const [stage2SavingKey, setStage2SavingKey] = useState(null);
+
     const load = async () => {
         setLoading(true);
         try {
@@ -32,8 +40,44 @@ export default function Page() {
         }
     };
 
+    const loadStage2Settings = async () => {
+        setStage2Loading(true);
+        try {
+            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_SETTINGS);
+            setStage2DocTypes(res.data?.doc_types || []);
+            setStage2Settings(res.data?.settings || {});
+        } catch (e) {
+            enqueueSnackbar(handleError(e), {variant: 'error'});
+        } finally {
+            setStage2Loading(false);
+        }
+    };
+
+    const handleStage2Toggle = async (docType, active) => {
+        const skipValue = !active;
+        setStage2SavingKey(docType);
+        setStage2Settings((prev) => ({...prev, [docType]: skipValue}));
+        try {
+            await service_api.post(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_SETTINGS, {
+                doc_type: docType, skip_stage2: skipValue,
+            });
+            enqueueSnackbar(
+                active
+                    ? 'Bu kateqoriyada 2-ci mərhələ yenidən aktivləşdirildi.'
+                    : 'Bu kateqoriyada 2-ci mərhələ (MSN təsdiqi) söndürüldü.',
+                {variant: 'success', autoHideDuration: 2500}
+            );
+        } catch (e) {
+            enqueueSnackbar(handleError(e), {variant: 'error'});
+            setStage2Settings((prev) => ({...prev, [docType]: !skipValue}));
+        } finally {
+            setStage2SavingKey(null);
+        }
+    };
+
     useEffect(() => {
         load();
+        loadStage2Settings();
     }, []);
 
     const handleToggle = async (userId, docType, value) => {
@@ -96,6 +140,66 @@ export default function Page() {
                         onToggle={handleToggle}
                         emptyText="Təşkilatınızda aktiv istifadəçi tapılmadı."
                     />
+                </Box>
+
+                <Typography sx={{fontSize: 20, fontWeight: 800, color: GOV.textPrimary, mt: 5, mb: 0.5}}>
+                    2-ci mərhələ (MSN təsdiqi)
+                </Typography>
+                <Typography sx={{fontSize: 13, color: GOV.textMuted, mb: 2.5}}>
+                    Hər lisenziya kateqoriyası üçün ayrılıqda seçin - açıq olduqda sənədlər 1-ci mərhələdən
+                    (qurum yoxlaması) sonra Nazirliyin son təsdiqini gözləyir; söndürsəniz, 1-ci mərhələ
+                    təsdiqləndiyi kimi sənəd birbaşa aktivləşir.
+                </Typography>
+                <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, overflow: 'hidden'}}>
+                    {stage2Loading ? (
+                        <Box sx={{display: 'flex', justifyContent: 'center', py: 4}}>
+                            <CircularProgress size={22}/>
+                        </Box>
+                    ) : stage2DocTypes.length === 0 ? (
+                        <Typography sx={{fontSize: 13, color: GOV.textMuted, px: 2.5, py: 3}}>
+                            Lisenziya kateqoriyası tapılmadı.
+                        </Typography>
+                    ) : (
+                        stage2DocTypes.map((dt, i) => {
+                            const enabled = !stage2Settings[dt.key];
+                            const saving = stage2SavingKey === dt.key;
+                            return (
+                                <Box
+                                    key={dt.key}
+                                    sx={{
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        px: 2.5, py: 1.75,
+                                        borderTop: i === 0 ? 'none' : `1px solid ${GOV.cardBorder}`,
+                                    }}
+                                >
+                                    <Box>
+                                        <Typography sx={{fontSize: 13.5, fontWeight: 700, color: GOV.textPrimary}}>
+                                            {dt.label}
+                                        </Typography>
+                                        <Typography sx={{fontSize: 11, color: GOV.textMuted, mt: 0.3}}>
+                                            {enabled ? 'MSN son təsdiqini gözləyir' : 'Sənədlər birbaşa aktiv olur'}
+                                        </Typography>
+                                    </Box>
+                                    {saving ? (
+                                        <CircularProgress size={16}/>
+                                    ) : (
+                                        <Switch
+                                            size="small" checked={enabled}
+                                            onChange={(e) => handleStage2Toggle(dt.key, {
+                                                target: {checked: !e.target.checked},
+                                            })}
+                                            sx={{
+                                                '& .MuiSwitch-switchBase.Mui-checked': {color: GOV.navy},
+                                                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                    backgroundColor: GOV.navySoft,
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                </Box>
+                            );
+                        })
+                    )}
                 </Box>
             </Box>
         </AppShell>
