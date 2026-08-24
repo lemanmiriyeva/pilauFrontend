@@ -30,6 +30,11 @@ export const DJANGO_API_ENDPOINTS = {
         TABLE: API_URL + "/api/organizations/table/",
         LIST: API_URL + "/api/organizations/",
         DETAIL: (id) => API_URL + `/api/organizations/${id}/`,
+        DEPARTMENTS: (orgId) =>
+            API_URL + `/api/organizations/${orgId}/departments/`,
+
+        POSITIONS: (orgId) =>
+            API_URL + `/api/organizations/${orgId}/positions/`,
     },
     PERMISSIONS: {
         MODULES: API_URL + "/api/permissions/modules/",
@@ -58,6 +63,7 @@ export const DJANGO_API_ENDPOINTS = {
         STAGE2_SETTINGS: API_URL + "/api/workflow/stage2-settings/",
         APPROVERS: API_URL + "/api/workflow/approvers/",
         WORKFLOW_CONFIG: API_URL + "/api/workflow/workflow-config/",
+        STAGE1_ORGANIZATION_USERS: API_URL + "/api/workflow/stage1-organization-users/",
         NOTIFICATIONS: API_URL + "/api/workflow/notifications/",
         NOTIFICATIONS_READ_ALL: API_URL + "/api/workflow/notifications/read-all/",
         NOTIFICATIONS_READ: (id) => API_URL + `/api/workflow/notifications/${id}/read/`,
@@ -90,6 +96,9 @@ export const NEXT_API_ENDPOINTS = {
         TABLE: "organizations/table/",
         LIST: "organizations/",
         DETAIL: (id) => `organizations/${id}/`,
+        DEPARTMENTS: (orgId) => `organizations/${orgId}/departments/`,
+
+        POSITIONS: (orgId) => `organizations/${orgId}/positions/`,
     },
     PERMISSIONS: {
         MODULES: "permissions/modules/",
@@ -118,6 +127,7 @@ export const NEXT_API_ENDPOINTS = {
         STAGE2_SETTINGS: "workflow/stage2-settings/",
         APPROVERS: "workflow/approvers/",
         WORKFLOW_CONFIG: "workflow/workflow-config/",
+        STAGE1_ORGANIZATION_USERS: "workflow/stage1-organization-users/",
         NOTIFICATIONS: "workflow/notifications/",
         NOTIFICATIONS_READ_ALL: "workflow/notifications/read-all/",
         NOTIFICATIONS_READ: (id) => `workflow/notifications/${id}/read/`,

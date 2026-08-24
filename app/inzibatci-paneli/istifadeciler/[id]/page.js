@@ -44,15 +44,23 @@ export default function Page() {
     const handleSubmit = async (form) => {
         setSubmitting(true);
         try {
-            await service_api.patch(NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USER_DETAIL(id), {
-                first_name: form.first_name,
-                last_name: form.last_name,
-                email: form.email,
-                phone: form.phone,
-                organization: form.organization || null,
-                fin_kod: form.fin_kod,
-                id_card_serial: form.id_card_serial,
-            });
+            await service_api.patch(
+                NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USER_DETAIL(id),
+                {
+                    first_name: form.first_name,
+                    last_name: form.last_name,
+                    email: form.email,
+                    phone: form.phone,
+                    organization: form.organization || null,
+
+                    department: form.department || null,
+                    position: form.position || null,
+                    birth_date: form.birth_date || null,
+
+                    fin_kod: form.fin_kod,
+                    id_card_serial: form.id_card_serial,
+                }
+            );
             if (form.modules && form.modules.length) {
                 await service_api.post(NEXT_API_ENDPOINTS.PERMISSIONS.GRANT, {
                     user: Number(id), modules: form.modules,

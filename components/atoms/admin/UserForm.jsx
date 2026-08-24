@@ -1,14 +1,16 @@
 "use client"
-import React, {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Switch from '@mui/material/Switch';
 import InputAdornment from '@mui/material/InputAdornment';
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccountOutlined';
 import {GOV} from "@/components/theme/govColors";
 import OrganizationSelect from "@/components/atoms/admin/OrganizationSelect";
 import ModulePermissionsPicker from "@/components/atoms/admin/ModulePermissionsPicker";
@@ -17,8 +19,18 @@ const PHONE_PREFIX = '+994 ';
 const ID_CARD_SERIES = ['AZE', 'AA'];
 
 const emptyForm = {
-    first_name: '', last_name: '', username: '', email: '', phone: PHONE_PREFIX,
-    organization: '', fin_kod: '', id_card_serial: '',
+    first_name: '',
+    last_name: '',
+    username: '',
+    email: '',
+    phone: PHONE_PREFIX,
+    organization: '',
+    department: '',
+    position: '',
+    birth_date: '',
+    fin_kod: '',
+    id_card_serial: '',
+    is_org_admin: false,
 };
 
 // FİN kodun vəsiqədə harada olduğunu göstərən sadə illüstrasiya (tooltip içində)
@@ -65,6 +77,9 @@ export default function UserForm({mode = 'create', initialData, initialModules =
     const [idCardNumber, setIdCardNumber] = useState(initialParsedIdCard.number);
     const [modules, setModules] = useState([]);
     const [errors, setErrors] = useState({});
+    const [departments, setDepartments] = useState([]);
+    const [positions, setPositions] = useState([]);
+
 
     const set = (field) => (e) => setForm((f) => ({...f, [field]: e.target.value}));
 
@@ -100,7 +115,34 @@ export default function UserForm({mode = 'create', initialData, initialModules =
         if (!validate()) return;
         onSubmit({...form, modules});
     };
+    useEffect(() => {
+        if (!form.organization) {
+            setDepartments([]);
+            setPositions([]);
+            return;
+        }
 
+        const loadOrganizationData = async () => {
+            try {
+                const [departmentRes, positionRes] = await Promise.all([
+                    service_api.get(
+                        `${NEXT_API_ENDPOINTS.ORGANIZATIONS.DEPARTMENTS(form.organization)}`
+                    ),
+                    service_api.get(
+                        `${NEXT_API_ENDPOINTS.ORGANIZATIONS.POSITIONS(form.organization)}`
+                    ),
+                ]);
+
+                setDepartments(departmentRes.data || []);
+                setPositions(positionRes.data || []);
+            } catch (e) {
+                setDepartments([]);
+                setPositions([]);
+            }
+        };
+
+        loadOrganizationData();
+    }, [form.organization]);
     return (
         <Box>
             <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}, mb: 3}}>
@@ -125,7 +167,61 @@ export default function UserForm({mode = 'create', initialData, initialModules =
                     label="Telefon" size="small" placeholder="+994 __ ___ __ __"
                     value={form.phone} onChange={handlePhoneChange} onFocus={handlePhoneFocus}
                 />
-                <OrganizationSelect value={form.organization} onChange={(v) => setForm((f) => ({...f, organization: v}))}/>
+                <TextField
+                    label="Doğum tarixi"
+                    type="date"
+                    size="small"
+                    value={form.birth_date || ''}
+                    onChange={set('birth_date')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
+                <OrganizationSelect
+                    value={form.organization}
+                    onChange={(v) => setForm((f) => ({
+                        ...f,
+                        organization: v,
+                        department: '',
+                        position: '',
+                    }))}
+                />
+                <TextField
+                    select
+                    label="Departament / Şöbə"
+                    size="small"
+                    value={form.department || ''}
+                    onChange={set('department')}
+                    disabled={!form.organization}
+                >
+                    <MenuItem value="">
+                        Seçin
+                    </MenuItem>
+
+                    {departments.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                            {item.name}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    select
+                    label="Vəzifə"
+                    size="small"
+                    value={form.position || ''}
+                    onChange={set('position')}
+                    disabled={!form.organization}
+                >
+                    <MenuItem value="">
+                        Seçin
+                    </MenuItem>
+
+                    {positions.map((item) => (
+                        <MenuItem key={item.id} value={item.id}>
+                            {item.name}
+                        </MenuItem>
+                    ))}
+                </TextField>
                 <TextField
                     label="FİN kod" size="small" value={form.fin_kod} onChange={set('fin_kod')}
                     InputProps={{

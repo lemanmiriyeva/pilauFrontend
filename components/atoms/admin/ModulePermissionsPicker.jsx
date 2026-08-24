@@ -10,6 +10,7 @@ import {GOV} from "@/components/theme/govColors";
 
 const STATUS_FIELDS = [
     {key: 'can_view', label: 'BAXIŞ'},
+    {key: 'can_create', label: 'YARATMA'},
     {key: 'can_edit', label: 'REDAKTƏ'},
     {key: 'can_approve', label: 'TƏSDİQ'},
 ];
@@ -18,7 +19,7 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
     const [tree, setTree] = useState([]);
     const [loading, setLoading] = useState(true);
     const [enabled, setEnabled] = useState({});
-    const [status, setStatus] = useState({can_view: true, can_edit: false, can_approve: false});
+    const [status, setStatus] = useState({can_view: true, can_create: false, can_edit: false, can_approve: false});
 
     useEffect(() => {
         (async () => {
@@ -45,6 +46,7 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
                     const first = initialModules[0];
                     setStatus({
                         can_view: !!first.can_view,
+                        can_create: !!first.can_create,
                         can_edit: !!first.can_edit,
                         can_approve: !!first.can_approve,
                     });

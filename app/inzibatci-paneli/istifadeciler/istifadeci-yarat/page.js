@@ -31,6 +31,9 @@ export default function Page() {
                 fin_kod: form.fin_kod,
                 id_card_serial: form.id_card_serial,
                 modules: form.modules,
+                department: form.department || null,
+                position: form.position || null,
+                birth_date: form.birth_date || null,
             });
             enqueueSnackbar('İstifadəçi uğurla yaradıldı. Şifrə təyini üçün e-poçt göndərildi.', {variant: 'success'});
             router.push(APP_ROUTES.INZIBATCI_ISTIFADECILER);

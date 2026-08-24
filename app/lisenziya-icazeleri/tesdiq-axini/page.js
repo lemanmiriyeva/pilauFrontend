@@ -19,6 +19,9 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
+import {Autocomplete} from "@mui/material";
+import axios from "axios";
+import TextField from "@mui/material/TextField";
 
 const selectSx = {
     backgroundColor: '#fff', fontSize: 13.5,
@@ -49,6 +52,8 @@ export default function Page() {
     const [settingsByDocType, setSettingsByDocType] = useState({});
     const [settingsLoading, setSettingsLoading] = useState(true);
     const [settingsSavingKey, setSettingsSavingKey] = useState(null);
+    const [stage1Users, setStage1Users] = useState([]);
+    const [selectedStage1Users, setSelectedStage1Users] = useState([]);
 
     const loadSettings = async () => {
         setSettingsLoading(true);
@@ -98,10 +103,14 @@ export default function Page() {
         }
     };
 
+
+
     useEffect(() => {
         load();
         loadSettings();
     }, []);
+
+
 
     const patchRow = (docType, patch) => {
         setRows((prev) => prev.map((r) => (r.doc_type === docType ? {...r, ...patch} : r)));
@@ -122,22 +131,58 @@ export default function Page() {
         }
     };
 
-    const handleStage1ModeChange = (row, mode) => {
-        patchRow(row.doc_type, {stage1_mode: mode});
-        if (mode === 'qurum') {
-            persist(row.doc_type, {stage1_mode: 'qurum', stage1_user: null, stage2_user: row.stage2_user});
+    const loadStage1Users = async (organizationId, docType) => {
+        if (!organizationId || !docType) {
+            setStage1Users([]);
+            return;
         }
-        // 'msn' seçildikdə hələ saxlamırıq - istifadəçi mütləq seçilməlidir, bax handleStage1UserChange.
+
+        try {
+            const response = await service_api.get(
+                NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_ORGANIZATION_USERS,
+                {
+                    params: {
+                        organization_id: organizationId,
+                        doc_type: docType,
+                    },
+                }
+            );
+
+            setStage1Users(response.data);
+        } catch (error) {
+            console.error("1-ci mərhələ təsdiqçiləri yüklənmədi:", error);
+            setStage1Users([]);
+        }
     };
 
+    const handleStage1ModeChange = async (row, mode) => {
+        patchRow(row.doc_type, {
+            stage1_mode: mode,
+        });
+
+        if (mode === "qurum" && row.organization_id) {
+            await loadStage1Users(
+                row.organization_id,
+                row.doc_type
+            );
+        }
+    };
     const handleStage1UserChange = (row, userId) => {
         patchRow(row.doc_type, {stage1_user: userId});
-        persist(row.doc_type, {stage1_mode: 'msn', stage1_user: userId, stage2_user: row.stage2_user});
+        persist(row.doc_type, {stage1_mode: 'msn', stage1_user: userId, stage2_enabled: row.stage2_enabled, stage2_user: row.stage2_user});
     };
 
     const handleStage2UserChange = (row, userId) => {
         patchRow(row.doc_type, {stage2_user: userId});
-        persist(row.doc_type, {stage1_mode: row.stage1_mode, stage1_user: row.stage1_user, stage2_user: userId});
+        persist(row.doc_type, {stage1_mode: row.stage1_mode, stage1_user: row.stage1_user, stage2_user: userId, stage2_enabled: row.stage2_enabled});
+    };
+
+    const handleStage2EnabledChange = (row, checked) => {
+        patchRow(row.doc_type, {stage2_enabled: checked});
+        persist(row.doc_type, {
+            stage1_mode: row.stage1_mode, stage1_user: row.stage1_user,
+            stage2_enabled: checked, stage2_user: checked ? row.stage2_user : null,
+        });
     };
 
     return (
@@ -160,10 +205,12 @@ export default function Page() {
                 </Typography>
                 <Typography sx={{fontSize: 13, color: GOV.textMuted, mt: 0.5, mb: 3, maxWidth: 780}}>
                     Hər sənəd növü üçün 1-ci mərhələnin kimə (Qurum admininə, ya da təyin etdiyiniz konkret
-                    MSN işçisinə) və 2-ci mərhələnin (həmişə MSN) hansı işçiyə gedəcəyini seçin. Sənəd
+                    MSN işçisinə) və 2-ci mərhələnin (MSN) hansı işçiyə gedəcəyini seçin. Sənəd
                     göndəriləndə müvafiq şəxsə həm bildiriş, həm də e-poçt avtomatik göndərilir. "Mərhələli
                     təsdiq" sütunundan hər kateqoriyanı ayrı-ayrılıqda söndürə bilərsiniz - digər
-                    kateqoriyalara təsir etmir.
+                    kateqoriyalara təsir etmir. "MSN (2-ci mərhələ)" sütunu isə yalnız Nazirliyin son
+                    təsdiqini (2-ci mərhələni) söndürür - açıq olduqda 1-ci mərhələdən sonra sənəd MSN-in
+                    son təsdiqini gözləyir, söndürsəniz 1-ci mərhələ təsdiqi ilə sənəd birbaşa aktivləşir.
                 </Typography>
 
                 <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, overflow: 'hidden'}}>
@@ -183,7 +230,7 @@ export default function Page() {
                             <Box component="table" sx={{width: '100%', borderCollapse: 'collapse', minWidth: 780}}>
                                 <Box component="thead">
                                     <Box component="tr" sx={{borderBottom: `1px solid ${GOV.cardBorder}`}}>
-                                        {['Sənəd növü', 'Mərhələli təsdiq', '1-ci mərhələ', '1-ci mərhələ icraçısı', '2-ci mərhələ icraçısı (MSN)'].map((h) => (
+                                        {['Sənəd növü', 'Mərhələli təsdiq', '1-ci mərhələ', '1-ci mərhələ icraçısı', 'MSN (2-ci mərhələ)', '2-ci mərhələ icraçısı (MSN)'].map((h) => (
                                             <Box component="th" key={h} sx={{
                                                 textAlign: 'left', fontSize: 11, fontWeight: 700, color: GOV.textMuted,
                                                 textTransform: 'uppercase', letterSpacing: 0.4, px: 2.5, py: 1.5,
@@ -287,9 +334,31 @@ export default function Page() {
                                                             </Select>
                                                         </FormControl>
                                                     ) : (
-                                                        <Typography sx={{fontSize: 12.5, color: GOV.textMuted}}>
-                                                            Təşkilatın admininə göndərilir
-                                                        </Typography>
+                                                        <Autocomplete
+                                                            multiple
+                                                            options={stage1Users}
+                                                            value={stage1Users.filter((user) =>
+                                                                selectedStage1Users.includes(user.id)
+                                                            )}
+                                                            getOptionLabel={(option) =>
+                                                                `${option.full_name}${option.is_org_admin ? " — Qurum admini" : ""}`
+                                                            }
+                                                            isOptionEqualToValue={(option, value) =>
+                                                                option.id === value.id
+                                                            }
+                                                            onChange={(event, values) => {
+                                                                setSelectedStage1Users(
+                                                                    values.map((user) => user.id)
+                                                                );
+                                                            }}
+                                                            renderInput={(params) => (
+                                                                <TextField
+                                                                    {...params}
+                                                                    label="1-ci mərhələ təsdiqçiləri"
+                                                                    placeholder="İşçiləri seçin"
+                                                                />
+                                                            )}
+                                                        />
                                                     )}
                                                 </Box>
 
@@ -297,6 +366,28 @@ export default function Page() {
                                                     px: 2.5, py: 2,
                                                     opacity: stagedEnabled ? 1 : 0.4,
                                                     pointerEvents: stagedEnabled ? 'auto' : 'none',
+                                                }}>
+                                                    <Switch
+                                                        size="small" checked={row.stage2_enabled !== false} disabled={saving}
+                                                        onChange={(e) => handleStage2EnabledChange(row, e.target.checked)}
+                                                        sx={{
+                                                            '& .MuiSwitch-switchBase.Mui-checked': {color: GOV.navy},
+                                                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                                backgroundColor: GOV.navySoft,
+                                                            },
+                                                        }}
+                                                    />
+                                                    {row.stage2_enabled === false && (
+                                                        <Typography sx={{fontSize: 10.5, color: GOV.textMuted, mt: 0.3}}>
+                                                            Söndürülüb
+                                                        </Typography>
+                                                    )}
+                                                </Box>
+
+                                                <Box component="td" sx={{
+                                                    px: 2.5, py: 2,
+                                                    opacity: (stagedEnabled && row.stage2_enabled !== false) ? 1 : 0.4,
+                                                    pointerEvents: (stagedEnabled && row.stage2_enabled !== false) ? 'auto' : 'none',
                                                 }}>
                                                     <FormControl size="small" sx={{minWidth: 220}}>
                                                         <Select
