@@ -1,12 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
   "/daxilol/page": "app/daxilol/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/lisenziya-icazeleri/tesdiq-axini/page": "app/lisenziya-icazeleri/tesdiq-axini/page.js",
-  "/api/licenses/approval-settings/route": "app/api/licenses/approval-settings/route.js",
-  "/api/workflow/stage1-organization-users/route": "app/api/workflow/stage1-organization-users/route.js",
-  "/api/workflow/workflow-config/route": "app/api/workflow/workflow-config/route.js"
+  "/lisenziya-icazeleri/tesdiq-axini/page": "app/lisenziya-icazeleri/tesdiq-axini/page.js"
 }

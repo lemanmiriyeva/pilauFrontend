@@ -28,6 +28,8 @@ export const DJANGO_API_ENDPOINTS = {
         TREE: API_URL + "/api/organizations/tree/",
         SUMMARY: API_URL + "/api/organizations/summary/",
         TABLE: API_URL + "/api/organizations/table/",
+        REPORT_CARDS: API_URL + "/api/organizations/report-cards/",
+        STATS: (id) => API_URL + `/api/organizations/${id}/stats/`,
         LIST: API_URL + "/api/organizations/",
         DETAIL: (id) => API_URL + `/api/organizations/${id}/`,
         DEPARTMENTS: (orgId) =>
@@ -56,6 +58,7 @@ export const DJANGO_API_ENDPOINTS = {
         CERTIFICATE_COMPLETE: (id) => API_URL + `/api/licenses/certificates/${id}/complete/`,
         CERTIFICATE_PDF: (id) => API_URL + `/api/licenses/certificates/${id}/pdf/`,
         CERTIFICATE_SIGN: (id) => API_URL + `/api/licenses/certificates/${id}/sign/`,
+        STATS_OVERVIEW: API_URL + "/api/licenses/stats/overview/",
     },
     WORKFLOW: {
         STAGE1_PERMISSIONS: API_URL + "/api/workflow/stage1-permissions/",
@@ -94,6 +97,8 @@ export const NEXT_API_ENDPOINTS = {
         TREE: "organizations/tree/",
         SUMMARY: "organizations/summary/",
         TABLE: "organizations/table/",
+        REPORT_CARDS: "organizations/report-cards/",
+        STATS: (id) => `organizations/${id}/stats/`,
         LIST: "organizations/",
         DETAIL: (id) => `organizations/${id}/`,
         DEPARTMENTS: (orgId) => `organizations/${orgId}/departments/`,
@@ -120,6 +125,7 @@ export const NEXT_API_ENDPOINTS = {
         CERTIFICATE_COMPLETE: (id) => `licenses/certificates/${id}/complete/`,
         CERTIFICATE_PDF: (id) => `licenses/certificates/${id}/pdf/`,
         CERTIFICATE_SIGN: (id) => `licenses/certificates/${id}/sign/`,
+        STATS_OVERVIEW: "licenses/stats-overview/",
     },
     WORKFLOW: {
         STAGE1_PERMISSIONS: "workflow/stage1-permissions/",
