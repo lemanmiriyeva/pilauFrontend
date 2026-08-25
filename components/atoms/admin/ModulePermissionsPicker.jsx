@@ -39,24 +39,27 @@ export default function ModulePermissionsPicker({initialModules = [], onChange})
 
                 if (initialModules.length) {
                     const enabledMap = {};
+                    // Tutaq ki, ilk elementdən statusu götürürük və ya hər modulun öz statusu gəlir
                     initialModules.forEach((p) => {
                         enabledMap[p.module] = true;
                     });
                     setEnabled(enabledMap);
+
                     const first = initialModules[0];
-                    setStatus({
-                        can_view: !!first.can_view,
-                        can_create: !!first.can_create,
-                        can_edit: !!first.can_edit,
-                        can_approve: !!first.can_approve,
-                    });
+                    if (first) {
+                        setStatus({
+                            can_view: !!first.can_view,
+                            can_create: !!first.can_create,
+                            can_edit: !!first.can_edit,
+                            can_approve: !!first.can_approve,
+                        });
+                    }
                 }
             } finally {
                 setLoading(false);
             }
         })();
-    }, []);
-
+    }, [initialModules]);
     useEffect(() => {
         if (loading) return;
         const payload = Object.keys(enabled)

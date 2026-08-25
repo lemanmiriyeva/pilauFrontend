@@ -19,7 +19,7 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
-import {Autocomplete} from "@mui/material";
+import {Autocomplete, Grid} from "@mui/material";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 
@@ -54,6 +54,7 @@ export default function Page() {
     const [settingsSavingKey, setSettingsSavingKey] = useState(null);
     const [stage1Users, setStage1Users] = useState([]);
     const [selectedStage1Users, setSelectedStage1Users] = useState([]);
+    const [stage1Organizations, setStage1Organizations] = useState([]);
 
     const loadSettings = async () => {
         setSettingsLoading(true);
@@ -103,7 +104,27 @@ export default function Page() {
         }
     };
 
+    const loadStage1Organizations = async (row) => {
+        try {
+            const response = await service_api.get(
+                NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_ORGANIZATION_USERS,
+                {
+                    params: {
+                        doc_type: row.doc_type,
+                    },
+                }
+            );
 
+            setStage1Organizations(response.data);
+        } catch (error) {
+            console.error(
+                "Qurumların təsdiqçiləri yüklənmədi:",
+                error
+            );
+
+            setStage1Organizations([]);
+        }
+    };
 
     useEffect(() => {
         load();
@@ -142,8 +163,7 @@ export default function Page() {
                 NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_ORGANIZATION_USERS,
                 {
                     params: {
-                        organization_id: organizationId,
-                        doc_type: docType,
+                        doc_type: row.doc_type,
                     },
                 }
             );
@@ -160,11 +180,10 @@ export default function Page() {
             stage1_mode: mode,
         });
 
-        if (mode === "qurum" && row.organization_id) {
-            await loadStage1Users(
-                row.organization_id,
-                row.doc_type
-            );
+        if (mode === "qurum") {
+            await loadStage1Organizations(row);
+        } else {
+            setStage1Organizations([]);
         }
     };
     const handleStage1UserChange = (row, userId) => {
@@ -247,6 +266,7 @@ export default function Page() {
                                         const stagedEnabled = settingsByDocType[row.doc_type] ?? true;
                                         const settingsSaving = settingsSavingKey === row.doc_type;
                                         return (
+                                            <>
                                             <Box component="tr" key={row.doc_type} sx={{
                                                 borderBottom: `1px solid ${GOV.cardBorder}`,
                                                 '&:last-of-type': {borderBottom: 'none'},
@@ -416,7 +436,145 @@ export default function Page() {
                                                         </Select>
                                                     </FormControl>
                                                 </Box>
+
                                             </Box>
+                                        <Box>
+                                            {row.stage1_mode === "qurum" && (
+                                                <Grid item xs={12}>
+                                                    <Box sx={{ mt: 2 }}>
+                                                        <Typography
+                                                            variant="subtitle1"
+                                                            sx={{ mb: 1 }}
+                                                        >
+                                                            Qurum üzrə 1-ci mərhələ təsdiqçiləri
+                                                        </Typography>
+
+                                                        {(stage1Organizations[row.doc_type] || []).map(
+                                                            (organization) => (
+                                                                <Accordion
+                                                                    key={organization.organization_id}
+                                                                >
+                                                                    <AccordionSummary
+                                                                        expandIcon={<ExpandMoreIcon />}
+                                                                    >
+                                                                        <Typography>
+                                                                            {organization.organization_name}
+                                                                        </Typography>
+                                                                    </AccordionSummary>
+
+                                                                    <AccordionDetails>
+                                                                        <Box sx={{ width: "100%" }}>
+
+                                                                            {(stage1Organizations[row.doc_type] || []).map(
+                                                                                (organization) => (
+                                                                                    <Box
+                                                                                        key={organization.organization_id}
+                                                                                        sx={{
+                                                                                            display: "grid",
+                                                                                            gridTemplateColumns: "300px 1fr",
+                                                                                            gap: 2,
+                                                                                            alignItems: "center",
+                                                                                            mb: 2,
+                                                                                            pb: 2,
+                                                                                            borderBottom: "1px solid #eee",
+                                                                                        }}
+                                                                                    >
+
+                                                                                        {/* QURUM */}
+                                                                                        <Typography>
+                                                                                            {organization.organization_name}
+                                                                                        </Typography>
+
+                                                                                        {/* TƏSDİQÇİLƏR */}
+                                                                                        <Autocomplete
+                                                                                            multiple
+                                                                                            fullWidth
+                                                                                            options={organization.users || []}
+                                                                                            value={
+                                                                                                (organization.users || []).filter(
+                                                                                                    (user) =>
+                                                                                                        (
+                                                                                                            organization.selected_user_ids ||
+                                                                                                            []
+                                                                                                        ).includes(user.id)
+                                                                                                )
+                                                                                            }
+                                                                                            getOptionLabel={(user) =>
+                                                                                                `${user.full_name}${
+                                                                                                    user.is_org_admin
+                                                                                                        ? " — Qurum admini"
+                                                                                                        : ""
+                                                                                                }`
+                                                                                            }
+                                                                                            isOptionEqualToValue={(
+                                                                                                option,
+                                                                                                value
+                                                                                            ) => option.id === value.id}
+                                                                                            onChange={(event, values) => {
+                                                                                                const userIds = values.map(
+                                                                                                    (user) => user.id
+                                                                                                );
+
+                                                                                                setStage1Organizations((prev) => ({
+                                                                                                    ...prev,
+                                                                                                    [row.doc_type]: (
+                                                                                                        prev[row.doc_type] || []
+                                                                                                    ).map((item) =>
+                                                                                                        item.organization_id ===
+                                                                                                        organization.organization_id
+                                                                                                            ? {
+                                                                                                                ...item,
+                                                                                                                selected_user_ids:
+                                                                                                                userIds,
+                                                                                                            }
+                                                                                                            : item
+                                                                                                    ),
+                                                                                                }));
+                                                                                            }}
+                                                                                            renderOption={(props, user) => (
+                                                                                                <li
+                                                                                                    {...props}
+                                                                                                    key={user.id}
+                                                                                                >
+                                                                                                    <Box>
+                                                                                                        <Typography>
+                                                                                                            {user.full_name}
+                                                                                                        </Typography>
+
+                                                                                                        {user.is_org_admin && (
+                                                                                                            <Typography
+                                                                                                                variant="caption"
+                                                                                                                color="primary"
+                                                                                                            >
+                                                                                                                Qurum admini
+                                                                                                            </Typography>
+                                                                                                        )}
+                                                                                                    </Box>
+                                                                                                </li>
+                                                                                            )}
+                                                                                            renderInput={(params) => (
+                                                                                                <TextField
+                                                                                                    {...params}
+                                                                                                    label="Təsdiqçilər"
+                                                                                                    placeholder="Əməkdaş seçin"
+                                                                                                />
+                                                                                            )}
+                                                                                        />
+
+                                                                                    </Box>
+                                                                                )
+                                                                            )}
+
+                                                                        </Box>
+                                                                    </AccordionDetails>
+                                                                </Accordion>
+                                                            )
+                                                        )}
+                                                    </Box>
+                                                </Grid>
+                                            )}
+                                        </Box>
+                                        </>
                                         );
                                     })}
                                 </Box>

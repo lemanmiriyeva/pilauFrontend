@@ -31,6 +31,7 @@ const emptyForm = {
     fin_kod: '',
     id_card_serial: '',
     is_org_admin: false,
+    can_approve: false,
 };
 
 // FİN kodun vəsiqədə harada olduğunu göstərən sadə illüstrasiya (tooltip içində)
