@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {useRouter} from "next/navigation";
@@ -32,28 +35,61 @@ function Field({label, ...props}) {
     );
 }
 
+function SelectField({label, value, onChange, options, disabled, emptyLabel}) {
+    return (
+        <Box>
+            <Typography sx={{
+                fontSize: 11, fontWeight: 700, letterSpacing: 0.4, color: GOV.textMuted,
+                textTransform: 'uppercase', mb: 0.75,
+            }}>
+                {label}
+            </Typography>
+            <FormControl size="small" fullWidth>
+                <Select
+                    displayEmpty value={value ?? ''} onChange={onChange} disabled={disabled}
+                    sx={fieldSx}
+                >
+                    <MenuItem value="">
+                        <em style={{color: GOV.textMuted, fontStyle: 'normal'}}>
+                            {emptyLabel || 'Seçin...'}
+                        </em>
+                    </MenuItem>
+                    {options.map((o) => (
+                        <MenuItem key={o.id} value={o.id}>{o.name}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Box>
+    );
+}
+
 export default function Page() {
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
     const [user, setUser] = useState(null);
     const [form, setForm] = useState(null);
+    const [orgOptions, setOrgOptions] = useState({departments: [], positions: []});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [orgOpen, setOrgOpen] = useState(true);
 
-    const fetchUser = async () => {
+    const fetchAll = async () => {
         setLoading(true);
         try {
-            const res = await service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.USER);
-            setUser(res.data);
+            const [userRes, optionsRes] = await Promise.all([
+                service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.USER),
+                service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.MY_ORGANIZATION_OPTIONS),
+            ]);
+            setUser(userRes.data);
+            setOrgOptions(optionsRes.data || {departments: [], positions: []});
             setForm({
-                first_name: res.data.first_name || '',
-                last_name: res.data.last_name || '',
-                phone: res.data.phone || '',
-                email: res.data.email || '',
-                id_card_serial: res.data.id_card_serial || '',
-                department: res.data.department || '',
-                position: res.data.position || '',
+                first_name: userRes.data.first_name || '',
+                last_name: userRes.data.last_name || '',
+                phone: userRes.data.phone || '',
+                email: userRes.data.email || '',
+                id_card_serial: userRes.data.id_card_serial || '',
+                department: userRes.data.department || '',
+                position: userRes.data.position || '',
             });
         } catch (e) {
             enqueueSnackbar(handleError(e), {variant: 'error'});
@@ -63,7 +99,8 @@ export default function Page() {
     };
 
     useEffect(() => {
-        fetchUser();
+        fetchAll();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const set = (key) => (e) => setForm((f) => ({...f, [key]: e.target.value}));
@@ -71,7 +108,11 @@ export default function Page() {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const res = await service_api.patch(NEXT_API_ENDPOINTS.AUTHENTICATION.USER, form);
+            const res = await service_api.patch(NEXT_API_ENDPOINTS.AUTHENTICATION.USER, {
+                ...form,
+                department: form.department || null,
+                position: form.position || null,
+            });
             setUser(res.data);
             enqueueSnackbar('Məlumatlarınız yadda saxlanıldı.', {variant: 'success'});
         } catch (e) {
@@ -90,6 +131,8 @@ export default function Page() {
             </AppShell>
         );
     }
+
+    const org = user?.organization_detail;
 
     return (
         <AppShell>
@@ -142,16 +185,26 @@ export default function Page() {
 
                         {orgOpen && (
                             <Box sx={{display: 'grid', gap: 3, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr 1fr'}, mt: 3}}>
-                                <Field
-                                    label="Təşkilatın adı"
-                                    value={user?.organization_detail?.full_name || ''} disabled
+                                <Field label="Təşkilatın adı" value={org?.full_name || ''} disabled/>
+                                <Field label="Təşkilatın VÖENİ" value={org?.voen || ''} disabled/>
+                                <Field label="Dövlət qeydiyyat nömrəsi" value={org?.state_reg_number || ''} disabled/>
+
+                                <Field label="Təşkilatın elektron poçtu" value={org?.email || ''} disabled/>
+                                <Field label="Təşkilatın telefonu" value={org?.phone || ''} disabled/>
+                                <Field label="Ünvan" value={org?.address || ''} disabled/>
+
+                                <SelectField
+                                    label="Departament/Şöbə" value={form.department}
+                                    onChange={set('department')} options={orgOptions.departments}
+                                    disabled={orgOptions.departments.length === 0}
+                                    emptyLabel={orgOptions.departments.length === 0 ? 'Təşkilat üçün departament təyin olunmayıb' : 'Seçin...'}
                                 />
-                                <Field
-                                    label="Təşkilatın VÖENİ"
-                                    value={user?.organization_detail?.voen || ''} disabled
+                                <SelectField
+                                    label="Vəzifə" value={form.position}
+                                    onChange={set('position')} options={orgOptions.positions}
+                                    disabled={orgOptions.positions.length === 0}
+                                    emptyLabel={orgOptions.positions.length === 0 ? 'Təşkilat üçün vəzifə təyin olunmayıb' : 'Seçin...'}
                                 />
-                                <Field label="Departament/Şöbə" value={form.department} onChange={set('department')}/>
-                                <Field label="Vəzifə" value={form.position} onChange={set('position')}/>
                             </Box>
                         )}
                     </Box>

@@ -1,6 +1,16 @@
 {
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/daxilol/page": "app/daxilol/page.js",
+  "/modullar/hesabatlar/statistik-melumatlar/page": "app/modullar/hesabatlar/statistik-melumatlar/page.js",
+  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/lisenziya-icazeleri/tesdiq-axini/page": "app/lisenziya-icazeleri/tesdiq-axini/page.js"
+  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js",
+  "/sexsi-kabinet/page": "app/sexsi-kabinet/page.js",
+  "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
+  "/page": "app/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/modullar/hesabatlar/page": "app/modullar/hesabatlar/page.js",
+  "/api/organizations/table/route": "app/api/organizations/table/route.js",
+  "/modullar/teskilatlar/yeni/page": "app/modullar/teskilatlar/yeni/page.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js"
 }
