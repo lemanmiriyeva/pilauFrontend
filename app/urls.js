@@ -39,6 +39,10 @@ export const DJANGO_API_ENDPOINTS = {
 
         POSITIONS: (orgId) =>
             API_URL + `/api/organizations/${orgId}/positions/`,
+        DEPARTMENTS_LIST: API_URL + "/api/organizations/departments/",
+        DEPARTMENT_DETAIL: (id) => API_URL + `/api/organizations/departments/${id}/`,
+        POSITIONS_LIST: API_URL + "/api/organizations/positions/",
+        POSITION_DETAIL: (id) => API_URL + `/api/organizations/positions/${id}/`,
     },
     PERMISSIONS: {
         MODULES: API_URL + "/api/permissions/modules/",
@@ -108,6 +112,11 @@ export const NEXT_API_ENDPOINTS = {
         DEPARTMENTS: (orgId) => `organizations/${orgId}/departments/`,
 
         POSITIONS: (orgId) => `organizations/${orgId}/positions/`,
+
+        DEPARTMENTS_LIST: "organizations/departments/",
+        DEPARTMENT_DETAIL: (id) => `organizations/departments/${id}/`,
+        POSITIONS_LIST: "organizations/positions/",
+        POSITION_DETAIL: (id) => `organizations/positions/${id}/`,
     },
     PERMISSIONS: {
         MODULES: "permissions/modules/",

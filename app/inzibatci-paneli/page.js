@@ -51,6 +51,14 @@ export default function Page() {
                         icon: 'gavel',
                         href: APP_ROUTES.TESDIQ_AXINI,
                     });
+                    extraCards.push({
+                        id: 'departament-vezife',
+                        key: 'departament-vezife',
+                        title: 'Departamentlər və Vəzifələr',
+                        description: 'Hər təşkilat üçün Şəxsi Kabinet və istifadəçi formalarında seçilə bilən departament/vəzifə kataloqunu idarə edin.',
+                        icon: 'apartment',
+                        href: APP_ROUTES.INZIBATCI_DEPARTAMENT_VEZIFE,
+                    });
                 }
 
                 return (
