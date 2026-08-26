@@ -31,6 +31,7 @@ export default function Page() {
                 fin_kod: form.fin_kod,
                 id_card_serial: form.id_card_serial,
                 modules: form.modules,
+                approver_doc_types: form.approver_doc_types,
                 department: form.department || null,
                 position: form.position || null,
                 birth_date: form.birth_date || null,

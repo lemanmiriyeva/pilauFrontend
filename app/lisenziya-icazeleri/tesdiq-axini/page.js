@@ -208,6 +208,16 @@ export default function Page() {
         persist(row.doc_type, {
             stage1_mode: row.stage1_mode, stage1_user: row.stage1_user,
             stage2_enabled: checked, stage2_user: checked ? row.stage2_user : null,
+            signer_user: row.signer_user,
+        });
+    };
+
+    const handleSignerUserChange = (row, userId) => {
+        patchRow(row.doc_type, {signer_user: userId});
+        persist(row.doc_type, {
+            stage1_mode: row.stage1_mode, stage1_user: row.stage1_user,
+            stage2_enabled: row.stage2_enabled, stage2_user: row.stage2_user,
+            signer_user: userId,
         });
     };
 
@@ -290,10 +300,10 @@ export default function Page() {
                         </Box>
                     ) : (
                         <Box sx={{overflowX: 'auto'}}>
-                            <Box component="table" sx={{width: '100%', borderCollapse: 'collapse', minWidth: 820}}>
+                            <Box component="table" sx={{width: '100%', borderCollapse: 'collapse', minWidth: 1040}}>
                                 <Box component="thead">
                                     <Box component="tr" sx={{borderBottom: `1px solid ${GOV.cardBorder}`, backgroundColor: GOV.pageBg}}>
-                                        {['Sənəd növü', 'Mərhələli təsdiq', '1-ci mərhələ', '1-ci mərhələ icraçısı', 'MSN (2-ci mərhələ)', '2-ci mərhələ icraçısı (MSN)'].map((h) => (
+                                        {['Sənəd növü', 'Mərhələli təsdiq', '1-ci mərhələ', '1-ci mərhələ icraçısı', 'MSN (2-ci mərhələ)', '2-ci mərhələ icraçısı (MSN)', 'İmzalayan şəxs'].map((h) => (
                                             <Box component="th" key={h} sx={{
                                                 textAlign: 'left', fontSize: 11, fontWeight: 700, color: GOV.textMuted,
                                                 textTransform: 'uppercase', letterSpacing: 0.4, px: 2.5, py: 1.5,
@@ -311,6 +321,7 @@ export default function Page() {
                                         const settingsSaving = settingsSavingKey === row.doc_type;
                                         const stage1User = eligible.find((u) => u.id === row.stage1_user);
                                         const stage2User = eligible.find((u) => u.id === row.stage2_user);
+                                        const signerUser = eligible.find((u) => u.id === row.signer_user);
 
                                         return (
                                             <React.Fragment key={row.doc_type}>
@@ -501,10 +512,57 @@ export default function Page() {
                                                             </Select>
                                                         </FormControl>
                                                     </Box>
+
+                                                    <Box component="td" sx={{px: 2.5, py: 2}}>
+                                                        <FormControl size="small" sx={{minWidth: 240}}>
+                                                            <Select
+                                                                displayEmpty value={row.signer_user || ''} disabled={saving}
+                                                                onChange={(e) => handleSignerUserChange(row, e.target.value)}
+                                                                sx={selectSx}
+                                                                renderValue={(val) => {
+                                                                    if (!val) {
+                                                                        return <em style={{color: GOV.textMuted, fontStyle: 'normal'}}>Seçin...</em>;
+                                                                    }
+                                                                    return (
+                                                                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                                                            <UserAvatar name={signerUser?.full_name} tone={GOV.gold}/>
+                                                                            <Typography sx={{fontSize: 13, fontWeight: 600, color: GOV.textPrimary}}>
+                                                                                {signerUser?.full_name || '—'}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <MenuItem value="" disabled>
+                                                                    <em style={{color: GOV.textMuted, fontStyle: 'normal'}}>Seçin...</em>
+                                                                </MenuItem>
+                                                                {eligible.length === 0 && (
+                                                                    <MenuItem value="" disabled>
+                                                                        Uyğun icazəli istifadəçi yoxdur
+                                                                    </MenuItem>
+                                                                )}
+                                                                {eligible.map((u) => (
+                                                                    <MenuItem key={u.id} value={u.id}>
+                                                                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                                                            <UserAvatar name={u.full_name} size={24} tone={GOV.gold}/>
+                                                                            <Box>
+                                                                                <Typography sx={{fontSize: 13}}>{u.full_name}</Typography>
+                                                                                {(u.department || u.position) && (
+                                                                                    <Typography sx={{fontSize: 11, color: GOV.textMuted, lineHeight: 1.2}}>
+                                                                                        {[u.department, u.position].filter(Boolean).join(' · ')}
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                        </Box>
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Box>
                                                 </Box>
 
                                                 <Box component="tr">
-                                                    <Box component="td" colSpan={6} sx={{p: 0, borderBottom: `1px solid ${GOV.cardBorder}`}}>
+                                                    <Box component="td" colSpan={7} sx={{p: 0, borderBottom: `1px solid ${GOV.cardBorder}`}}>
                                                         {row.stage1_mode === "qurum" && (
                                                             <Box sx={{
                                                                 mx: 2.5, my: 2,
@@ -663,7 +721,7 @@ export default function Page() {
                     <InfoOutlinedIcon sx={{fontSize: 14, color: GOV.textMuted}}/>
                     <Typography sx={{fontSize: 12, color: GOV.textMuted}}>
                         Yalnız "Təsdiq hüquqları" bölməsində həmin sənəd növü üzrə yoxlama icazəsi verilmiş
-                        istifadəçilər dropdown-da görünür.
+                        istifadəçilər dropdown-da (o cümlədən "İmzalayan şəxs" siyahısında) görünür.
                     </Typography>
                 </Box>
             </Box>

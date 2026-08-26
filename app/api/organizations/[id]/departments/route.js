@@ -6,12 +6,16 @@ import {DJANGO_API_ENDPOINTS} from "@/app/urls";
 import {handleError} from "@/app/utils";
 
 export async function GET(req, {params}) {
-    const access = cookies().get("access");
-    const refresh = cookies().get("refresh");
-
     try {
+        const {id} = await params;
+
+        const cookieStore = await cookies();
+
+        const access = cookieStore.get("access");
+        const refresh = cookieStore.get("refresh");
+
         const res = await get_request(
-            DJANGO_API_ENDPOINTS.ORGANIZATIONS.DEPARTMENTS(params.id),
+            DJANGO_API_ENDPOINTS.ORGANIZATIONS.DEPARTMENTS(id),
             access,
             refresh
         );
@@ -19,9 +23,12 @@ export async function GET(req, {params}) {
         const data = await res.json();
 
         return Response.json(data, {
-            status: res.status
+            status: res.status,
         });
+
     } catch (e) {
+        console.error("Departments API error:", e);
+
         return Response.json(
             {detail: handleError(e)},
             {status: 500}

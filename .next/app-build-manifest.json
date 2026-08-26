@@ -65,6 +65,76 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/teskilatlar/yeni/page.js"
+    ],
+    "/sexsi-kabinet/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/sexsi-kabinet/page.js"
+    ],
+    "/modullar/lisenziya-senedler/istehsal/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/page.js"
+    ],
+    "/modullar/lisenziya-senedler/istehsal/yeni/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/yeni/page.js"
+    ],
+    "/modullar/lisenziya-senedler/istehsal/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
+    ],
+    "/lisenziya-icazeleri/tesdiq-axini/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/tesdiq-axini/page.js"
+    ],
+    "/lisenziya-icazeleri/tesdiq-huquqlari/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/tesdiq-huquqlari/page.js"
+    ],
+    "/chixish/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/chixish/page.js"
+    ],
+    "/shifre-teyini/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/shifre-teyini/page.js"
+    ],
+    "/2fa-qurulmasi/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/2fa-qurulmasi/page.js"
+    ],
+    "/lisenziya-icazeleri/senedlerim/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+    ],
+    "/lisenziya-icazeleri/yoxlamalarim/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/yoxlamalarim/page.js"
+    ],
+    "/lisenziya-icazeleri/sened/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/sened/[id]/page.js"
+    ],
+    "/modullar/hesabatlar/teskilatlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/hesabatlar/teskilatlar/page.js"
+    ],
+    "/modullar/hesabatlar/teskilatlar/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/hesabatlar/teskilatlar/[id]/page.js"
     ]
   }
 }

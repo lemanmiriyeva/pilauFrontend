@@ -59,6 +59,8 @@ export default function Page() {
 
                     fin_kod: form.fin_kod,
                     id_card_serial: form.id_card_serial,
+
+                    approver_doc_types: form.approver_doc_types,
                 }
             );
             if (form.modules && form.modules.length) {

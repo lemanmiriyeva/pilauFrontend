@@ -1,15 +1,16 @@
 {
+  "/lisenziya-icazeleri/tesdiq-axini/page": "app/lisenziya-icazeleri/tesdiq-axini/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/inzibatci-paneli/istifadeciler/istifadeci-yarat/page": "app/inzibatci-paneli/istifadeciler/istifadeci-yarat/page.js",
-  "/inzibatci-paneli/departament-vezife/page": "app/inzibatci-paneli/departament-vezife/page.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/api/organizations/table/route": "app/api/organizations/table/route.js",
-  "/modullar/hesabatlar/page": "app/modullar/hesabatlar/page.js",
-  "/modullar/teskilatlar/yeni/page": "app/modullar/teskilatlar/yeni/page.js",
   "/page": "app/page.js",
-  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js"
+  "/inzibatci-paneli/istifadeciler/page": "app/inzibatci-paneli/istifadeciler/page.js",
+  "/modullar/lisenziya-senedler/istehsal/[id]/page": "app/modullar/lisenziya-senedler/istehsal/[id]/page.js",
+  "/inzibatci-paneli/istifadeciler/[id]/page": "app/inzibatci-paneli/istifadeciler/[id]/page.js",
+  "/modullar/hesabatlar/teskilatlar/page": "app/modullar/hesabatlar/teskilatlar/page.js",
+  "/modullar/hesabatlar/page": "app/modullar/hesabatlar/page.js",
+  "/api/organizations/report-cards/route": "app/api/organizations/report-cards/route.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/modullar/hesabatlar/teskilatlar/[id]/page": "app/modullar/hesabatlar/teskilatlar/[id]/page.js",
+  "/api/organizations/[id]/stats/route": "app/api/organizations/[id]/stats/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js"
 }
