@@ -1,25 +1,8 @@
 {
-  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/inzibatci-paneli/istifadeciler/istifadeci-yarat/page": "app/inzibatci-paneli/istifadeciler/istifadeci-yarat/page.js",
-  "/api/permissions/modules/route": "app/api/permissions/modules/route.js",
+  "/daxilol/page": "app/daxilol/page.js",
   "/page": "app/page.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/lisenziya-icazeleri/tesdiq-huquqlari/page": "app/lisenziya-icazeleri/tesdiq-huquqlari/page.js",
-  "/api/workflow/stage2-permissions/route": "app/api/workflow/stage2-permissions/route.js",
-  "/inzibatci-paneli/istifadeciler/page": "app/inzibatci-paneli/istifadeciler/page.js",
-  "/api/organizations/positions/route": "app/api/organizations/positions/route.js",
-  "/inzibatci-paneli/departament-vezife/page": "app/inzibatci-paneli/departament-vezife/page.js",
-  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
-  "/api/auth/admin/users/route": "app/api/auth/admin/users/route.js",
-  "/api/organizations/departments/route": "app/api/organizations/departments/route.js",
-  "/inzibatci-paneli/icazeler/page": "app/inzibatci-paneli/icazeler/page.js",
-  "/api/organizations/[id]/route": "app/api/organizations/[id]/route.js",
-  "/api/permissions/user-permissions/route": "app/api/permissions/user-permissions/route.js",
-  "/inzibatci-paneli/icazeler/[orgId]/page": "app/inzibatci-paneli/icazeler/[orgId]/page.js",
-  "/api/organizations/table/route": "app/api/organizations/table/route.js",
-  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/modullar/hesabatlar/page": "app/modullar/hesabatlar/page.js"
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js"
 }
