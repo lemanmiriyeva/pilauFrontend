@@ -7,8 +7,12 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-
 import SearchIcon from "@mui/icons-material/Search";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import {useRouter} from "next/navigation";
 import {useSnackbar} from "notistack";
@@ -16,7 +20,6 @@ import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
 import {NEXT_API_ENDPOINTS} from "@/app/urls";
 import {handleError} from "@/app/utils";
-
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 
@@ -30,30 +33,99 @@ export default function Page() {
     const {enqueueSnackbar} = useSnackbar();
 
     const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+
+    const [organizations, setOrganizations] = useState([]);
+
+    const [organization, setOrganization] = useState("");
+
+    const [loading, setLoading] = useState(false);
+    const [organizationsLoading, setOrganizationsLoading] = useState(true);
+
     const [pendingKey, setPendingKey] = useState(null);
+
     const [search, setSearch] = useState("");
 
 
     // ========================================================================
-    // LOAD
+    // ORGANIZATIONS
     // ========================================================================
 
-    const load = async () => {
+    const loadOrganizations = async () => {
+
+        setOrganizationsLoading(true);
+
+        try {
+
+            /*
+             * Burada sənin təşkilat API endpoint-in olmalıdır.
+             *
+             * Əgər artıq başqa səhifədə istifadə etdiyin endpoint varsa,
+             * aşağıdakı endpoint-i həmin endpoint ilə dəyiş.
+             */
+
+            const res = await service_api.get(
+                NEXT_API_ENDPOINTS.ORGANIZATIONS.LIST
+            );
+
+            const list =
+                Array.isArray(res.data)
+                    ? res.data
+                    : (
+                        res.data?.results ||
+                        res.data?.organizations ||
+                        []
+                    );
+
+            setOrganizations(list);
+
+        } catch (e) {
+
+            enqueueSnackbar(
+                handleError(e),
+                {variant: "error"}
+            );
+
+        } finally {
+
+            setOrganizationsLoading(false);
+
+        }
+    };
+
+
+    // ========================================================================
+    // LOAD PERMISSIONS
+    // ========================================================================
+
+    const loadPermissions = async (organizationId) => {
+
+        if (!organizationId) {
+
+            setData(null);
+
+            return;
+        }
 
         setLoading(true);
 
         try {
 
-            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS);
+            const url =
+                `${NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS}` +
+                `?organization=${organizationId}`;
+
+            const res = await service_api.get(url);
 
             setData(res.data);
 
         } catch (e) {
 
-            enqueueSnackbar(handleError(e), {
-                variant: "error"
-            });
+            enqueueSnackbar(
+                handleError(e),
+                {variant: "error"}
+            );
+
+            setData(null);
 
         } finally {
 
@@ -63,153 +135,52 @@ export default function Page() {
     };
 
 
+    // ========================================================================
+    // INITIAL LOAD
+    // ========================================================================
+
     useEffect(() => {
 
-        load();
+        loadOrganizations();
 
     }, []);
 
 
     // ========================================================================
-    // TOGGLE
+    // ORGANIZATION CHANGE
     // ========================================================================
 
-    const handleToggle = async (stage, userId, docType, value) => {
+    useEffect(() => {
 
-        const key = `${stage}:${userId}:${docType}`;
+        if (!organization) {
 
-        setPendingKey(key);
+            setData(null);
 
-
-        const usersKey = stage === "stage1" ? "stage1_users" : "stage2_users";
-
-
-        // --------------------------------------------------------------------
-        // OPTIMISTIC UPDATE
-        // --------------------------------------------------------------------
-
-        setData((prev) => {
-
-            if (!prev) {
-                return prev;
-            }
-
-            return {
-
-                ...prev,
-
-                [usersKey]: (prev[usersKey] || []).map((user) => {
-
-                    if (user.id !== userId) {
-                        return user;
-                    }
-
-                    return {
-
-                        ...user,
-
-                        permissions: {
-
-                            ...user.permissions,
-
-                            [docType]: value,
-
-                        },
-
-                    };
-
-                }),
-
-            };
-
-        });
-
-
-        // --------------------------------------------------------------------
-        // ENDPOINT
-        // --------------------------------------------------------------------
-
-        const endpoint = stage === "stage1" ? NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS : NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS;
-
-
-        try {
-
-            await service_api.post(endpoint, {
-                user: userId, doc_type: docType, value,
-            });
-
-        } catch (e) {
-
-            enqueueSnackbar(handleError(e), {
-                variant: "error"
-            });
-
-
-            // ---------------------------------------------------------------
-            // ROLLBACK
-            // ---------------------------------------------------------------
-
-            setData((prev) => {
-
-                if (!prev) {
-                    return prev;
-                }
-
-                return {
-
-                    ...prev,
-
-                    [usersKey]: (prev[usersKey] || []).map((user) => {
-
-                        if (user.id !== userId) {
-                            return user;
-                        }
-
-                        return {
-
-                            ...user,
-
-                            permissions: {
-
-                                ...user.permissions,
-
-                                [docType]: !value,
-
-                            },
-
-                        };
-
-                    }),
-
-                };
-
-            });
-
-        } finally {
-
-            setPendingKey(null);
-
+            return;
         }
 
-    };
+        loadPermissions(organization);
+
+    }, [organization]);
 
 
     // ========================================================================
     // SEARCH
     // ========================================================================
 
-    const q = search
-        .trim()
-        .toLowerCase();
-
-
     const filterUsers = (users) => {
 
-        if (!q) {
-            return users || [];
+        const list = users || [];
+
+        if (!search.trim()) {
+            return list;
         }
 
-        return (users || []).filter((user) => {
+        const q = search
+            .trim()
+            .toLowerCase();
+
+        return list.filter((user) => {
 
             return (
 
@@ -238,14 +209,201 @@ export default function Page() {
             );
 
         });
+    };
+
+
+    // ========================================================================
+    // STAGE 1 USERS
+    // ========================================================================
+
+    const filteredStage1Users = filterUsers(
+        data?.stage1_users
+    );
+
+
+    // ========================================================================
+    // STAGE 2 USERS
+    // ========================================================================
+
+    const filteredStage2Users = filterUsers(
+        data?.stage2_users
+    );
+
+
+    // ========================================================================
+    // TOGGLE
+    // ========================================================================
+
+    const handleToggle = async (
+        stage,
+        userId,
+        docType,
+        value
+    ) => {
+
+        const key =
+            `${stage}:${userId}:${docType}`;
+
+        setPendingKey(key);
+
+
+        // ------------------------------------------------------------
+        // USER LIST
+        // ------------------------------------------------------------
+
+        const usersKey =
+            stage === "stage1"
+                ? "stage1_users"
+                : "stage2_users";
+
+
+        // ------------------------------------------------------------
+        // OPTIMISTIC UPDATE
+        // ------------------------------------------------------------
+
+        setData((prev) => {
+
+            if (!prev) {
+                return prev;
+            }
+
+            return {
+
+                ...prev,
+
+                [usersKey]: (
+                    prev[usersKey] || []
+                ).map((user) => {
+
+                    if (user.id !== userId) {
+                        return user;
+                    }
+
+                    return {
+
+                        ...user,
+
+                        permissions: {
+
+                            ...(user.permissions || {}),
+
+                            [docType]: value,
+
+                        },
+
+                    };
+
+                }),
+
+            };
+
+        });
+
+
+        try {
+
+            /*
+             * Çox vacib:
+             *
+             * organization mütləq POST-a gedir.
+             *
+             * Backend artıq seçilmiş təşkilata görə
+             * icazəni dəyişir.
+             */
+
+            await service_api.post(
+                stage === "stage1"
+                    ? NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS
+                    : NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS,
+
+                {
+
+                    organization: organization,
+
+                    user: userId,
+
+                    doc_type: docType,
+
+                    value: value,
+
+                }
+            );
+
+
+        } catch (e) {
+
+            enqueueSnackbar(
+                handleError(e),
+                {
+                    variant: "error",
+                }
+            );
+
+
+            // --------------------------------------------------------
+            // ROLLBACK
+            // --------------------------------------------------------
+
+            setData((prev) => {
+
+                if (!prev) {
+                    return prev;
+                }
+
+                return {
+
+                    ...prev,
+
+                    [usersKey]: (
+                        prev[usersKey] || []
+                    ).map((user) => {
+
+                        if (user.id !== userId) {
+                            return user;
+                        }
+
+                        return {
+
+                            ...user,
+
+                            permissions: {
+
+                                ...(user.permissions || {}),
+
+                                [docType]: !value,
+
+                            },
+
+                        };
+
+                    }),
+
+                };
+
+            });
+
+        } finally {
+
+            setPendingKey(null);
+
+        }
 
     };
 
 
-    const stage1Users = filterUsers(data?.stage1_users);
+    // ========================================================================
+    // SELECTED ORGANIZATION
+    // ========================================================================
 
-
-    const stage2Users = filterUsers(data?.stage2_users);
+    const selectedOrganization =
+        organizations.find(
+            (item) =>
+                String(
+                    item.id
+                ) === String(
+                    organization
+                )
+        );
 
 
     // ========================================================================
@@ -258,10 +416,15 @@ export default function Page() {
 
             <Box
                 sx={{
-                    maxWidth: "90%", mx: "auto", px: {
-                        xs: 2, md: 4
-                    }, py: {
-                        xs: 4, md: 6
+                    maxWidth: "90%",
+                    mx: "auto",
+                    px: {
+                        xs: 2,
+                        md: 4,
+                    },
+                    py: {
+                        xs: 4,
+                        md: 6,
                     },
                 }}
             >
@@ -272,15 +435,23 @@ export default function Page() {
 
                 <Typography
                     sx={{
-                        fontSize: 12.5, color: GOV.textMuted, mb: 1,
+                        fontSize: 12.5,
+                        color: GOV.textMuted,
+                        mb: 1,
                     }}
                 >
 
                     <Link
                         component="button"
-                        onClick={() => router.push(APP_ROUTES.INZIBATCI)}
+                        onClick={() =>
+                            router.push(
+                                APP_ROUTES.INZIBATCI
+                            )
+                        }
                         sx={{
-                            fontSize: 12.5, color: GOV.textMuted, textDecoration: "none",
+                            fontSize: 12.5,
+                            color: GOV.textMuted,
+                            textDecoration: "none",
                         }}
                     >
                         İnzibatçı paneli
@@ -290,7 +461,8 @@ export default function Page() {
 
                     <span
                         style={{
-                            fontWeight: 700, color: GOV.textPrimary,
+                            fontWeight: 700,
+                            color: GOV.textPrimary,
                         }}
                     >
                         Təsdiq hüquqları
@@ -300,21 +472,27 @@ export default function Page() {
 
 
                 {/* ============================================================
-                    TITLE
+                    HEADER
                 ============================================================ */}
 
                 <Typography
                     sx={{
-                        fontSize: 11.5, fontWeight: 700, letterSpacing: 0.6, color: GOV.gold, mb: 0.5,
+                        fontSize: 11.5,
+                        fontWeight: 700,
+                        letterSpacing: 0.6,
+                        color: GOV.gold,
+                        mb: 0.5,
                     }}
                 >
-                    LİSENZİYA VƏ SƏNƏDLƏR · İCAZƏLƏR
+                    LİSENZİYA VƏ SƏNƏDLƏR · WORKFLOW
                 </Typography>
 
 
                 <Typography
                     sx={{
-                        fontSize: 24, fontWeight: 800, color: GOV.textPrimary,
+                        fontSize: 24,
+                        fontWeight: 800,
+                        color: GOV.textPrimary,
                     }}
                 >
                     Təsdiq hüquqları
@@ -323,137 +501,470 @@ export default function Page() {
 
                 <Typography
                     sx={{
-                        fontSize: 13, color: GOV.textMuted, mt: 0.5, mb: 3,
+                        fontSize: 13,
+                        color: GOV.textMuted,
+                        mt: 0.5,
+                        mb: 3,
                     }}
                 >
-                    İstifadəçilərin 1-ci və 2-ci mərhələ üzrə
-                    sənəd yoxlama və təsdiq hüquqlarını idarə edin.
+                    Təşkilatı seçin və həmin təşkilatda 1-ci və
+                    2-ci mərhələ üzrə təsdiq və yoxlama hüquqlarını
+                    idarə edin.
                 </Typography>
 
 
                 {/* ============================================================
-                    SEARCH
+                    ORGANIZATION SELECT
                 ============================================================ */}
 
-                <TextField
-                    size="small"
-                    placeholder="İstifadəçi axtar..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                <Box
                     sx={{
-                        mb: 3, minWidth: 280, backgroundColor: "#fff",
+                        display: "flex",
+                        gap: 2,
+                        flexWrap: "wrap",
+                        alignItems: "center",
+                        mb: 3,
                     }}
-                    InputProps={{
-                        startAdornment: (<InputAdornment position="start">
-                                <SearchIcon
-                                    sx={{
-                                        fontSize: 18, color: GOV.textMuted,
-                                    }}
+                >
+
+                    <FormControl
+                        size="small"
+                        sx={{
+                            minWidth: {
+                                xs: "100%",
+                                sm: 380,
+                            },
+                            backgroundColor: "#fff",
+                        }}
+                    >
+
+                        <InputLabel>
+                            Təşkilat
+                        </InputLabel>
+
+                        <Select
+                            value={organization}
+                            label="Təşkilat"
+                            onChange={(e) =>
+                                setOrganization(
+                                    e.target.value
+                                )
+                            }
+                        >
+
+                            {organizationsLoading ? (
+
+                                <MenuItem disabled>
+
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1,
+                                        }}
+                                    >
+
+                                        <CircularProgress
+                                            size={16}
+                                        />
+
+                                        Təşkilatlar yüklənir...
+
+                                    </Box>
+
+                                </MenuItem>
+
+                            ) : (
+
+                                organizations.map(
+                                    (item) => (
+
+                                        <MenuItem
+                                            key={item.id}
+                                            value={item.id}
+                                        >
+                                            {
+                                                item.full_name ||
+                                                item.name ||
+                                                item.title ||
+                                                `Təşkilat #${item.id}`
+                                            }
+                                        </MenuItem>
+
+                                    )
+                                )
+
+                            )}
+
+                        </Select>
+
+                    </FormControl>
+
+
+                    {/* ========================================================
+                        SEARCH
+                    ======================================================== */}
+
+                    <TextField
+                        size="small"
+                        placeholder="İstifadəçi axtar..."
+                        value={search}
+                        onChange={(e) =>
+                            setSearch(
+                                e.target.value
+                            )
+                        }
+                        disabled={!organization}
+                        sx={{
+                            minWidth: {
+                                xs: "100%",
+                                sm: 280,
+                            },
+                            backgroundColor: "#fff",
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment
+                                    position="start"
+                                >
+                                    <SearchIcon
+                                        sx={{
+                                            fontSize: 18,
+                                            color: GOV.textMuted,
+                                        }}
+                                    />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+
+                </Box>
+
+
+                {/* ============================================================
+                    SELECTED ORGANIZATION
+                ============================================================ */}
+
+                {selectedOrganization && (
+
+                    <Box
+                        sx={{
+                            mb: 3,
+                            px: 2,
+                            py: 1.5,
+                            backgroundColor: "#fff",
+                            border: `1px solid ${GOV.cardBorder}`,
+                            borderRadius: 2,
+                        }}
+                    >
+
+                        <Typography
+                            sx={{
+                                fontSize: 12,
+                                color: GOV.textMuted,
+                            }}
+                        >
+                            Seçilmiş təşkilat
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                fontSize: 15,
+                                fontWeight: 800,
+                                color: GOV.textPrimary,
+                            }}
+                        >
+                            {
+                                selectedOrganization.full_name ||
+                                selectedOrganization.name ||
+                                selectedOrganization.title
+                            }
+                        </Typography>
+
+                    </Box>
+
+                )}
+
+
+                {/* ============================================================
+                    NO ORGANIZATION
+                ============================================================ */}
+
+                {!organization && (
+
+                    <Box
+                        sx={{
+                            backgroundColor: "#fff",
+                            border: `1px solid ${GOV.cardBorder}`,
+                            borderRadius: 2,
+                            p: 5,
+                            textAlign: "center",
+                        }}
+                    >
+
+                        <Typography
+                            sx={{
+                                fontSize: 14,
+                                fontWeight: 700,
+                                color: GOV.textPrimary,
+                            }}
+                        >
+                            Təşkilat seçin
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                fontSize: 12.5,
+                                color: GOV.textMuted,
+                                mt: 0.5,
+                            }}
+                        >
+                            İcazələri görmək üçün əvvəlcə
+                            təşkilat seçilməlidir.
+                        </Typography>
+
+                    </Box>
+
+                )}
+
+
+                {/* ============================================================
+                    LOADING
+                ============================================================ */}
+
+                {organization && loading && (
+
+                    <Box
+                        sx={{
+                            backgroundColor: "#fff",
+                            border: `1px solid ${GOV.cardBorder}`,
+                            borderRadius: 2,
+                            p: 6,
+                            display: "flex",
+                            justifyContent: "center",
+                        }}
+                    >
+
+                        <CircularProgress />
+
+                    </Box>
+
+                )}
+
+
+                {/* ============================================================
+                    CONTENT
+                ============================================================ */}
+
+                {organization && !loading && data && (
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 4,
+                        }}
+                    >
+
+
+                        {/* ====================================================
+                            STAGE 1
+                        ==================================================== */}
+
+                        <Box>
+
+                            <Typography
+                                sx={{
+                                    fontSize: 15,
+                                    fontWeight: 800,
+                                    color: GOV.textPrimary,
+                                    mb: 1,
+                                }}
+                            >
+                                1-ci mərhələ — Yoxlama hüquqları
+                            </Typography>
+
+
+                            <Typography
+                                sx={{
+                                    fontSize: 12.5,
+                                    color: GOV.textMuted,
+                                    mb: 1.5,
+                                }}
+                            >
+                                Seçilmiş təşkilatda 1-ci mərhələdə
+                                yoxlama hüququ olan istifadəçilər.
+                            </Typography>
+
+
+                            <Box
+                                sx={{
+                                    backgroundColor: "#fff",
+                                    border: `1px solid ${GOV.cardBorder}`,
+                                    borderRadius: 2,
+                                    overflow: "hidden",
+                                }}
+                            >
+
+                                <PermissionGrid
+
+                                    loading={false}
+
+                                    docTypes={
+                                        data?.doc_types || []
+                                    }
+
+                                    users={
+                                        filteredStage1Users
+                                    }
+
+                                    pendingKey={
+                                        pendingKey
+                                    }
+
+                                    onToggle={(
+                                        userId,
+                                        docType,
+                                        value
+                                    ) =>
+                                        handleToggle(
+                                            "stage1",
+                                            userId,
+                                            docType,
+                                            value
+                                        )
+                                    }
+
+                                    emptyText={
+                                        "Bu təşkilatda 1-ci mərhələ üzrə " +
+                                        "yoxlama hüququ olan istifadəçi yoxdur."
+                                    }
+
                                 />
-                            </InputAdornment>),
-                    }}
-                />
+
+                            </Box>
+
+                        </Box>
 
 
-                {/* ============================================================
-                    STAGE 1
-                ============================================================ */}
+                        {/* ====================================================
+                            STAGE 2
+                        ==================================================== */}
 
-                <Box sx={{mb: 5}}>
+                        <Box>
 
-                    <Typography
-                        sx={{
-                            fontSize: 17, fontWeight: 800, color: GOV.textPrimary, mb: 0.5,
-                        }}
-                    >
-                        1-ci mərhələ — Yoxlama hüquqları
-                    </Typography>
-
-
-                    <Typography
-                        sx={{
-                            fontSize: 12.5, color: GOV.textMuted, mb: 1.5,
-                        }}
-                    >
-                        Sənədləri 1-ci mərhələdə yoxlama
-                        hüququ olan istifadəçilər.
-                    </Typography>
+                            <Typography
+                                sx={{
+                                    fontSize: 15,
+                                    fontWeight: 800,
+                                    color: GOV.textPrimary,
+                                    mb: 1,
+                                }}
+                            >
+                                2-ci mərhələ — Təsdiq hüquqları
+                            </Typography>
 
 
-                    <Box
-                        sx={{
-                            backgroundColor: "#fff",
-                            border: `1px solid ${GOV.cardBorder}`,
-                            borderRadius: 2,
-                            overflow: "hidden",
-                        }}
-                    >
-
-                        <PermissionGrid
-                            loading={loading}
-                            docTypes={data?.doc_types || []}
-                            users={stage1Users}
-                            pendingKey={pendingKey}
-                            onToggle={(userId, docType, value) => handleToggle("stage1", userId, docType, value)}
-                            emptyText={"1-ci mərhələdə icazəsi olan istifadəçi tapılmadı."}
-                        />
-
-                    </Box>
-
-                </Box>
+                            <Typography
+                                sx={{
+                                    fontSize: 12.5,
+                                    color: GOV.textMuted,
+                                    mb: 1.5,
+                                }}
+                            >
+                                Seçilmiş təşkilatda 2-ci mərhələdə
+                                təsdiq hüququ olan istifadəçilər.
+                            </Typography>
 
 
-                {/* ============================================================
-                    STAGE 2
-                ============================================================ */}
+                            <Box
+                                sx={{
+                                    backgroundColor: "#fff",
+                                    border: `1px solid ${GOV.cardBorder}`,
+                                    borderRadius: 2,
+                                    overflow: "hidden",
+                                }}
+                            >
 
-                <Box>
+                                <PermissionGrid
 
-                    <Typography
-                        sx={{
-                            fontSize: 17, fontWeight: 800, color: GOV.textPrimary, mb: 0.5,
-                        }}
-                    >
-                        2-ci mərhələ — Təsdiq hüquqları
-                    </Typography>
+                                    loading={false}
 
+                                    docTypes={
+                                        data?.doc_types || []
+                                    }
 
-                    <Typography
-                        sx={{
-                            fontSize: 12.5, color: GOV.textMuted, mb: 1.5,
-                        }}
-                    >
-                        Sənədləri 2-ci mərhələdə təsdiqləmək
-                        hüququ olan istifadəçilər.
-                    </Typography>
+                                    users={
+                                        filteredStage2Users
+                                    }
 
+                                    pendingKey={
+                                        pendingKey
+                                    }
 
-                    <Box
-                        sx={{
-                            backgroundColor: "#fff",
-                            border: `1px solid ${GOV.cardBorder}`,
-                            borderRadius: 2,
-                            overflow: "hidden",
-                        }}
-                    >
+                                    onToggle={(
+                                        userId,
+                                        docType,
+                                        value
+                                    ) =>
+                                        handleToggle(
+                                            "stage2",
+                                            userId,
+                                            docType,
+                                            value
+                                        )
+                                    }
 
-                        <PermissionGrid
-                            loading={loading}
-                            docTypes={data?.doc_types || []}
-                            users={stage2Users}
-                            pendingKey={pendingKey}
-                            onToggle={(userId, docType, value) => handleToggle("stage2", userId, docType, value)}
-                            emptyText={"2-ci mərhələdə təsdiq hüququ olan istifadəçi tapılmadı."}
-                        />
+                                    emptyText={
+                                        "Bu təşkilatda 2-ci mərhələ üzrə " +
+                                        "təsdiq hüququ olan istifadəçi yoxdur."
+                                    }
+
+                                />
+
+                            </Box>
+
+                        </Box>
 
                     </Box>
 
-                </Box>
+                )}
+
+
+                {/* ============================================================
+                    EMPTY RESPONSE
+                ============================================================ */}
+
+                {organization &&
+                    !loading &&
+                    !data && (
+
+                        <Box
+                            sx={{
+                                backgroundColor: "#fff",
+                                border: `1px solid ${GOV.cardBorder}`,
+                                borderRadius: 2,
+                                p: 5,
+                                textAlign: "center",
+                            }}
+                        >
+
+                            <Typography
+                                sx={{
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    color: GOV.textPrimary,
+                                }}
+                            >
+                                Məlumat tapılmadı
+                            </Typography>
+
+                        </Box>
+
+                    )}
 
             </Box>
 
         </AppShell>
-
     );
-
 }
