@@ -100,9 +100,7 @@ export default function Page() {
     const loadPermissions = async (organizationId) => {
 
         if (!organizationId) {
-
             setData(null);
-
             return;
         }
 
@@ -110,13 +108,29 @@ export default function Page() {
 
         try {
 
-            const url =
-                `${NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS}` +
-                `?organization=${organizationId}`;
+            const [stage1Res, stage2Res] = await Promise.all([
+                service_api.get(
+                    `${NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS}?organization=${organizationId}`
+                ),
+                service_api.get(
+                    `${NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS}?organization=${organizationId}`
+                ),
+            ]);
 
-            const res = await service_api.get(url);
+            setData({
+                organization: stage1Res.data.organization,
 
-            setData(res.data);
+                doc_types:
+                    stage1Res.data.doc_types ||
+                    stage2Res.data.doc_types ||
+                    [],
+
+                stage1_users:
+                    stage1Res.data.users || [],
+
+                stage2_users:
+                    stage2Res.data.users || [],
+            });
 
         } catch (e) {
 
@@ -133,7 +147,6 @@ export default function Page() {
 
         }
     };
-
 
     // ========================================================================
     // INITIAL LOAD
