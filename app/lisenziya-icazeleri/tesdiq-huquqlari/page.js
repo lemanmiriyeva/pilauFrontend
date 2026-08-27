@@ -69,7 +69,10 @@ export default function Page() {
     const filteredUsers = [
         ...(data?.stage1_users || []),
         ...(data?.stage2_users || []),
-    ].filter((u) => {
+    ].filter((u, index, arr) => {
+        // Eyni user hər iki mərhələdə varsa, bir dəfə göstər
+        return arr.findIndex((item) => item.id === u.id) === index;
+    }).filter((u) => {
         if (!search) return true;
 
         const q = search.toLowerCase();
