@@ -229,7 +229,17 @@ export default function UserForm({
     const [idCardNumber, setIdCardNumber] = useState(initialParsedIdCard.number);
 
 
-    const [modules, setModules] = useState(initialModules || []);
+    const [modules, setModules] = useState(() => {
+        const initial = initialModules || [];
+
+        if (!initialData?.is_org_admin) {
+            return initial.filter(
+                (module) => module.key !== "inzibatci-paneli"
+            );
+        }
+
+        return initial;
+    });
 
 
     const [errors, setErrors] = useState({});
@@ -733,13 +743,21 @@ export default function UserForm({
     */
 
     const handleOrgAdminChange = (e) => {
+        const checked = e.target.checked;
 
         setForm((f) => ({
-            ...f, is_org_admin: e.target.checked
+            ...f,
+            is_org_admin: checked
         }));
 
+        if (!checked) {
+            setModules((prev) =>
+                (prev || []).filter(
+                    (module) => module.key !== "inzibatci-paneli"
+                )
+            );
+        }
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -1284,10 +1302,11 @@ export default function UserForm({
 
             <ModulePermissionsPicker
                 initialModules={initialModules}
-                onChange={setModules}
+                isOrgAdmin={form.is_org_admin}
+                onChange={(updatedModules) => {
+                    setModules(updatedModules || []);
+                }}
             />
-
-
             {/* BUTTONS */}
 
             <Box

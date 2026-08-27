@@ -35,6 +35,7 @@ export default function Page() {
                 department: form.department || null,
                 position: form.position || null,
                 birth_date: form.birth_date || null,
+                is_org_admin: Boolean(form.is_org_admin),
             });
             enqueueSnackbar('İstifadəçi uğurla yaradıldı. Şifrə təyini üçün e-poçt göndərildi.', {variant: 'success'});
             router.push(APP_ROUTES.INZIBATCI_ISTIFADECILER);

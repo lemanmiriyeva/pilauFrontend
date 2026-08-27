@@ -56,6 +56,7 @@ export default function Page() {
                     department: form.department || null,
                     position: form.position || null,
                     birth_date: form.birth_date || null,
+                    is_org_admin: Boolean(form.is_org_admin),
 
                     fin_kod: form.fin_kod,
                     id_card_serial: form.id_card_serial,
