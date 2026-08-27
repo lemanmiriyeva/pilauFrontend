@@ -66,10 +66,18 @@ export default function Page() {
         }
     };
 
-    const filteredUsers = (data?.users || []).filter((u) => {
+    const filteredUsers = [
+        ...(data?.stage1_users || []),
+        ...(data?.stage2_users || []),
+    ].filter((u) => {
         if (!search) return true;
+
         const q = search.toLowerCase();
-        return u.full_name?.toLowerCase().includes(q) || u.username?.toLowerCase().includes(q);
+
+        return (
+            u.full_name?.toLowerCase().includes(q) ||
+            u.username?.toLowerCase().includes(q)
+        );
     });
 
     return (
