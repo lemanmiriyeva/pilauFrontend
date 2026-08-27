@@ -40,36 +40,84 @@ export default function Page() {
         load();
     }, []);
 
-    const handleToggle = async (userId, docType, value) => {
-        const key = `${userId}:${docType}`;
+    const handleToggle = async (stage, userId, docType, value) => {
+        const key = `${stage}:${userId}:${docType}`;
+
         setPendingKey(key);
+
+        const usersKey = stage === 'stage1'
+            ? 'stage1_users'
+            : 'stage2_users';
+
         setData((prev) => ({
             ...prev,
-            users: prev.users.map((u) => u.id === userId
-                ? {...u, permissions: {...u.permissions, [docType]: value}}
-                : u),
+            [usersKey]: prev[usersKey].map((u) =>
+                u.id === userId
+                    ? {
+                        ...u,
+                        permissions: {
+                            ...u.permissions,
+                            [docType]: value,
+                        },
+                    }
+                    : u
+            ),
         }));
+
+        const endpoint = stage === 'stage1'
+            ? NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS
+            : NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS;
+
         try {
-            await service_api.post(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_PERMISSIONS, {
-                user: userId, doc_type: docType, value,
+            await service_api.post(endpoint, {
+                user: userId,
+                doc_type: docType,
+                value,
             });
         } catch (e) {
-            enqueueSnackbar(handleError(e), {variant: 'error'});
+            enqueueSnackbar(handleError(e), {
+                variant: 'error',
+            });
+
             setData((prev) => ({
                 ...prev,
-                users: prev.users.map((u) => u.id === userId
-                    ? {...u, permissions: {...u.permissions, [docType]: !value}}
-                    : u),
+                [usersKey]: prev[usersKey].map((u) =>
+                    u.id === userId
+                        ? {
+                            ...u,
+                            permissions: {
+                                ...u.permissions,
+                                [docType]: !value,
+                            },
+                        }
+                        : u
+                ),
             }));
         } finally {
             setPendingKey(null);
         }
     };
 
-    const filteredUsers = (data?.users || []).filter((u) => {
+    const filteredStage1Users = (data?.stage1_users || []).filter((u) => {
         if (!search) return true;
+
         const q = search.toLowerCase();
-        return u.full_name?.toLowerCase().includes(q) || u.username?.toLowerCase().includes(q);
+
+        return (
+            u.full_name?.toLowerCase().includes(q) ||
+            u.username?.toLowerCase().includes(q)
+        );
+    });
+
+    const filteredStage2Users = (data?.stage2_users || []).filter((u) => {
+        if (!search) return true;
+
+        const q = search.toLowerCase();
+
+        return (
+            u.full_name?.toLowerCase().includes(q) ||
+            u.username?.toLowerCase().includes(q)
+        );
     });
 
     return (
@@ -108,14 +156,98 @@ export default function Page() {
                 />
 
                 <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, overflow: 'hidden'}}>
-                    <PermissionGrid
-                        loading={loading}
-                        docTypes={data?.doc_types || []}
-                        users={filteredUsers}
-                        pendingKey={pendingKey}
-                        onToggle={handleToggle}
-                        emptyText="İstifadəçi tapılmadı."
-                    />
+                    {/* ================================================================
+    STAGE 1
+================================================================ */}
+
+                    <Typography
+                        sx={{
+                            fontSize: 15,
+                            fontWeight: 800,
+                            color: GOV.textPrimary,
+                            mb: 1,
+                            mt: 3,
+                        }}
+                    >
+                        1-ci mərhələ — Yoxlama hüquqları
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            fontSize: 12.5,
+                            color: GOV.textMuted,
+                            mb: 1.5,
+                        }}
+                    >
+                        Sənədləri 1-ci mərhələdə yoxlama hüququ olan istifadəçilər.
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            backgroundColor: '#fff',
+                            border: `1px solid ${GOV.cardBorder}`,
+                            borderRadius: 2,
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <PermissionGrid
+                            loading={loading}
+                            docTypes={data?.doc_types || []}
+                            users={filteredStage1Users}
+                            pendingKey={pendingKey}
+                            onToggle={(userId, docType, value) =>
+                                handleToggle('stage1', userId, docType, value)
+                            }
+                            emptyText="1-ci mərhələdə icazəsi olan istifadəçi tapılmadı."
+                        />
+                    </Box>
+
+
+                    {/* ================================================================
+    STAGE 2
+================================================================ */}
+
+                    <Typography
+                        sx={{
+                            fontSize: 15,
+                            fontWeight: 800,
+                            color: GOV.textPrimary,
+                            mb: 1,
+                            mt: 4,
+                        }}
+                    >
+                        2-ci mərhələ — Təsdiq hüquqları
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            fontSize: 12.5,
+                            color: GOV.textMuted,
+                            mb: 1.5,
+                        }}
+                    >
+                        Sənədləri 2-ci mərhələdə təsdiqləmək hüququ olan istifadəçilər.
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            backgroundColor: '#fff',
+                            border: `1px solid ${GOV.cardBorder}`,
+                            borderRadius: 2,
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <PermissionGrid
+                            loading={loading}
+                            docTypes={data?.doc_types || []}
+                            users={filteredStage2Users}
+                            pendingKey={pendingKey}
+                            onToggle={(userId, docType, value) =>
+                                handleToggle('stage2', userId, docType, value)
+                            }
+                            emptyText="2-ci mərhələdə icazəsi olan istifadəçi tapılmadı."
+                        />
+                    </Box>
                 </Box>
             </Box>
         </AppShell>
