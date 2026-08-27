@@ -1,11 +1,16 @@
 {
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
-  "/inzibatci-paneli/departament-vezife/page": "app/inzibatci-paneli/departament-vezife/page.js",
-  "/modullar/hesabatlar/teskilatlar/page": "app/modullar/hesabatlar/teskilatlar/page.js",
+  "/page": "app/page.js",
+  "/modullar/lisenziya-senedler/edv-guzesti/yeni/[type]/page": "app/modullar/lisenziya-senedler/edv-guzesti/yeni/[type]/page.js",
+  "/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page": "app/modullar/lisenziya-senedler/idxal-ixrac/yeni/[type]/page.js",
+  "/inzibatci-paneli/istifadeciler/istifadeci-yarat/page": "app/inzibatci-paneli/istifadeciler/istifadeci-yarat/page.js",
   "/modullar/hesabatlar/teskilatlar/[id]/page": "app/modullar/hesabatlar/teskilatlar/[id]/page.js",
+  "/api/organizations/[id]/departments/route": "app/api/organizations/[id]/departments/route.js",
+  "/api/permissions/modules/route": "app/api/permissions/modules/route.js",
+  "/api/organizations/[id]/positions/route": "app/api/organizations/[id]/positions/route.js",
+  "/api/auth/admin/users-create/route": "app/api/auth/admin/users-create/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
   "/inzibatci-paneli/istifadeciler/page": "app/inzibatci-paneli/istifadeciler/page.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js"
+  "/api/auth/admin/users/route": "app/api/auth/admin/users/route.js"
 }

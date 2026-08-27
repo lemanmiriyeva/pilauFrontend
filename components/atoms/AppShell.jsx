@@ -50,19 +50,37 @@ export default function AppShell({children, onReady}) {
     // backend-də olur (bax: workflow app) - bu, yalnız naviqasiyadır.
     const sidebarTree = tree.map((module) => {
         if (module.key !== 'inzibatci-paneli') return module;
+
+        const existingKeys = new Set((module.children || []).map(child => child.key));
         const extraChildren = [];
-        if (user?.is_org_admin) {
+
+        if (user?.is_org_admin && !existingKeys.has('qurum-yoxlamasi-icazeleri')) {
             extraChildren.push({
                 id: 'qurum-yoxlamasi-icazeleri', key: 'qurum-yoxlamasi-icazeleri',
                 title: 'Qurum yoxlaması icazələri', children: [],
             });
         }
         if (user?.is_staff) {
-            extraChildren.push({
-                id: 'tesdiq-huquqlari', key: 'tesdiq-huquqlari',
-                title: 'Təsdiq hüquqları', children: [],
-            });
+            if (!existingKeys.has('tesdiq-huquqlari')) {
+                extraChildren.push({
+                    id: 'tesdiq-huquqlari', key: 'tesdiq-huquqlari',
+                    title: 'Təsdiq hüquqları', children: [],
+                });
+            }
+            if (!existingKeys.has('tesdiq-axini')) {
+                extraChildren.push({
+                    id: 'tesdiq-axini', key: 'tesdiq-axini',
+                    title: 'Təsdiq axını', children: [],
+                });
+            }
+            if (!existingKeys.has('departament-vezife')) {
+                extraChildren.push({
+                    id: 'departament-vezife', key: 'departament-vezife',
+                    title: 'Departamentlər və Vəzifələr', children: [],
+                });
+            }
         }
+
         if (extraChildren.length === 0) return module;
         return {...module, children: [...(module.children || []), ...extraChildren]};
     });

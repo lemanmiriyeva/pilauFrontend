@@ -38,9 +38,7 @@ export default function Page() {
         }
         (async () => {
             try {
-                const res = await service_api.get(
-                    `${NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USERS_LIST}?organization=${organization}`
-                );
+                const res = await service_api.get(`${NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USERS_LIST}?organization=${organization}`);
                 const emps = Array.isArray(res.data) ? res.data : [];
                 setEmployees(emps);
                 if (preselectedEmployee && emps.some((e) => String(e.id) === String(preselectedEmployee))) {
@@ -88,8 +86,7 @@ export default function Page() {
         }
     };
 
-    return (
-        <AppShell>
+    return (<AppShell>
             <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 3}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.INZIBATCI)}
@@ -121,12 +118,9 @@ export default function Page() {
                         disabled={!organization}
                         error={!!errors.employee} helperText={errors.employee}
                     >
-                        {employees.map((e) => (
-                            <MenuItem key={e.id} value={e.id}>{e.full_name}</MenuItem>
-                        ))}
+                        {employees.map((e) => (<MenuItem key={e.id} value={e.id}>{e.full_name}</MenuItem>))}
                         {organization && employees.length === 0 && (
-                            <MenuItem disabled value="">Bu təşkilatda işçi tapılmadı</MenuItem>
-                        )}
+                            <MenuItem disabled value="">Bu təşkilatda işçi tapılmadı</MenuItem>)}
                     </TextField>
                 </Box>
 
@@ -142,7 +136,10 @@ export default function Page() {
                     <Button
                         variant="contained" onClick={handleSubmit} disabled={submitting}
                         sx={{
-                            backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13,
+                            backgroundColor: GOV.navy,
+                            textTransform: 'none',
+                            fontWeight: 700,
+                            fontSize: 13,
                             '&:hover': {backgroundColor: GOV.navyMid},
                         }}
                     >
@@ -150,6 +147,5 @@ export default function Page() {
                     </Button>
                 </Box>
             </Box>
-        </AppShell>
-    );
+        </AppShell>);
 }

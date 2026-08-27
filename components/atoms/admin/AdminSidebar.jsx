@@ -21,6 +21,9 @@ function hrefForModule(module, parentKeys = []) {
     if (parentKeys[0] === 'inzibatci-paneli') {
         if (module.key === 'istifadeciler') return APP_ROUTES.INZIBATCI_ISTIFADECILER;
         if (module.key === 'icazelerin-idaresi') return APP_ROUTES.INZIBATCI_ICAZELER;
+        if (module.key === 'departament-vezife') return APP_ROUTES.INZIBATCI_DEPARTAMENT_VEZIFE;
+        if (module.key === 'tesdiq-huquqlari') return APP_ROUTES.TESDIQ_HUQUQLARI;
+        if (module.key === 'tesdiq-axini') return APP_ROUTES.TESDIQ_AXINI;
     }
     return `${APP_ROUTES.MODULES}/${[...parentKeys, module.key].join('/')}`;
 }

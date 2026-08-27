@@ -5,6 +5,10 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Switch from '@mui/material/Switch';
 import CircularProgress from '@mui/material/CircularProgress';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import {useRouter} from "next/navigation";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
@@ -18,20 +22,27 @@ import PermissionGrid from "@/components/atoms/licenses/PermissionGrid";
 export default function Page() {
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
+
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [pendingKey, setPendingKey] = useState(null);
 
-    // 2-ci mərhələni (MSN son təsdiqi) hər lisenziya kateqoriyası üçün AYRILIQDA söndürmə/açma.
+    // Qurum seçimi üçün state-lər
+    const [organizations, setOrganizations] = useState([]);
+    const [selectedOrgId, setSelectedOrgId] = useState('');
+
+    // 2-ci mərhələ state-ləri
     const [stage2Settings, setStage2Settings] = useState({});
     const [stage2DocTypes, setStage2DocTypes] = useState([]);
     const [stage2Loading, setStage2Loading] = useState(true);
     const [stage2SavingKey, setStage2SavingKey] = useState(null);
 
-    const load = async () => {
+    // Məlumatları çəkən funksiyalar (organization parametri ilə)
+    const load = async (orgId) => {
         setLoading(true);
         try {
-            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS);
+            const params = orgId ? {organization: orgId} : {};
+            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS, {params});
             setData(res.data);
         } catch (e) {
             enqueueSnackbar(handleError(e), {variant: 'error'});
@@ -40,10 +51,11 @@ export default function Page() {
         }
     };
 
-    const loadStage2Settings = async () => {
+    const loadStage2Settings = async (orgId) => {
         setStage2Loading(true);
         try {
-            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_SETTINGS);
+            const params = orgId ? {organization: orgId} : {};
+            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_SETTINGS, {params});
             setStage2DocTypes(res.data?.doc_types || []);
             setStage2Settings(res.data?.settings || {});
         } catch (e) {
@@ -53,13 +65,46 @@ export default function Page() {
         }
     };
 
+    // Səhifə açılan kimi əvvəlcə qurumları yoxlayırıq ki, boş sorğu gedib 400 verməsin
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const res = await service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.MY_ORGANIZATION_OPTIONS);
+                if (res.data && res.data.length > 0) {
+                    setOrganizations(res.data);
+                    const firstOrgId = res.data[0].id;
+                    setSelectedOrgId(firstOrgId);
+                    load(firstOrgId);
+                    loadStage2Settings(firstOrgId);
+                } else {
+                    load(null);
+                    loadStage2Settings(null);
+                }
+            } catch (e) {
+                // Nazirlik admini deyilsə və ya bu endpoint tələb olunmursa
+                load(null);
+                loadStage2Settings(null);
+            }
+        };
+        init();
+    }, []);
+
+    // Dropdown-dan başqa qurum seçildikdə
+    const handleOrgChange = (newOrgId) => {
+        setSelectedOrgId(newOrgId);
+        load(newOrgId);
+        loadStage2Settings(newOrgId);
+    };
+
     const handleStage2Toggle = async (docType, active) => {
         const skipValue = !active;
         setStage2SavingKey(docType);
         setStage2Settings((prev) => ({...prev, [docType]: skipValue}));
         try {
             await service_api.post(NEXT_API_ENDPOINTS.WORKFLOW.STAGE2_SETTINGS, {
-                doc_type: docType, skip_stage2: skipValue,
+                doc_type: docType,
+                skip_stage2: skipValue,
+                ...(selectedOrgId ? {organization: selectedOrgId} : {})
             });
             enqueueSnackbar(
                 active
@@ -75,15 +120,10 @@ export default function Page() {
         }
     };
 
-    useEffect(() => {
-        load();
-        loadStage2Settings();
-    }, []);
-
     const handleToggle = async (userId, docType, value) => {
         const key = `${userId}:${docType}`;
         setPendingKey(key);
-        // Optimistik UI - dərhal switch-i dəyişdir, sorğu uğursuz olarsa geri qaytar.
+        // Optimistik UI
         setData((prev) => ({
             ...prev,
             users: prev.users.map((u) => u.id === userId
@@ -92,7 +132,10 @@ export default function Page() {
         }));
         try {
             await service_api.post(NEXT_API_ENDPOINTS.WORKFLOW.STAGE1_PERMISSIONS, {
-                user: userId, doc_type: docType, value,
+                user: userId,
+                doc_type: docType,
+                value,
+                ...(selectedOrgId ? {organization: selectedOrgId} : {})
             });
         } catch (e) {
             enqueueSnackbar(handleError(e), {variant: 'error'});
@@ -119,13 +162,35 @@ export default function Page() {
                     <span style={{fontWeight: 700, color: GOV.textPrimary}}>Qurum yoxlaması icazələri</span>
                 </Typography>
 
-                <Typography sx={{fontSize: 11.5, fontWeight: 700, letterSpacing: 0.6, color: GOV.gold, mb: 0.5}}>
-                    LİSENZİYA VƏ SƏNƏDLƏR · 1-Cİ MƏRHƏLƏ
-                </Typography>
-                <Typography sx={{fontSize: 24, fontWeight: 800, color: GOV.textPrimary}}>
-                    Qurum yoxlaması icazələri
-                </Typography>
-                <Typography sx={{fontSize: 13, color: GOV.textMuted, mt: 0.5, mb: 3}}>
+                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2, mb: 1.5}}>
+                    <Box>
+                        <Typography sx={{fontSize: 11.5, fontWeight: 700, letterSpacing: 0.6, color: GOV.gold, mb: 0.5}}>
+                            LİSENZİYA VƏ SƏNƏDLƏR · 1-Cİ MƏRHƏLƏ
+                        </Typography>
+                        <Typography sx={{fontSize: 24, fontWeight: 800, color: GOV.textPrimary}}>
+                            Qurum yoxlaması icazələri
+                        </Typography>
+                    </Box>
+
+                    {organizations.length > 0 && (
+                        <FormControl size="small" sx={{minWidth: 260, backgroundColor: '#fff'}}>
+                            <InputLabel>Qurum seçin</InputLabel>
+                            <Select
+                                value={selectedOrgId}
+                                label="Qurum seçin"
+                                onChange={(e) => handleOrgChange(e.target.value)}
+                            >
+                                {organizations.map((org) => (
+                                    <MenuItem key={org.id} value={org.id}>
+                                        {org.name || org.full_name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    )}
+                </Box>
+
+                <Typography sx={{fontSize: 13, color: GOV.textMuted, mb: 3}}>
                     {data?.organization?.full_name
                         ? `${data.organization.full_name} təşkilatının işçilərinə hansı lisenziya kateqoriyalarını ilkin yoxlaya biləcəklərini təyin edin.`
                         : 'Təşkilatınızın işçilərinə hansı lisenziya kateqoriyalarını ilkin yoxlaya biləcəklərini təyin edin.'}
@@ -138,7 +203,7 @@ export default function Page() {
                         users={data?.users || []}
                         pendingKey={pendingKey}
                         onToggle={handleToggle}
-                        emptyText="Təşkilatınızda aktiv istifadəçi tapılmadı."
+                        emptyText="Təşkilatda aktiv istifadəçi tapılmadı."
                     />
                 </Box>
 
@@ -185,9 +250,7 @@ export default function Page() {
                                     ) : (
                                         <Switch
                                             size="small" checked={enabled}
-                                            onChange={(e) => handleStage2Toggle(dt.key, {
-                                                target: {checked: !e.target.checked},
-                                            })}
+                                            onChange={(e) => handleStage2Toggle(dt.key, e.target.checked)}
                                             sx={{
                                                 '& .MuiSwitch-switchBase.Mui-checked': {color: GOV.navy},
                                                 '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
