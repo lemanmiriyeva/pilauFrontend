@@ -45,11 +45,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
-    ],
-    "/modullar/lisenziya-senedler/istehsal/yeni/[type]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/yeni/[type]/page.js"
     ]
   }
 }

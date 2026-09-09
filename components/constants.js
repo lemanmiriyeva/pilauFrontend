@@ -53,7 +53,6 @@ export const LICENSE_TYPES = [
     {key: "idxal", label: "İdxal"},
     // "İstehsal" Xüsusi/Ümumi Lisenziya olaraq bölündü. Köhnə "istehsal" doc_type-ı
     // geriyə uyğunluq üçün saxlanılır (bax backend DOC_TYPES).
-    {key: "istehsal", label: "İstehsal (köhnə)"},
     {key: "xususi_lisenziya", label: "Xüsusi Lisenziya"},
     {key: "umumi_lisenziya", label: "Ümumi Lisenziya"},
     {key: "xususi_satis", label: "Xüsusi Satış"},
