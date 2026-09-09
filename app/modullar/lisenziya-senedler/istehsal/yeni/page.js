@@ -1219,6 +1219,25 @@ export default function Page() {
 
                                         const selected = formValues[f.key] || [];
 
+                                        /*
+                                         * Bəndlər (6.1-6.5 / 7.1-7.5) öz "maddə" qrupuna
+                                         * (6 / 7) görə qruplaşdırılır - hər qrupun öz
+                                         * qalın başlığı (məs. "6. Döyüş təyinatlı hərbi
+                                         * texnikanın və hərbi silahın:") var, altında isə
+                                         * checkbox-lar sətir-sətir gəlir (bax
+                                         * backend field_schema.py -> ISTINAD_MADDESI_BENDLERI).
+                                         */
+
+                                        const groups = [];
+                                        (f.options || []).forEach((opt) => {
+                                            let g = groups.find((x) => x.group === opt.group);
+                                            if (!g) {
+                                                g = {group: opt.group, group_label: opt.group_label, items: []};
+                                                groups.push(g);
+                                            }
+                                            g.items.push(opt);
+                                        });
+
                                         return (
                                             <Box
                                                 key={f.key}
@@ -1228,36 +1247,46 @@ export default function Page() {
                                                     borderRadius: 1.5, p: 1.75,
                                                 }}
                                             >
-                                                <Typography sx={{fontSize: 12.5, fontWeight: 700, color: GOV.textPrimary, mb: 1}}>
+                                                <Typography sx={{fontSize: 12.5, fontWeight: 700, color: GOV.textPrimary, mb: 1.5}}>
                                                     {numberLabel}{f.required ? ' *' : ''}
                                                 </Typography>
 
-                                                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
-                                                    {(f.options || []).map((opt) => (
-                                                        <FormControlLabel
-                                                            key={opt.key}
-                                                            sx={{mr: 2}}
-                                                            control={
-                                                                <Checkbox
-                                                                    size="small"
-                                                                    checked={selected.includes(opt.key)}
-                                                                    onChange={(e) => {
-                                                                        setFormValues((prev) => {
-                                                                            const current = prev[f.key] || [];
-                                                                            const next = e.target.checked
-                                                                                ? [...current, opt.key]
-                                                                                : current.filter((k) => k !== opt.key);
-                                                                            return {...prev, [f.key]: next};
-                                                                        });
-                                                                    }}
-                                                                />
-                                                            }
-                                                            label={<Typography sx={{fontSize: 12.5}}>{opt.label}</Typography>}
-                                                        />
-                                                    ))}
-                                                </Box>
+                                                {groups.map((g) => (
+                                                    <Box key={g.group} sx={{mb: 1.5}}>
 
-                                                <Typography sx={{fontSize: 11, color: GOV.textMuted, mt: 0.75}}>
+                                                        <Typography sx={{fontSize: 12.5, fontWeight: 700, color: GOV.textPrimary, mb: 0.5}}>
+                                                            {g.group}. {g.group_label}
+                                                        </Typography>
+
+                                                        <Box sx={{display: 'flex', flexDirection: 'column', pl: 1}}>
+                                                            {g.items.map((opt) => (
+                                                                <FormControlLabel
+                                                                    key={opt.key}
+                                                                    sx={{ml: 0}}
+                                                                    control={
+                                                                        <Checkbox
+                                                                            size="small"
+                                                                            checked={selected.includes(opt.key)}
+                                                                            onChange={(e) => {
+                                                                                setFormValues((prev) => {
+                                                                                    const current = prev[f.key] || [];
+                                                                                    const next = e.target.checked
+                                                                                        ? [...current, opt.key]
+                                                                                        : current.filter((k) => k !== opt.key);
+                                                                                    return {...prev, [f.key]: next};
+                                                                                });
+                                                                            }}
+                                                                        />
+                                                                    }
+                                                                    label={<Typography sx={{fontSize: 12.5}}>{opt.number} {opt.label}</Typography>}
+                                                                />
+                                                            ))}
+                                                        </Box>
+
+                                                    </Box>
+                                                ))}
+
+                                                <Typography sx={{fontSize: 11, color: GOV.textMuted}}>
                                                     Bütün bəndləri işarələsəniz "Ümumi Lisenziya", hər hansı birini
                                                     boş buraxsanız "Xüsusi Lisenziya" kateqoriyası avtomatik təyin olunur.
                                                 </Typography>

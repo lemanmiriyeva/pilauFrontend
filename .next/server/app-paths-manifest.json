@@ -1,15 +1,9 @@
 {
-  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js",
-  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/page": "app/page.js",
   "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
+  "/page": "app/page.js",
   "/daxilol/page": "app/daxilol/page.js",
+  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
+  "/api/licenses/anket-parse/route": "app/api/licenses/anket-parse/route.js",
   "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
-  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
-  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
-  "/modullar/lisenziya-senedler/istehsal/[id]/page": "app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
+  "/api/organizations/voen-lookup/route": "app/api/organizations/voen-lookup/route.js"
 }
