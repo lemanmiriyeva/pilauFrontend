@@ -100,7 +100,7 @@ export default function Page() {
                     {' / '}
                     <Link component="button" onClick={() => router.push(APP_ROUTES.ISTEHSAL)}
                           sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>
-                        İstehsal lisenziyası
+                        Lisenziya
                     </Link>
                     {' / '}
                     <span style={{fontWeight: 700, color: GOV.textPrimary}}>{doc.number}</span>

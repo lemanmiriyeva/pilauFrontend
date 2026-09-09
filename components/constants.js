@@ -51,10 +51,15 @@ export const APP_ROUTES = {
 export const LICENSE_TYPES = [
     {key: "ixrac", label: "İxrac"},
     {key: "idxal", label: "İdxal"},
-    {key: "istehsal", label: "İstehsal"},
+    // "İstehsal" Xüsusi/Ümumi Lisenziya olaraq bölündü. Köhnə "istehsal" doc_type-ı
+    // geriyə uyğunluq üçün saxlanılır (bax backend DOC_TYPES).
+    {key: "istehsal", label: "İstehsal (köhnə)"},
+    {key: "xususi_lisenziya", label: "Xüsusi Lisenziya"},
+    {key: "umumi_lisenziya", label: "Ümumi Lisenziya"},
     {key: "xususi_satis", label: "Xüsusi Satış"},
     {key: "gomrukden_azadolma", label: "Gömrükdən Azadolma"},
     {key: "edvden_azadolma", label: "ƏDV-dən Azadolma"},
+
 ]
 
 export const LICENSE_STATUS_LABELS = {

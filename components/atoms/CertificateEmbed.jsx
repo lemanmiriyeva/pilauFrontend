@@ -19,9 +19,9 @@ import PdfViewer from "./PdfViewer";
 
 /**
  * Lisenziya sənədinin (PermitDocument) öz detal səhifəsində ("İdxal/İxrac", "İstehsal" və s.
- * [id]/page.js) rəsmi sertifikatın (LicenseCertificate) qısa görünüşünü göstərir - PDF önizləmə +
+ * [type]/page.js) rəsmi sertifikatın (LicenseCertificate) qısa görünüşünü göstərir - PDF önizləmə +
  * status. Tam funksionallıq (imzalama - SİM/Asan İmza, "Tamamlandı" işarələnməsi) üçün ayrıca
- * /lisenziya-icazeleri/sened/[id] səhifəsinə keçid verir, onu təkrarlamır.
+ * /lisenziya-icazeleri/sened/[type] səhifəsinə keçid verir, onu təkrarlamır.
  *
  * @param {number|null} certificateId - PermitDocumentDetailSerializer.certificate_id (sənəd hər
  *   iki mərhələdə təsdiqlənməyibsə null olur - bax licenses/serializers.py get_certificate_id).

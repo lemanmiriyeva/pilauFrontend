@@ -17,7 +17,7 @@ import {GOV} from "@/components/theme/govColors";
 const METHOD_LABEL = {sima: 'SİMA İmza', asan: 'Asan İmza'};
 
 // SİM İmza / Asan İmza ilə imzalama - telefon nömrəsini alır, imzala düyməsini basanda
-// onConfirm(phone) çağırır (əsl API çağırışı və nəticə emalı sened/[id]/page.js-də olur).
+// onConfirm(phone) çağırır (əsl API çağırışı və nəticə emalı sened/[type]/page.js-də olur).
 export default function CertificateSignDialog({open, method, onClose, onConfirm}) {
     const [phone, setPhone] = useState('+994 ');
     const [loading, setLoading] = useState(false);

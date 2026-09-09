@@ -1,8 +1,14 @@
 {
+  "/modullar/lisenziya-senedler/istehsal/yeni/page": "app/modullar/lisenziya-senedler/istehsal/yeni/page.js",
+  "/modullar/lisenziya-senedler/istehsal/page": "app/modullar/lisenziya-senedler/istehsal/page.js",
   "/daxilol/page": "app/daxilol/page.js",
+  "/modullar/lisenziya-senedler/istehsal/yeni/[type]/page": "app/modullar/lisenziya-senedler/istehsal/yeni/[type]/page.js",
   "/page": "app/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js"
+  "/api/licenses/anket-parse/route": "app/api/licenses/anket-parse/route.js",
+  "/api/licenses/anket-template/route": "app/api/licenses/anket-template/route.js"
 }

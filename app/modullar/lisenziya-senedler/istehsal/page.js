@@ -22,7 +22,13 @@ import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import PermitStatusChip, {STATUS_META} from "@/components/atoms/licenses/PermitStatusChip";
 
-const DOC_TYPE = 'istehsal';
+/*
+ * "İstehsal" bundan sonra "Lisenziya" adı altında Xüsusi/Ümumi olaraq bölünüb.
+ * Köhnə "istehsal" sənədləri (bölünmədən əvvəl yaradılanlar) də bu siyahıda
+ * görünsün deyə üç doc_type birlikdə sorğulanır (bax backend - doc_type
+ * query param vergüllə ayrılmış siyahı qəbul edir).
+ */
+const DOC_TYPE = 'istehsal,xususi_lisenziya,umumi_lisenziya';
 
 function formatDate(value) {
     if (!value) return '-';
@@ -91,7 +97,7 @@ export default function Page() {
                     {' / '}
                     <span>Lisenziyalar</span>
                     {' / '}
-                    <span style={{fontWeight: 700, color: GOV.textPrimary}}>İstehsal lisenziyası</span>
+                    <span style={{fontWeight: 700, color: GOV.textPrimary}}>Lisenziya</span>
                 </Typography>
 
                 <Typography sx={{fontSize: 11.5, fontWeight: 700, letterSpacing: 0.6, color: GOV.gold, mb: 0.5}}>
@@ -101,10 +107,10 @@ export default function Page() {
                 <Box sx={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2, mb: 3}}>
                     <Box>
                         <Typography sx={{fontSize: 24, fontWeight: 800, color: GOV.textPrimary}}>
-                            İstehsal lisenziyası
+                            Lisenziya
                         </Typography>
                         <Typography sx={{fontSize: 13, color: GOV.textMuted, mt: 0.5}}>
-                            Müəssisənizə aid bütün istehsal lisenziyalarını idarə və izləyin.
+                            Müəssisənizə aid bütün lisenziyaları (Xüsusi/Ümumi) idarə və izləyin.
                         </Typography>
                     </Box>
                     <Button

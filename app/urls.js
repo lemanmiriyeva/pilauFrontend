@@ -31,6 +31,7 @@ export const DJANGO_API_ENDPOINTS = {
         SUMMARY: API_URL + "/api/organizations/summary/",
         TABLE: API_URL + "/api/organizations/table/",
         REPORT_CARDS: API_URL + "/api/organizations/report-cards/",
+        VOEN_LOOKUP: API_URL + "/api/organizations/voen-lookup/",
         STATS: (id) => API_URL + `/api/organizations/${id}/stats/`,
         LIST: API_URL + "/api/organizations/",
         DETAIL: (id) => API_URL + `/api/organizations/${id}/`,
@@ -53,6 +54,8 @@ export const DJANGO_API_ENDPOINTS = {
     LICENSES: {
         APPLICANT_INFO: API_URL + "/api/licenses/applicant-info/",
         PERMIT_SCHEMA: API_URL + "/api/licenses/permit-documents/schema/",
+        ANKET_TEMPLATE: API_URL + "/api/licenses/permit-documents/anket-template/",
+        ANKET_PARSE: API_URL + "/api/licenses/permit-documents/anket-parse/",
         PERMIT_LIST: API_URL + "/api/licenses/permit-documents/",
         PERMIT_DETAIL: (id) => API_URL + `/api/licenses/permit-documents/${id}/`,
         PERMIT_CREATE: API_URL + "/api/licenses/permit-documents/",
@@ -106,6 +109,7 @@ export const NEXT_API_ENDPOINTS = {
         SUMMARY: "organizations/summary/",
         TABLE: "organizations/table/",
         REPORT_CARDS: "organizations/report-cards/",
+        VOEN_LOOKUP: "organizations/voen-lookup/",
         STATS: (id) => `organizations/${id}/stats/`,
         LIST: "organizations/",
         DETAIL: (id) => `organizations/${id}/`,
@@ -127,6 +131,8 @@ export const NEXT_API_ENDPOINTS = {
     LICENSES: {
         APPLICANT_INFO: "licenses/applicant-info/",
         PERMIT_SCHEMA: "licenses/permit-documents-schema/",
+        ANKET_TEMPLATE: "licenses/anket-template/",
+        ANKET_PARSE: "licenses/anket-parse/",
         PERMIT_LIST: "licenses/permit-documents/",
         PERMIT_DETAIL: (id) => `licenses/permit-documents/${id}/`,
         PERMIT_CREATE: "licenses/permit-documents-create/",
