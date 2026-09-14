@@ -16,20 +16,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/modullar/teskilatlar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/teskilatlar/page.js"
-    ],
     "/modullar/[[...path]]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/[[...path]]/page.js"
-    ],
-    "/modullar/hesabatlar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/hesabatlar/page.js"
     ],
     "/modullar/lisenziya-senedler/istehsal/page": [
       "static/chunks/webpack.js",
@@ -45,6 +35,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
+    ],
+    "/modullar/teskilatlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/teskilatlar/page.js"
     ]
   }
 }
