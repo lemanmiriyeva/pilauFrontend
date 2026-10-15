@@ -37,7 +37,7 @@ export default function Page() {
                 birth_date: form.birth_date || null,
                 is_org_admin: Boolean(form.is_org_admin),
             });
-            enqueueSnackbar('İstifadəçi uğurla yaradıldı. Şifrə təyini üçün e-poçt göndərildi.', {variant: 'success'});
+            enqueueSnackbar('İstifadəçi uğurla yaradıldı. İlkin şifrə: AA123456! - istifadəçi ilk girişdə 2FA qurub yeni şifrə təyin edəcək.', {variant: 'success'});
             router.push(APP_ROUTES.INZIBATCI_ISTIFADECILER);
         } catch (e) {
             enqueueSnackbar(handleError(e), {variant: 'error'});
