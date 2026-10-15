@@ -18,7 +18,7 @@ import TwoFaResetDialog from "@/components/atoms/TwoFaResetDialog";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
 import bina from "@/app/msn_bina.png"
-import logo from "@/app/logo.svg"
+import logo from "@/app/logo.png"
 import Image from "next/image";
 
 function BrandMark() {

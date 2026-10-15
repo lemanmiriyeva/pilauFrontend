@@ -4,13 +4,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {GOV} from "@/components/theme/govColors";
 import bina from "@/app/msn_bina.png"
-import logo from "@/app/logo.svg"
+import logo from "@/app/logo.png"
 import Image from "next/image";
 
 export function BrandMark() {
     return (
         <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5, zIndex: 10}}>
-            <Image src={logo} alt=""/>
+            <Image width={"250px"} height={"46px"} src={logo} alt=""/>
         </Box>
     );
 }

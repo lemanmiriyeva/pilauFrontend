@@ -18,7 +18,7 @@ import {useRouter} from "next/navigation";
 import {GOV} from "@/components/theme/govColors";
 import {APP_ROUTES} from "@/components/constants";
 import Image from "next/image";
-import logo from "@/app/logo.svg";
+import logo from "@/app/logo.png";
 import NotificationBell from "@/components/atoms/NotificationBell";
 
 function initialsOf(user) {
@@ -40,7 +40,7 @@ export default function AppHeader({user}) {
             <Box onClick={() => {
                 router.push(APP_ROUTES.HOME);
             }} sx={{display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer'}}>
-                <Image src={logo} alt="" height={44} style={{width: 'auto', height: 44}}/>
+                <Image width={"250px"} height={"46px"} src={logo} alt="" height={44} style={{width: 'auto', height: 44}}/>
             </Box>
 
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5}}>

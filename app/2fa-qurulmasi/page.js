@@ -14,13 +14,13 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import {handleError} from "@/app/utils";
 import bina from "@/app/msn_bina.png"
-import logo from "@/app/logo.svg"
+import logo from "@/app/logo.png"
 import Image from "next/image";
 
 function BrandMark() {
     return (
         <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5, zIndex: 10}}>
-            <Image src={logo} alt=""/>
+            <Image width={"250px"} height={"46px"} src={logo} alt=""/>
         </Box>
     );
 }
