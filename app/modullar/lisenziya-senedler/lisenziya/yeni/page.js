@@ -23,7 +23,7 @@ import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import FileDropField from "@/components/atoms/licenses/FileDropField";
 import GovAccordionSection from "@/components/atoms/organizations/GovAccordionSection";
-
+import {afterPermitCreate} from "@/components/atoms/licenses/permitSubmit";
 
 /*
  * "İstehsal" bundan sonra "Lisenziya" adlanır. Əvvəllər Xüsusi/Ümumi Lisenziya
@@ -543,19 +543,7 @@ export default function Page() {
             });
 
 
-            if (!isConfidential) {
 
-                schema.file_fields.forEach((f) => {
-
-                    if (f.required && !files[f.key]) {
-
-                        next[`file__${f.key}`] = true;
-
-                    }
-
-                });
-
-            }
 
         }
 
@@ -675,17 +663,14 @@ export default function Page() {
             });
 
 
-            await service_api.post(NEXT_API_ENDPOINTS.LICENSES.PERMIT_CREATE, fd, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+            const res = await service_api.post(NEXT_API_ENDPOINTS.LICENSES.PERMIT_CREATE, fd, {
+                headers: {'Content-Type': 'multipart/form-data'},
             });
-
-
-            enqueueSnackbar(`${LICENSE_TITLE} yoxlamaya göndərildi.`, {variant: 'success'});
-
-
-            router.push(APP_ROUTES.LISENZIYA);
+            afterPermitCreate({
+                data: res.data, router, enqueueSnackbar,
+                successMessage: 'İcazə sənədi yoxlamaya göndərildi.',
+                listRoute: APP_ROUTES.IDXAL_IXRAC,
+            });
 
 
         } catch (e) {

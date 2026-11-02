@@ -1,5 +1,11 @@
 {
+  "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/sexsi-kabinet/page": "app/sexsi-kabinet/page.js",
-  "/inzibatci-paneli/departament-vezife/page": "app/inzibatci-paneli/departament-vezife/page.js"
+  "/lisenziya-icazeleri/operator-yoxlama/page": "app/lisenziya-icazeleri/operator-yoxlama/page.js",
+  "/lisenziya-icazeleri/operatorlar/page": "app/lisenziya-icazeleri/operatorlar/page.js",
+  "/modullar/lisenziya-senedler/lisenziya/page": "app/modullar/lisenziya-senedler/lisenziya/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/modullar/lisenziya-senedler/lisenziya/[id]/page": "app/modullar/lisenziya-senedler/lisenziya/[id]/page.js",
+  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
+  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
 }

@@ -32,6 +32,8 @@ const STATUS_COLORS = {
     bitmis: {bg: '#FDEBD3', fg: '#B45309'},
     legv: {bg: '#FBE5E8', fg: '#B0374D'},
     dayandirilib: {bg: '#FBE5E8', fg: '#B0374D'},
+    qaralama: {bg: '#EEEFF3', fg: '#5A5F70'},
+    yoxlamada: {bg: '#E7EEFA', fg: '#1F4E9A'},
 };
 
 export function StatusChip({status}) {

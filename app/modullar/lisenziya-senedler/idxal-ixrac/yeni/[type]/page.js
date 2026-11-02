@@ -436,16 +436,7 @@ export default function Page() {
             /*
              * File fields
              */
-            if (!isConfidential) {
 
-                schema.file_fields.forEach((field) => {
-
-                    if (field.required && !files[field.key]) {
-                        next[`file__${field.key}`] = true;
-                    }
-
-                });
-            }
         }
 
 

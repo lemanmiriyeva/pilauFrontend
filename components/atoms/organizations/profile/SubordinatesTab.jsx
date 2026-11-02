@@ -103,7 +103,7 @@ export default function SubordinatesTab({orgId, onChanged}) {
         {label: 'ADI', width: '2.2fr', render: (r) => <b>{r.name}</b>},
         {label: 'VÖEN', width: '1fr', render: (r) => r.voen},
         {label: 'ÜNVAN', width: '2fr', render: (r) => r.address || '—'},
-        {label: 'DİREKTOR', width: '1.4fr', render: (r) => r.director_name || '—'},
+        {label: 'RƏHBƏR', width: '1.4fr', render: (r) => r.director_name || '—'},
         ...(canManage ? [{
             label: '', width: '1fr', render: (r) => (
                 <Box sx={{display: 'flex', gap: 2}}>
@@ -141,7 +141,7 @@ export default function SubordinatesTab({orgId, onChanged}) {
                                    error={!!errors.name} helperText={errors.name} sx={{gridColumn: {sm: '1 / -1'}}}/>
                         <TextField size="small" required label="VÖEN" value={form.voen} onChange={set('voen')}
                                    error={!!errors.voen} helperText={errors.voen}/>
-                        <TextField size="small" label="Direktor" value={form.director_name} onChange={set('director_name')}/>
+                        <TextField size="small" label="Rəhbər" value={form.director_name} onChange={set('director_name')}/>
                         <TextField size="small" label="Ünvan" value={form.address} onChange={set('address')} sx={{gridColumn: {sm: '1 / -1'}}}/>
                     </Box>
                 </DialogContent>

@@ -86,6 +86,8 @@ export const DJANGO_API_ENDPOINTS = {
         CERTIFICATE_COMPLETE: (id) => API_URL + `/api/licenses/certificates/${id}/complete/`,
         CERTIFICATE_PDF: (id) => API_URL + `/api/licenses/certificates/${id}/pdf/`,
         CERTIFICATE_SIGN: (id) => API_URL + `/api/licenses/certificates/${id}/sign/`,
+        PERMIT_UPLOAD_FILES: (id) => API_URL + `/api/licenses/permit-documents/${id}/upload-files/`,
+        PERMIT_OPERATOR_REVIEW: (id) => API_URL + `/api/licenses/permit-documents/${id}/operator-review/`,
         STATS_OVERVIEW: API_URL + "/api/licenses/stats/overview/",
     },
     WORKFLOW: {
@@ -98,6 +100,10 @@ export const DJANGO_API_ENDPOINTS = {
         NOTIFICATIONS: API_URL + "/api/workflow/notifications/",
         NOTIFICATIONS_READ_ALL: API_URL + "/api/workflow/notifications/read-all/",
         NOTIFICATIONS_READ: (id) => API_URL + `/api/workflow/notifications/${id}/read/`,
+        OPERATORS: API_URL + "/api/workflow/operators/",
+        OPERATOR: (id) => API_URL + `/api/workflow/operators/${id}/`,
+        OPERATOR_SETTINGS: API_URL + "/api/workflow/operators/settings/",
+        OPERATOR_QUEUE: API_URL + "/api/workflow/operator-queue/",
     },
 }
 
@@ -183,6 +189,8 @@ export const NEXT_API_ENDPOINTS = {
         CERTIFICATE_PDF: (id) => `licenses/certificates/${id}/pdf/`,
         CERTIFICATE_SIGN: (id) => `licenses/certificates/${id}/sign/`,
         STATS_OVERVIEW: "licenses/stats-overview/",
+        PERMIT_UPLOAD_FILES: (id) => `licenses/permit-documents/${id}/upload-files/`,
+        PERMIT_OPERATOR_REVIEW: (id) => `licenses/permit-documents/${id}/operator-review/`,
     },
     WORKFLOW: {
         STAGE1_PERMISSIONS: "workflow/stage1-permissions/",
@@ -194,5 +202,9 @@ export const NEXT_API_ENDPOINTS = {
         NOTIFICATIONS: "workflow/notifications/",
         NOTIFICATIONS_READ_ALL: "workflow/notifications/read-all/",
         NOTIFICATIONS_READ: (id) => `workflow/notifications/${id}/read/`,
+        OPERATORS: "workflow/operators/",
+        OPERATOR: (id) => `workflow/operators/${id}/`,
+        OPERATOR_SETTINGS: "workflow/operators/settings/",
+        OPERATOR_QUEUE: "workflow/operator-queue/",
     },
 }

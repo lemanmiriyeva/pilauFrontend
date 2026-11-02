@@ -260,7 +260,7 @@ export default function Page() {
                     <TextField
                         size="small"
                         fullWidth
-                        placeholder="Təşkilatın adı, direktor, VÖEN, ünvan..."
+                        placeholder="Təşkilatın adı, rəhbər, VÖEN, ünvan..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         InputProps={{
@@ -364,7 +364,7 @@ export default function Page() {
                         }}
                     >
 
-                        {['TƏŞKİLATIN ADI', 'DİREKTOR', 'İŞÇİ SAYI', 'STATUS', ''].map((h) => (
+                        {['TƏŞKİLATIN ADI', 'RƏHBƏR', 'İŞÇİ SAYI', 'STATUS', ''].map((h) => (
 
                             <Typography
                                 key={h}

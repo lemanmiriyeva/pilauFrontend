@@ -44,6 +44,7 @@ export const APP_ROUTES = {
     HESABATLAR_TESKILATLAR: "/modullar/hesabatlar/teskilatlar",
     HESABATLAR_TESKILAT_DETAL: (id) => `/modullar/hesabatlar/teskilatlar/${id}`,
     HESABATLAR_STATISTIK: "/modullar/hesabatlar/statistik-melumatlar",
+    OPERATOR_YOXLAMA: "/lisenziya-icazeleri/operator-yoxlama",
 }
 
 /* Hesabatlar modulu - lisenziya kateqoriyaları (bax: licenses/field_schema.py DOC_TYPES,

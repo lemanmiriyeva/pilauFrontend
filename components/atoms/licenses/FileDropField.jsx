@@ -13,7 +13,6 @@ export default function FileDropField({field, file, onChange, error}) {
         <Box>
             <Typography sx={{fontSize: 11.5, fontWeight: 700, color: GOV.textPrimary, mb: 0.75}}>
                 {field.label}
-                {field.required && <span style={{color: '#B3261E'}}> *</span>}
                 {field.max_size_mb && (
                     <span style={{fontWeight: 500, color: GOV.textMuted}}> (max {field.max_size_mb}mb)</span>
                 )}

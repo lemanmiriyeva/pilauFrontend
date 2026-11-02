@@ -492,14 +492,7 @@ export default function Page() {
         // Files
         // -------------------------------------------------------
 
-        if (!isConfidential && schema?.file_fields) {
-            schema.file_fields.forEach((field) => {
 
-                if (field.required && !files[field.key]) {
-                    nextErrors[`file__${field.key}`] = true;
-                }
-            });
-        }
 
         setErrors(nextErrors);
 

@@ -215,9 +215,9 @@ export default function Page() {
                         {tab === 'info' && (
                             <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, p: {xs: 2.5, md: 3.5}}}>
                                 <Box sx={{display: 'grid', gridTemplateColumns: {xs: '1fr', md: '1fr 1fr 1fr'}, gap: 3}}>
-                                    <InfoItem label="DİREKTOR" value={org.director_name}/>
-                                    <InfoItem label="DİREKTORUN TELEFONU" value={org.director_phone}/>
-                                    <InfoItem label="DİREKTORUN E-POÇTU" value={org.director_email}/>
+                                    <InfoItem label="RƏHBƏR" value={org.director_name}/>
+                                    <InfoItem label="RƏHBƏRİN TELEFONU" value={org.director_phone}/>
+                                    <InfoItem label="RƏHBƏRİN E-POÇTU" value={org.director_email}/>
                                     <InfoItem label="ÜNVAN" value={org.address}/>
                                     <InfoItem label="DÖVLƏT QEYDİYYAT NÖMRƏSİ" value={org.state_reg_number}/>
                                     <InfoItem label="TELEFON" value={org.phone}/>
@@ -250,10 +250,10 @@ export default function Page() {
                 <DialogContent>
                     <Box sx={{display: 'grid', gap: 2, mt: 1}}>
                         <TextField size="small" label="Təşkilatın adı *" value={form.full_name || ''} onChange={set('full_name')}/>
-                        <TextField size="small" label="Direktor (ad, soyad)" value={form.director_name || ''} onChange={set('director_name')}/>
+                        <TextField size="small" label="Rəhbər (ad, soyad)" value={form.director_name || ''} onChange={set('director_name')}/>
                         <Box sx={{display: 'grid', gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}, gap: 2}}>
-                            <TextField size="small" label="Direktorun telefonu" value={form.director_phone || ''} onChange={set('director_phone')}/>
-                            <TextField size="small" label="Direktorun e-poçtu" value={form.director_email || ''} onChange={set('director_email')}/>
+                            <TextField size="small" label="Rəhbərin telefonu" value={form.director_phone || ''} onChange={set('director_phone')}/>
+                            <TextField size="small" label="Rəhbərin e-poçtu" value={form.director_email || ''} onChange={set('director_email')}/>
                         </Box>
                         <TextField size="small" label="Ünvan" value={form.address || ''} onChange={set('address')} multiline minRows={2}/>
                         <Box sx={{display: 'grid', gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}, gap: 2}}>

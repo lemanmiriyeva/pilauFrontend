@@ -50,6 +50,8 @@ const STATUS_META = {
     bitmis: {label: 'Bitmiş', bg: '#EEF0F4', color: '#4B5563', dot: '#9CA3AF'},
     legv: {label: 'Ləğv edilib', bg: '#FDECEC', color: '#B42318', dot: '#D92D20'},
     dayandirilib: {label: 'Dayandırılıb', bg: '#EEF0F4', color: '#4B5563', dot: '#9CA3AF'},
+    qaralama: {label: 'Natamam', bg: '#EEF0F4', color: '#4B5563', dot: '#9CA3AF'},
+    yoxlamada: {label: 'Operator yoxlamasında', bg: '#E7EEFA', color: '#1F4E9A', dot: '#1F4E9A'}
 };
 
 const asList = (data) => (Array.isArray(data) ? data : (data?.results || []));

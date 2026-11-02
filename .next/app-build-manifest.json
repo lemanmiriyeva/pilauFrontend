@@ -15,6 +15,41 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/sexsi-kabinet/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/lisenziya-icazeleri/operator-yoxlama/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/operator-yoxlama/page.js"
+    ],
+    "/lisenziya-icazeleri/operatorlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/operatorlar/page.js"
+    ],
+    "/modullar/[[...path]]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/[[...path]]/page.js"
+    ],
+    "/modullar/lisenziya-senedler/lisenziya/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/page.js"
+    ],
+    "/modullar/lisenziya-senedler/lisenziya/yeni/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
+    ],
+    "/modullar/lisenziya-senedler/lisenziya/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/[id]/page.js"
     ]
   }
 }

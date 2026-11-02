@@ -156,11 +156,7 @@ export default function Page() {
             schema.form_fields.forEach((f) => {
                 if (f.required && !f.auto && !formValues[f.key]) next[`form__${f.key}`] = 'Tələb olunur';
             });
-            if (!isConfidential) {
-                schema.file_fields.forEach((f) => {
-                    if (f.required && !files[f.key]) next[`file__${f.key}`] = true;
-                });
-            }
+
         }
         setErrors(next);
 

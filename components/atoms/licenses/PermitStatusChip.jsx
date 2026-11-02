@@ -9,6 +9,8 @@ export const STATUS_META = {
     bitmis: {label: 'Bitmiş', color: '#B3261E', bg: '#FBE7E5'},
     legv: {label: 'Ləğv edilib', color: '#5A5F70', bg: '#EEEFF3'},
     dayandirilib: {label: 'Dayandırılıb', color: '#B3261E', bg: '#FBE7E5'},
+    qaralama: {label: 'Natamam (qaralama)', color: '#5A5F70', bg: '#EEEFF3'},
+    yoxlamada: {label: 'Operator yoxlamasında', color: '#1F4E9A', bg: '#E7EEFA'},
 };
 
 export default function PermitStatusChip({status}) {

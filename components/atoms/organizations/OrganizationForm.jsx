@@ -198,7 +198,7 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                 </GovAccordionSection>
 
                 <GovAccordionSection
-                    title="Direktor"
+                    title="Rəhbər"
                     expanded={expanded === 'director'} onChange={toggle('director')}
                     complete={!!(form.director_name && form.director_phone && form.director_email)}
                 >

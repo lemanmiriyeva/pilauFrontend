@@ -16,6 +16,7 @@ import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import PermitStatusChip from "@/components/atoms/licenses/PermitStatusChip";
 import CertificateEmbed from "@/components/atoms/CertificateEmbed";
+import PermitStatusPanel from "@/components/atoms/licenses/PermitStatusPanel";
 
 function formatDate(value) {
     if (!value) return '-';
@@ -36,7 +37,6 @@ function InfoRow({label, value}) {
         </Box>
     );
 }
-
 function SectionCard({title, children}) {
     return (
         <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, p: 3, mb: 3}}>
@@ -117,6 +117,7 @@ export default function Page() {
                     </Box>
                     <PermitStatusChip status={doc.status}/>
                 </Box>
+                <PermitStatusPanel doc={doc} onUpdated={setDoc}/>
 
                 <SectionCard title="Sənəd məlumatları">
                     <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr 1fr'}}}>

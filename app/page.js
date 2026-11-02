@@ -85,6 +85,25 @@ export default function Page() {
                         }}>{review.total}</Box>
                     </Box>
                 )}
+                {review?.is_operator && (
+                    <Box onClick={() => router.push(APP_ROUTES.OPERATOR_YOXLAMA)}
+                         sx={{mb: 4, p: 2.5, cursor: 'pointer', borderRadius: 2, backgroundColor: GOV.navy, color: '#fff',
+                             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
+                             border: `1px solid ${GOV.gold}`, '&:hover': {backgroundColor: GOV.navyMid}}}>
+                        <Box>
+                            <Typography sx={{fontSize: 16, fontWeight: 800}}>Operator yoxlaması</Typography>
+                            <Typography sx={{fontSize: 12.5, opacity: 0.8, mt: 0.5}}>
+                                Yoxlamanı gözləyən sənədlərə baxın, uğurlu və ya imtina qərarı verin.
+                            </Typography>
+                        </Box>
+                        <Box sx={{minWidth: 44, height: 44, borderRadius: '50%', display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', fontSize: 18, fontWeight: 800, px: 1,
+                            backgroundColor: review.operator_pending ? GOV.gold : 'rgba(255,255,255,0.15)',
+                            color: review.operator_pending ? GOV.navy : '#fff'}}>
+                            {review.operator_pending}
+                        </Box>
+                    </Box>
+                )}
 
                 <Box sx={{display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', mb: 2}}>
                     <Typography sx={{fontSize: 14, fontWeight: 700, color: GOV.textPrimary}}>
