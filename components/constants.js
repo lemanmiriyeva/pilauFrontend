@@ -26,8 +26,8 @@ export const APP_ROUTES = {
     INZIBATCI_DEPARTAMENT_VEZIFE: "/inzibatci-paneli/departament-vezife",
     IDXAL_IXRAC: "/modullar/lisenziya-senedler/idxal-ixrac",
     IDXAL_IXRAC_YENI: "/modullar/lisenziya-senedler/idxal-ixrac/yeni",
-    ISTEHSAL: "/modullar/lisenziya-senedler/istehsal",
-    ISTEHSAL_YENI: "/modullar/lisenziya-senedler/istehsal/yeni",
+    LISENZIYA: "/modullar/lisenziya-senedler/lisenziya",
+    LISENZIYA_YENI: "/modullar/lisenziya-senedler/lisenziya/yeni",
     XUSUSI_SATIS: "/modullar/lisenziya-senedler/xususi-satis",
     XUSUSI_SATIS_YENI: "/modullar/lisenziya-senedler/xususi-satis/yeni",
     EDV_GUZESTI: "/modullar/lisenziya-senedler/edv-guzesti",
@@ -51,8 +51,6 @@ export const APP_ROUTES = {
 export const LICENSE_TYPES = [
     {key: "ixrac", label: "İxrac"},
     {key: "idxal", label: "İdxal"},
-    // "İstehsal" Xüsusi/Ümumi Lisenziya olaraq bölündü. Köhnə "istehsal" doc_type-ı
-    // geriyə uyğunluq üçün saxlanılır (bax backend DOC_TYPES).
     {key: "xususi_lisenziya", label: "Xüsusi Lisenziya"},
     {key: "umumi_lisenziya", label: "Ümumi Lisenziya"},
     {key: "xususi_satis", label: "Xüsusi Satış"},

@@ -24,6 +24,12 @@ import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 
+   const DETAIL_FOLDER = {
+       xususi_lisenziya: 'lisenziya', umumi_lisenziya: 'lisenziya', istehsal: 'lisenziya',
+       idxal: 'idxal-ixrac', ixrac: 'idxal-ixrac', xususi_satis: 'xususi-satis',
+       gomrukden_azadolma: 'edv-guzesti', edvden_azadolma: 'edv-guzesti',
+   };
+
    function DocRow({doc, onApprove, onReject, busy}) {
            return (
                    <Box sx={{
@@ -41,6 +47,14 @@ import AppShell from "@/components/atoms/AppShell";
                                </Typography>
                            </Box>
                            <Box sx={{display: 'flex', gap: 1, flexShrink: 0}}>
+                               {DETAIL_FOLDER[doc.doc_type] && (
+                                   <Button
+                                       size="small" variant="text" href={`/modullar/lisenziya-senedler/${DETAIL_FOLDER[doc.doc_type]}/${doc.id}`}
+                                       sx={{textTransform: 'none', fontSize: 12.5, fontWeight: 700, color: GOV.navySoft}}
+                                   >
+                                       Bax
+                                   </Button>
+                               )}
                                <Button
                                    size="small" variant="outlined" color="error" disabled={busy}
                                    startIcon={<HighlightOffIcon sx={{fontSize: 16}}/>}

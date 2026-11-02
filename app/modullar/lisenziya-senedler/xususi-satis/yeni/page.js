@@ -155,7 +155,8 @@ export default function Page() {
 
                 setIsMsn(org?.code === "msn");
 
-                const firstPerson = personList[0];
+                // Təşkilatda səlahiyyətli şəxs yoxdursa, daxil olan istifadəçinin öz məlumatları (qeyd: id boşdur)
+                const firstPerson = personList[0] || applicantRes.data?.current_user;
 
                 setApplicant((prev) => ({
                     ...prev,

@@ -169,7 +169,8 @@ export default function Page() {
                 /*
                  * Backend əsas şəxsi birinci qaytarır.
                  */
-                const firstPerson = personList[0];
+                // Təşkilatda səlahiyyətli şəxs yoxdursa, daxil olan istifadəçinin öz məlumatları (qeyd: id boşdur)
+                const firstPerson = personList[0] || applicantRes.data?.current_user;
 
 
                 setApplicant({

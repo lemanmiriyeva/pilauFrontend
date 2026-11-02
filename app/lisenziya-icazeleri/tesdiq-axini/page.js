@@ -248,7 +248,9 @@ export default function Page() {
     };
 
     return (
-        <AppShell>
+        <AppShell onReady={({user}) => {
+            if (user && !user.is_staff && !user.is_superuser) router.replace('/inzibatci-paneli/tesdiq-axini');
+        }}>
             <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 1}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.INZIBATCI)}

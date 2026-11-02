@@ -20,6 +20,8 @@ const STATUS_FIELDS = [{
     key: "can_edit", label: "REDAKTƏ"
 }, {
     key: "can_approve", label: "TƏSDİQ"
+}, {
+    key: "can_delete", label: "SİLMƏ"
 }];
 
 
@@ -27,12 +29,12 @@ const ADMIN_MODULE_KEY = "inzibatci-paneli";
 
 
 const DEFAULT_STATUS = {
-    can_view: true, can_create: false, can_edit: false, can_approve: false
+    can_view: true, can_create: false, can_edit: false, can_approve: false, can_delete: false
 };
 
 
 export default function ModulePermissionsPicker({
-                                                    initialModules = [], isOrgAdmin = false, onChange
+                                                    initialModules = [], isOrgAdmin = false, organization = null, onChange
                                                 }) {
 
     const [tree, setTree] = useState([]);
@@ -117,7 +119,7 @@ export default function ModulePermissionsPicker({
 
             try {
 
-                const res = await service_api.get(NEXT_API_ENDPOINTS.PERMISSIONS.MODULES);
+                const res = await service_api.get(`${NEXT_API_ENDPOINTS.PERMISSIONS.MODULES}${organization ? `?organization=${organization}` : ''}`);
 
 
                 if (cancelled) {
@@ -312,7 +314,9 @@ export default function ModulePermissionsPicker({
 
                             can_edit: !!first.can_edit,
 
-                            can_approve: !!first.can_approve
+                            can_approve: !!first.can_approve,
+
+                            can_delete: !!first.can_delete
 
                         });
 
@@ -347,7 +351,7 @@ export default function ModulePermissionsPicker({
 
         };
 
-    }, []);
+    }, [organization]);
 
 
     /*

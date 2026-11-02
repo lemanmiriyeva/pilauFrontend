@@ -21,6 +21,7 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
+import {normalizeAz} from "@/components/atoms/organizations/profile/shared";
 
 
 export default function Page() {
@@ -33,6 +34,8 @@ export default function Page() {
     const [busyId, setBusyId] = useState(null);
 
     const [search, setSearch] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+    const canManageStatus = Boolean(currentUser?.is_staff || currentUser?.is_superuser);
 
 
     /*
@@ -80,9 +83,8 @@ export default function Page() {
 
     const filteredOrganizations = useMemo(() => {
 
-        const query = search
-            .trim()
-            .toLocaleLowerCase('az-AZ');
+        // Azərbaycan hərflərinin fərqini yox sayır: "iqlim" -> "İqlim", "senaye" -> "Sənaye"
+        const query = normalizeAz(search.trim());
 
         if (!query) {
             return orgs;
@@ -90,10 +92,10 @@ export default function Page() {
 
         return orgs.filter((org) => {
 
-            const searchableText = [org.full_name, org.code, org.voen, org.state_reg_number, org.email, org.phone,]
+            const searchableText = [org.full_name, org.director_name, org.voen, org.address]
                 .filter(Boolean)
-                .join(' ')
-                .toLocaleLowerCase('az-AZ');
+                .map(normalizeAz)
+                .join(' ');
 
             return searchableText.includes(query);
         });
@@ -159,7 +161,15 @@ export default function Page() {
 
     return (
 
-        <AppShell>
+        <AppShell onReady={({user}) => {
+            setCurrentUser(user);
+            // Qurum admini / işçi "Təşkilatlar" siyahısını görmür - birbaşa öz təşkilatının səhifəsinə düşür.
+            const seesAll = user?.is_staff || user?.is_superuser || user?.rehber_kadr
+                || user?.organization_detail?.code === 'msn';
+            if (!seesAll && user?.organization) {
+                router.replace(`${APP_ROUTES.TESKILATLAR}/${user.organization}`);
+            }
+        }}>
 
             <Box
                 sx={{
@@ -217,6 +227,7 @@ export default function Page() {
                     </Box>
 
 
+                    {canManageStatus && (
                     <Button
                         variant="contained"
                         startIcon={<AddIcon/>}
@@ -231,6 +242,7 @@ export default function Page() {
                     >
                         Yeni təşkilat
                     </Button>
+                    )}
 
                 </Box>
 
@@ -248,7 +260,7 @@ export default function Page() {
                     <TextField
                         size="small"
                         fullWidth
-                        placeholder="Təşkilat adı, kod, VÖEN..."
+                        placeholder="Təşkilatın adı, direktor, VÖEN, ünvan..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         InputProps={{
@@ -344,7 +356,7 @@ export default function Page() {
                     <Box
                         sx={{
                             display: 'grid',
-                            gridTemplateColumns: '2fr 1fr 0.8fr 1.2fr',
+                            gridTemplateColumns: '2fr 1.3fr 0.8fr 0.8fr 1.4fr',
                             px: 2.5,
                             py: 1.25,
                             borderBottom: `1px solid ${GOV.cardBorder}`,
@@ -352,7 +364,7 @@ export default function Page() {
                         }}
                     >
 
-                        {['TƏŞKİLATIN ADI', 'SİSTEMDƏKİ İŞÇİ SAYI', 'STATUS', ''].map((h) => (
+                        {['TƏŞKİLATIN ADI', 'DİREKTOR', 'İŞÇİ SAYI', 'STATUS', ''].map((h) => (
 
                             <Typography
                                 key={h}
@@ -424,7 +436,7 @@ export default function Page() {
                                 key={o.id}
                                 sx={{
                                     display: 'grid',
-                                    gridTemplateColumns: '2fr 1fr 0.8fr 1.2fr',
+                                    gridTemplateColumns: '2fr 1.3fr 0.8fr 0.8fr 1.4fr',
                                     alignItems: 'center',
                                     px: 2.5,
                                     py: 1.75,
@@ -444,6 +456,15 @@ export default function Page() {
                                     }}
                                 >
                                     {o.full_name}
+                                    <Typography component="span" sx={{display: 'block', fontSize: 11.5, color: GOV.textMuted, fontWeight: 400}}>
+                                        VÖEN: {o.voen}
+                                    </Typography>
+                                </Typography>
+
+                                {/* DIRECTOR */}
+
+                                <Typography sx={{fontSize: 13, color: GOV.textPrimary}}>
+                                    {o.director_name || '—'}
                                 </Typography>
 
 
@@ -510,31 +531,34 @@ export default function Page() {
                                     }}
                                 >
 
-                                    <Link
-                                        component="button"
+                                    <Button
+                                        size="small"
+                                        variant="outlined"
                                         onClick={() => router.push(`${APP_ROUTES.TESKILATLAR}/${o.id}`)}
                                         sx={{
-                                            fontSize: 12.5, fontWeight: 600, color: GOV.navySoft, textDecoration: 'none'
+                                            textTransform: 'none', fontSize: 12.5, fontWeight: 700, color: GOV.navy,
+                                            borderColor: GOV.cardBorder, '&:hover': {borderColor: GOV.gold, backgroundColor: '#FFFBF0'}
                                         }}
                                     >
-                                        Redaktə
-                                    </Link>
+                                        Ətraflı
+                                    </Button>
 
-
-                                    <Link
-                                        component="button"
-                                        disabled={busyId === o.id}
-                                        onClick={() => toggleStatus(o)}
-                                        sx={{
-                                            fontSize: 12.5,
-                                            fontWeight: 600,
-                                            textDecoration: 'none',
-                                            color: o.is_active ? '#B0374D' : '#2E9E5B',
-                                            opacity: busyId === o.id ? 0.5 : 1
-                                        }}
-                                    >
-                                        {o.is_active ? 'Deaktiv et' : 'Aktiv et'}
-                                    </Link>
+                                    {canManageStatus && (
+                                        <Link
+                                            component="button"
+                                            disabled={busyId === o.id}
+                                            onClick={() => toggleStatus(o)}
+                                            sx={{
+                                                fontSize: 12.5,
+                                                fontWeight: 600,
+                                                textDecoration: 'none',
+                                                color: o.is_active ? '#B0374D' : '#2E9E5B',
+                                                opacity: busyId === o.id ? 0.5 : 1
+                                            }}
+                                        >
+                                            {o.is_active ? 'Deaktiv et' : 'Aktiv et'}
+                                        </Link>
+                                    )}
 
                                 </Box>
 

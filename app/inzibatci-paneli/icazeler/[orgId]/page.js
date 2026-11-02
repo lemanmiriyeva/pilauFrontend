@@ -28,7 +28,7 @@ function initialsOf(u) {
 }
 
 const STATUS_LABELS = {
-    can_view: 'Baxış', can_create: 'Yaratma', can_edit: 'Redaktə', can_approve: 'Təsdiq',
+    can_view: 'Baxış', can_create: 'Yaratma', can_edit: 'Redaktə', can_approve: 'Təsdiq', can_delete: 'Silmə',
 };
 
 function PermissionStatus({permission}) {

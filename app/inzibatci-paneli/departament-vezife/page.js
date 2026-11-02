@@ -265,7 +265,9 @@ export default function Page() {
                 service_api.get(NEXT_API_ENDPOINTS.ORGANIZATIONS.POSITIONS_LIST),]);
 
 
-            setOrgs(Array.isArray(orgRes.data) ? orgRes.data : (orgRes.data?.results || []));
+            const orgList = Array.isArray(orgRes.data) ? orgRes.data : (orgRes.data?.results || []);
+            setOrgs(orgList);
+            if (orgList.length === 1) setOrgFilter(String(orgList[0].id));
 
 
             setDepartments(Array.isArray(depRes.data) ? depRes.data : (depRes.data?.results || []));
@@ -360,7 +362,7 @@ export default function Page() {
 
         // Əgər toolbar-da təşkilat filter seçilibsə,
         // onu avtomatik seçirik.
-        setNewOrg(orgFilter || "");
+        setNewOrg(orgFilter || (orgs.length === 1 ? String(orgs[0].id) : ""));
 
         setNewName("");
 
@@ -883,16 +885,19 @@ export default function Page() {
 
                         <Select
                             displayEmpty
-                            value={orgFilter}
+                            value={orgs.length === 1 ? orgs[0].id : orgFilter}
+                            disabled={orgs.length === 1}
                             onChange={(e) => setOrgFilter(e.target.value)}
                             sx={{
                                 backgroundColor: "#fff", fontSize: 13.5,
                             }}
                         >
 
-                            <MenuItem value="">
-                                Bütün təşkilatlar
-                            </MenuItem>
+                            {orgs.length !== 1 && (
+                                <MenuItem value="">
+                                    Bütün təşkilatlar
+                                </MenuItem>
+                            )}
 
 
                             {orgs.map((org) => (

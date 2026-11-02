@@ -99,7 +99,7 @@ export default function Page() {
                                             break;
 
                                         case 'tesdiq-axini':
-                                            href = APP_ROUTES.TESDIQ_AXINI;
+                                            href = '/inzibatci-paneli/tesdiq-axini';
                                             break;
 
                                         default:
@@ -120,6 +120,16 @@ export default function Page() {
                             >
                                 Bu bölməyə girişiniz yoxdur.
                             </Typography>)}
+                        {(user?.is_staff || user?.is_superuser) && (
+                            <Box sx={{mt: 3, textAlign: 'center'}}>
+                                <Link
+                                    component="button" onClick={() => router.push('/inzibatci-paneli/modul-konfiqurasiyasi')}
+                                    sx={{fontSize: 13, fontWeight: 700, color: GOV.navySoft}}
+                                >
+                                    Qurum adminləri üçün modul konfiqurasiyası
+                                </Link>
+                            </Box>
+                        )}
                     </Box>);
             }}
         </AppShell>);

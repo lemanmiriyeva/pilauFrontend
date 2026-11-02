@@ -8,7 +8,9 @@ export function docTypeListRoute(docType) {
         case 'idxal':
             return APP_ROUTES.IDXAL_IXRAC;
         case 'istehsal':
-            return APP_ROUTES.ISTEHSAL;
+        case 'xususi_lisenziya':
+        case 'umumi_lisenziya':
+            return APP_ROUTES.LISENZIYA;
         case 'xususi_satis':
             return APP_ROUTES.XUSUSI_SATIS;
         case 'gomrukden_azadolma':

@@ -13,7 +13,7 @@ function flatten(nodes, depth = 0, out = []) {
     return out;
 }
 
-export default function OrganizationSelect({value, onChange, label = "Təşkilat", required = false, error, helperText}) {
+export default function OrganizationSelect({value, onChange, label = "Təşkilat", required = false, error, helperText, disabled = false}) {
     const [options, setOptions] = useState([]);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function OrganizationSelect({value, onChange, label = "Təşkilat
         <TextField
             select fullWidth size="small" label={label} required={required}
             value={value || ''} onChange={(e) => onChange(e.target.value)}
-            error={error} helperText={helperText}
+            error={error} helperText={helperText} disabled={disabled}
         >
             {options.map((o) => (
                 <MenuItem key={o.id} value={o.id} sx={{pl: 2 + o.depth * 2}}>

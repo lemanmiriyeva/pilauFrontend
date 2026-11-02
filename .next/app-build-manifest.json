@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/daxilol/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/daxilol/page.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,35 +11,15 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/page": [
+    "/daxilol/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/daxilol/page.js"
     ],
-    "/modullar/[[...path]]/page": [
+    "/lisenziya-icazeleri/yoxlamalarim/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/[[...path]]/page.js"
-    ],
-    "/modullar/lisenziya-senedler/istehsal/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/page.js"
-    ],
-    "/modullar/lisenziya-senedler/istehsal/yeni/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/yeni/page.js"
-    ],
-    "/modullar/lisenziya-senedler/istehsal/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/istehsal/[id]/page.js"
-    ],
-    "/modullar/teskilatlar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/teskilatlar/page.js"
+      "static/chunks/app/lisenziya-icazeleri/yoxlamalarim/page.js"
     ]
   }
 }

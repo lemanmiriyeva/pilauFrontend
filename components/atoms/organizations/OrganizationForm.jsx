@@ -35,10 +35,12 @@ const defaultDepartments = [
     }
 ];
 
-export default function OrganizationForm({mode = 'create', initialData, onSubmit, onCancel, submitting}) {
+export default function OrganizationForm({mode = 'create', initialData, onSubmit, onCancel, submitting, lockedFields = []}) {
+    const locked = (f) => lockedFields.includes(f);
     const [form, setForm] = useState({
         full_name: '', voen: '', state_reg_number: '', code: 'other',
         email: '', phone: '', address: '', notes: '',
+        director_name: '', director_phone: '', director_email: '',
         ...(initialData || {}),
     });
 
@@ -115,8 +117,10 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
         const next = {};
         if (!form.full_name) next.full_name = 'Tələb olunur';
         if (!form.voen) next.voen = 'Tələb olunur';
+        if (form.director_email && !/^\S+@\S+\.\S+$/.test(form.director_email)) next.director_email = 'E-poçt ünvanı düzgün deyil';
         setErrors(next);
-        if (Object.keys(next).length) setExpanded('identification');
+        if (next.full_name || next.voen) setExpanded('identification');
+        else if (next.director_email) setExpanded('director');
         return Object.keys(next).length === 0;
     };
 
@@ -154,7 +158,7 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                         />
                         <TextField
                             size="small" label="VÖEN" placeholder="123456789" required
-                            value={form.voen} onChange={set('voen')}
+                            value={form.voen} onChange={set('voen')} disabled={locked('voen')}
                             error={!!errors.voen} helperText={errors.voen}
                         />
                         <TextField
@@ -162,7 +166,7 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                             value={form.state_reg_number} onChange={set('state_reg_number')}
                         />
                         <TextField
-                            select size="small" label="Kod" value={form.code || 'other'} onChange={set('code')}
+                            select size="small" label="Kod" value={form.code || 'other'} onChange={set('code')} disabled={locked('code')}
                             helperText="MSN seçilərsə, bu təşkilatın istifadəçiləri icazə sənədi formasında müraciətçi məlumatlarını sərbəst redaktə edə bilər."
                         >
                             {CODE_OPTIONS.map((o) => (
@@ -189,6 +193,28 @@ export default function OrganizationForm({mode = 'create', initialData, onSubmit
                         <TextField
                             size="small" label="Tam ünvan" placeholder="Daxil edin"
                             value={form.address} onChange={set('address')}
+                        />
+                    </Box>
+                </GovAccordionSection>
+
+                <GovAccordionSection
+                    title="Direktor"
+                    expanded={expanded === 'director'} onChange={toggle('director')}
+                    complete={!!(form.director_name && form.director_phone && form.director_email)}
+                >
+                    <Box sx={{display: 'grid', gap: 2.5, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr 1fr'}}}>
+                        <TextField
+                            size="small" label="Ad, soyad" placeholder="Daxil edin"
+                            value={form.director_name} onChange={set('director_name')}
+                        />
+                        <TextField
+                            size="small" label="Telefon nömrəsi" placeholder="+994 ..."
+                            value={form.director_phone} onChange={set('director_phone')}
+                        />
+                        <TextField
+                            size="small" label="E-poçt ünvanı" placeholder="Daxil edin" type="email"
+                            value={form.director_email} onChange={set('director_email')}
+                            error={!!errors.director_email} helperText={errors.director_email}
                         />
                     </Box>
                 </GovAccordionSection>

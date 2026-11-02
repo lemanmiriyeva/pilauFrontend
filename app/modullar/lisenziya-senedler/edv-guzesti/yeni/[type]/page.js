@@ -79,7 +79,8 @@ export default function Page() {
                 setPersons(personList);
                 setIsMsn(org?.code === 'msn');
                 // authorized_persons artıq backend-də "əsas" şəxs birinci gələcək şəkildə sıralanır.
-                const firstPerson = personList[0];
+                // Təşkilatda səlahiyyətli şəxs yoxdursa, daxil olan istifadəçinin öz məlumatları (qeyd: id boşdur)
+                const firstPerson = personList[0] || applicantRes.data?.current_user;
                 setApplicant((prev) => ({
                     ...prev,
                     organization: org?.id || null,

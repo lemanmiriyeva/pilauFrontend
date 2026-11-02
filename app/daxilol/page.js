@@ -18,16 +18,8 @@ import TwoFaResetDialog from "@/components/atoms/TwoFaResetDialog";
 import {useSnackbar} from "notistack";
 import {service_api} from "@/app/service";
 import bina from "@/app/msn_bina.png"
-import logo from "@/app/logo.png"
+import {BrandMark} from "@/app/daxilol/AuthLayout";
 import Image from "next/image";
-
-function BrandMark() {
-    return (
-        <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5, zIndex: 10}}>
-            <Image src={logo} alt=""/>
-        </Box>
-    );
-}
 
 function BuildingBlueprint() {
     return (
@@ -178,7 +170,7 @@ export default function Page() {
                             PİLAU
                         </Typography>
                         <Typography sx={{color: GOV.textOnNavyMuted, maxWidth: 440, fontSize: 15, lineHeight: 1.7}}>
-                            İstehsal, təchizat və sənəd dövriyyəsi proseslərinin
+                            Lisenziya, təchizat və sənəd dövriyyəsi proseslərinin
                             vahid idarəetmə mühiti. Giriş yalnız sistem
                             administratoru tərəfindən yaradılmış hesablar üçün
                             mümkündür.

@@ -14,6 +14,7 @@ import ModuleCard from "@/components/atoms/ModuleCard";
 export default function Page() {
     const [user, setUser] = useState(null);
     const [modules, setModules] = useState([]);
+    const [review, setReview] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
@@ -26,6 +27,10 @@ export default function Page() {
                 ]);
                 setUser(userRes.data);
                 setModules(modulesRes.data);
+                try {
+                    const r = await service_api.get(NEXT_API_ENDPOINTS.LICENSES.REVIEW_SUMMARY);
+                    setReview(r.data);
+                } catch (e) { /* kart vacib deyil */ }
             } catch (e) {
                 router.push(APP_ROUTES.SIGNIN);
                 return;
@@ -57,6 +62,29 @@ export default function Page() {
                     </Typography>
                     <Box sx={{width: 48, height: 3, backgroundColor: GOV.navySoft, mx: 'auto', mt: 1.5}}/>
                 </Box>
+
+                {review?.is_reviewer && (
+                    <Box
+                        onClick={() => router.push(APP_ROUTES.YOXLAMALARIM)}
+                        sx={{
+                            mb: 4, p: 2.5, cursor: 'pointer', borderRadius: 2, backgroundColor: GOV.navy, color: '#fff',
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
+                            border: `1px solid ${GOV.gold}`, '&:hover': {backgroundColor: GOV.navyMid},
+                        }}
+                    >
+                        <Box>
+                            <Typography sx={{fontSize: 16, fontWeight: 800}}>Təsdiq gözləyən sənədlər</Typography>
+                            <Typography sx={{fontSize: 12.5, opacity: 0.8, mt: 0.5}}>
+                                Yoxlama və təsdiq üçün sizə yönləndirilmiş sənədlərə baxın, təsdiqləyin və ya rədd edin.
+                            </Typography>
+                        </Box>
+                        <Box sx={{
+                            minWidth: 44, height: 44, borderRadius: '50%', backgroundColor: review.total ? GOV.gold : 'rgba(255,255,255,0.15)',
+                            color: review.total ? GOV.navy : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: 18, fontWeight: 800, px: 1,
+                        }}>{review.total}</Box>
+                    </Box>
+                )}
 
                 <Box sx={{display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', mb: 2}}>
                     <Typography sx={{fontSize: 14, fontWeight: 700, color: GOV.textPrimary}}>

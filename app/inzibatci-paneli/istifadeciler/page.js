@@ -400,6 +400,7 @@ export default function Page() {
 
                     {/* ORGANIZATION */}
 
+                    {organizations.length > 1 && (
                     <FormControl
                         size="small"
                         fullWidth
@@ -437,6 +438,7 @@ export default function Page() {
                         </Select>
 
                     </FormControl>
+                    )}
 
 
                     {/* CLEAR */}

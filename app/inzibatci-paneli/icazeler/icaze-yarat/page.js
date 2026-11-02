@@ -29,6 +29,21 @@ export default function Page() {
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
     const preselectedEmployee = searchParams.get('employee') || '';
+    const [me, setMe] = useState(null);
+    const restrictedAdmin = Boolean(me && !me.is_staff && !me.is_superuser);
+
+    // Qurum admini: təşkilat həmişə öz təşkilatıdır (dəyişdirilə bilməz)
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.USER);
+                setMe(res.data);
+                if (!res.data.is_staff && !res.data.is_superuser && res.data.organization) {
+                    setOrganization(String(res.data.organization));
+                }
+            } catch (e) { /* AppShell səhvi özü idarə edir */ }
+        })();
+    }, []);
 
     useEffect(() => {
         setEmployee('');
@@ -108,7 +123,7 @@ export default function Page() {
 
                 <Box sx={{display: 'grid', gap: 2.5, mb: 3}}>
                     <OrganizationSelect
-                        label="Təşkilatı seçin" required value={organization} onChange={setOrganization}
+                        label="Təşkilatı seçin" required value={organization} onChange={setOrganization} disabled={restrictedAdmin}
                         error={!!errors.organization} helperText={errors.organization}
                     />
 
@@ -124,7 +139,7 @@ export default function Page() {
                     </TextField>
                 </Box>
 
-                <ModulePermissionsPicker key={employee || 'new'} initialModules={initialModules} onChange={setModules}/>
+                <ModulePermissionsPicker key={`${employee || 'new'}-${organization}`} initialModules={initialModules} organization={organization} onChange={setModules}/>
 
                 <Box sx={{display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 4}}>
                     <Button

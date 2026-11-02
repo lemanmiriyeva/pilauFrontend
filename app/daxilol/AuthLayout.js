@@ -8,9 +8,14 @@ import logo from "@/app/logo.png"
 import Image from "next/image";
 
 export function BrandMark() {
+    // Logo SVG-si 240x44-dür; auth səhifələrində kəskin və oxunaqlı görünsün deyə
+    // hündürlük 72px-ə böyüdülür (width avtomatik, nisbət qorunur). Kiçik ekranda 56px.
     return (
-        <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5, zIndex: 10}}>
-            <Image width={"250px"} height={"46px"} src={logo} alt=""/>
+        <Box sx={{display: 'flex', alignItems: 'center', zIndex: 10}}>
+            <Image
+                src={logo} alt="Azərbaycan Respublikasının Müdafiə Sənayesi Nazirliyi" priority unoptimized
+                style={{height: 'clamp(56px, 6vh, 72px)', width: 'auto', maxWidth: '100%'}}
+            />
         </Box>
     );
 }
@@ -71,7 +76,7 @@ export default function AuthLayout({children}) {
                             PİLAU
                         </Typography>
                         <Typography sx={{color: GOV.textOnNavyMuted, maxWidth: 440, fontSize: 15, lineHeight: 1.7}}>
-                            İstehsal, təchizat və sənəd dövriyyəsi proseslərinin
+                            Lisenziya, təchizat və sənəd dövriyyəsi proseslərinin
                             vahid idarəetmə mühiti. Giriş yalnız sistem
                             administratoru tərəfindən yaradılmış hesablar üçün
                             mümkündür.

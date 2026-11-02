@@ -180,6 +180,24 @@ export default function UserForm({
                                  }) {
 
     /*
+    | Qurum admini (staff deyil): təşkilat öz təşkilatıdır və dəyişdirilə bilməz;
+    | qurum admini statusu / təsdiq hüquqları yalnız Nazirlik adminində göstərilir.
+    */
+    const [me, setMe] = useState(null);
+    const restrictedAdmin = Boolean(me && !me.is_staff && !me.is_superuser);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.USER);
+                setMe(res.data);
+            } catch (e) {
+                setMe(null);
+            }
+        })();
+    }, []);
+
+    /*
     |--------------------------------------------------------------------------
     | ID CARD
     |--------------------------------------------------------------------------
@@ -221,6 +239,13 @@ export default function UserForm({
         is_org_admin: Boolean(initialData?.is_org_admin),
 
     });
+
+
+    useEffect(() => {
+        if (restrictedAdmin && me.organization && String(form.organization) !== String(me.organization)) {
+            setForm((f) => ({...f, organization: me.organization}));
+        }
+    }, [restrictedAdmin, me]);
 
 
     const [idCardSeries, setIdCardSeries] = useState(initialParsedIdCard.series);
@@ -945,6 +970,7 @@ export default function UserForm({
                 <OrganizationSelect
                     value={form.organization}
                     onChange={handleOrganizationChange}
+                    disabled={restrictedAdmin}
                     error={!!errors.organization}
                     helperText={errors.organization}
                     required
@@ -1145,6 +1171,7 @@ export default function UserForm({
             </Box>
 
 
+            {!restrictedAdmin && (<>
             {/*
             |--------------------------------------------------------------------------
             | QURUM ADMİNİ
@@ -1296,6 +1323,7 @@ export default function UserForm({
                 )}
 
             </Box>
+            </>)}
 
 
             {/* MODULE PERMISSIONS */}
@@ -1303,6 +1331,7 @@ export default function UserForm({
             <ModulePermissionsPicker
                 initialModules={initialModules}
                 isOrgAdmin={form.is_org_admin}
+                organization={form.organization}
                 onChange={(updatedModules) => {
                     setModules(updatedModules || []);
                 }}
