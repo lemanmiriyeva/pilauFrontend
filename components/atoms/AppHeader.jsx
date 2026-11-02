@@ -69,13 +69,6 @@ export default function AppHeader({user}) {
                   transformOrigin={{vertical: 'top', horizontal: 'right'}}>
                 <MenuItem onClick={() => {
                     setAnchorEl(null);
-                    router.push(APP_ROUTES.PROFILE);
-                }}>
-                    <ListItemIcon><PersonOutlineIcon fontSize="small"/></ListItemIcon>
-                    Şəxsi kabinet
-                </MenuItem>
-                <MenuItem onClick={() => {
-                    setAnchorEl(null);
                     router.push(APP_ROUTES.SENEDLERIM);
                 }}>
                     <ListItemIcon><DescriptionOutlinedIcon fontSize="small"/></ListItemIcon>
@@ -83,38 +76,11 @@ export default function AppHeader({user}) {
                 </MenuItem>
                 <MenuItem onClick={() => {
                     setAnchorEl(null);
-                    router.push(APP_ROUTES.YOXLAMALARIM);
+                    router.push(APP_ROUTES.PROFILE);
                 }}>
-                    <ListItemIcon><RuleOutlinedIcon fontSize="small"/></ListItemIcon>
-                    Yoxlamalarım
+                    <ListItemIcon><PersonOutlineIcon fontSize="small"/></ListItemIcon>
+                    Şəxsi kabinet
                 </MenuItem>
-                {user?.is_org_admin && (
-                    <MenuItem onClick={() => {
-                        setAnchorEl(null);
-                        router.push(APP_ROUTES.QURUM_YOXLAMASI_ICAZELERI);
-                    }}>
-                        <ListItemIcon><FactCheckOutlinedIcon fontSize="small"/></ListItemIcon>
-                        Qurum yoxlaması icazələri
-                    </MenuItem>
-                )}
-                {(user?.is_staff) && (
-                    <MenuItem onClick={() => {
-                        setAnchorEl(null);
-                        router.push(APP_ROUTES.TESDIQ_HUQUQLARI);
-                    }}>
-                        <ListItemIcon><VerifiedUserOutlinedIcon fontSize="small"/></ListItemIcon>
-                        Təsdiq hüquqları
-                    </MenuItem>
-                )}
-                {(user?.is_staff) && (
-                    <MenuItem onClick={() => {
-                        setAnchorEl(null);
-                        router.push(APP_ROUTES.TESDIQ_AXINI);
-                    }}>
-                        <ListItemIcon><AccountTreeOutlinedIcon fontSize="small"/></ListItemIcon>
-                        Təsdiq axını
-                    </MenuItem>
-                )}
                 <MenuItem onClick={() => {
                     setAnchorEl(null);
                     router.push(APP_ROUTES.SIGNOUT);

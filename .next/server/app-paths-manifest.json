@@ -1,6 +1,14 @@
 {
-  "/page": "app/page.js",
+  "/inzibatci-paneli/page": "app/inzibatci-paneli/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/daxilol/page": "app/daxilol/page.js",
-  "/lisenziya-icazeleri/yoxlamalarim/page": "app/lisenziya-icazeleri/yoxlamalarim/page.js"
+  "/inzibatci-paneli/icazeler/[orgId]/page": "app/inzibatci-paneli/icazeler/[orgId]/page.js",
+  "/page": "app/page.js",
+  "/sexsi-kabinet/page": "app/sexsi-kabinet/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/inzibatci-paneli/tesdiq-axini/page": "app/inzibatci-paneli/tesdiq-axini/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/licenses/review-summary/route": "app/api/licenses/review-summary/route.js",
+  "/api/workflow/stage2-permissions/route": "app/api/workflow/stage2-permissions/route.js",
+  "/lisenziya-icazeleri/tesdiq-huquqlari/page": "app/lisenziya-icazeleri/tesdiq-huquqlari/page.js",
+  "/api/organizations/[id]/approval-flow/route": "app/api/organizations/[id]/approval-flow/route.js"
 }

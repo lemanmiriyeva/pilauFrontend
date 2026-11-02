@@ -236,7 +236,7 @@ export default function Page() {
                         {tab === 'nomenclature' && <NomenclatureTab orgId={params.id} canCreate={org.can_create} canEdit={org.can_edit} canDelete={org.can_delete} onChanged={loadProfile}/>}
                         {tab === 'subordinates' && <SubordinatesTab orgId={params.id} onChanged={loadProfile}/>}
                         {tab === 'equipment' && <EquipmentTab orgId={params.id} canCreate={org.can_create} canEdit={org.can_edit} canDelete={org.can_delete} onChanged={loadProfile}/>}
-                        {tab === 'turnover' && <TurnoverTab/>}
+                        {tab === 'turnover' && <TurnoverTab orgId={params.id}/>}
                         {tab === 'flow' && <ApprovalFlowTab orgId={params.id}/>}
                         {tab === 'modules' && <ModulesTab orgId={params.id}/>}
                         {tab === 'activity' && <ActivityDocsTab orgId={params.id} canCreate={org.can_create} canDelete={org.can_delete} onChanged={loadProfile}/>}

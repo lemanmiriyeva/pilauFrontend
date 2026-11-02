@@ -65,7 +65,7 @@ export default function Page() {
 
                 {review?.is_reviewer && (
                     <Box
-                        onClick={() => router.push(APP_ROUTES.YOXLAMALARIM)}
+                        onClick={() => router.push(`${APP_ROUTES.SENEDLERIM}?tab=tesdiq`)}
                         sx={{
                             mb: 4, p: 2.5, cursor: 'pointer', borderRadius: 2, backgroundColor: GOV.navy, color: '#fff',
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
@@ -110,7 +110,14 @@ export default function Page() {
                                 module={m}
                                 variant="home"
                                 onClick={() => {
-                                    const path = m.key.startsWith('/') ? m.key : `modullar/${m.key}`;
+                                    // Nazirlik admini (staff/superuser) bütün təşkilatların siyahısını görür.
+                                    // Qurum istifadəçisi isə birbaşa öz təşkilatının detalına keçir.
+                                    const isMinistry = Boolean(user?.is_staff || user?.is_superuser);
+                                    if (m.key === 'teskilatlar' && !isMinistry && user?.organization) {
+                                        router.push(`/modullar/teskilatlar/${user.organization}`);
+                                        return;
+                                    }
+
                                     const finalRoute = m.key.includes('inzibatci-paneli')
                                         ? `/${m.key.replace(/^\/+/, '')}`
                                         : `modullar/${m.key}`;
