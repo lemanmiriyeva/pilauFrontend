@@ -45,7 +45,6 @@ export default function AppHeader({user}) {
 
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1.5}}>
                 <NotificationBell/>
-
                 <Box
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     sx={{
