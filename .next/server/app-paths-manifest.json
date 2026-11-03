@@ -1,11 +1,22 @@
 {
-  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
   "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/lisenziya-icazeleri/operator-yoxlama/page": "app/lisenziya-icazeleri/operator-yoxlama/page.js",
-  "/lisenziya-icazeleri/operatorlar/page": "app/lisenziya-icazeleri/operatorlar/page.js",
-  "/modullar/lisenziya-senedler/lisenziya/page": "app/modullar/lisenziya-senedler/lisenziya/page.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/daxilol/page": "app/daxilol/page.js",
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/modullar/lisenziya-senedler/lisenziya/page": "app/modullar/lisenziya-senedler/lisenziya/page.js",
+  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
   "/modullar/lisenziya-senedler/lisenziya/[id]/page": "app/modullar/lisenziya-senedler/lisenziya/[id]/page.js",
+  "/api/licenses/permit-documents/[id]/route": "app/api/licenses/permit-documents/[id]/route.js",
+  "/api/licenses/review-summary/route": "app/api/licenses/review-summary/route.js",
+  "/lisenziya-icazeleri/senedlerim/page": "app/lisenziya-icazeleri/senedlerim/page.js",
   "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
-  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
+  "/api/workflow/operator-queue/route": "app/api/workflow/operator-queue/route.js",
+  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
+  "/api/organizations/table/route": "app/api/organizations/table/route.js",
+  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
+  "/api/organizations/[id]/profile/route": "app/api/organizations/[id]/profile/route.js",
+  "/api/organizations/[id]/turnover/route": "app/api/organizations/[id]/turnover/route.js"
 }

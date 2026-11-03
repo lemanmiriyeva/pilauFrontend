@@ -11,6 +11,34 @@ import {GOV} from "@/components/theme/govColors";
 import AppHeader from "@/components/atoms/AppHeader";
 import ModuleCard from "@/components/atoms/ModuleCard";
 
+function TaskCard({title, hint, count, onClick}) {
+    const active = Number(count) > 0;
+    return (
+        <Box
+            onClick={onClick}
+            sx={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
+                px: 2, py: 1.5, cursor: 'pointer', borderRadius: 2, backgroundColor: '#fff',
+                border: `1px solid ${GOV.cardBorder}`, borderLeft: `3px solid ${active ? GOV.gold : GOV.cardBorder}`,
+                transition: 'box-shadow .15s',
+                '&:hover': {boxShadow: '0 4px 14px rgba(20, 27, 51, 0.08)'},
+            }}
+        >
+            <Box sx={{minWidth: 0}}>
+                <Typography sx={{fontSize: 13.5, fontWeight: 700, color: GOV.textPrimary}}>{title}</Typography>
+                <Typography sx={{fontSize: 12, color: GOV.textMuted, mt: 0.2}}>{hint}</Typography>
+            </Box>
+            <Box sx={{
+                minWidth: 28, height: 28, px: 1, borderRadius: 14, display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: 13, fontWeight: 800,
+                backgroundColor: active ? GOV.gold : GOV.pageBg, color: active ? GOV.navy : GOV.textMuted,
+            }}>
+                {count ?? 0}
+            </Box>
+        </Box>
+    );
+}
+
 export default function Page() {
     const [user, setUser] = useState(null);
     const [modules, setModules] = useState([]);
@@ -63,45 +91,27 @@ export default function Page() {
                     <Box sx={{width: 48, height: 3, backgroundColor: GOV.navySoft, mx: 'auto', mt: 1.5}}/>
                 </Box>
 
-                {review?.is_reviewer && (
-                    <Box
-                        onClick={() => router.push(`${APP_ROUTES.SENEDLERIM}?tab=tesdiq`)}
-                        sx={{
-                            mb: 4, p: 2.5, cursor: 'pointer', borderRadius: 2, backgroundColor: GOV.navy, color: '#fff',
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
-                            border: `1px solid ${GOV.gold}`, '&:hover': {backgroundColor: GOV.navyMid},
-                        }}
-                    >
-                        <Box>
-                            <Typography sx={{fontSize: 16, fontWeight: 800}}>Təsdiq gözləyən sənədlər</Typography>
-                            <Typography sx={{fontSize: 12.5, opacity: 0.8, mt: 0.5}}>
-                                Yoxlama və təsdiq üçün sizə yönləndirilmiş sənədlərə baxın, təsdiqləyin və ya rədd edin.
-                            </Typography>
-                        </Box>
-                        <Box sx={{
-                            minWidth: 44, height: 44, borderRadius: '50%', backgroundColor: review.total ? GOV.gold : 'rgba(255,255,255,0.15)',
-                            color: review.total ? GOV.navy : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 18, fontWeight: 800, px: 1,
-                        }}>{review.total}</Box>
-                    </Box>
-                )}
-                {review?.is_operator && (
-                    <Box onClick={() => router.push(APP_ROUTES.OPERATOR_YOXLAMA)}
-                         sx={{mb: 4, p: 2.5, cursor: 'pointer', borderRadius: 2, backgroundColor: GOV.navy, color: '#fff',
-                             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
-                             border: `1px solid ${GOV.gold}`, '&:hover': {backgroundColor: GOV.navyMid}}}>
-                        <Box>
-                            <Typography sx={{fontSize: 16, fontWeight: 800}}>Operator yoxlaması</Typography>
-                            <Typography sx={{fontSize: 12.5, opacity: 0.8, mt: 0.5}}>
-                                Yoxlamanı gözləyən sənədlərə baxın, uğurlu və ya imtina qərarı verin.
-                            </Typography>
-                        </Box>
-                        <Box sx={{minWidth: 44, height: 44, borderRadius: '50%', display: 'flex', alignItems: 'center',
-                            justifyContent: 'center', fontSize: 18, fontWeight: 800, px: 1,
-                            backgroundColor: review.operator_pending ? GOV.gold : 'rgba(255,255,255,0.15)',
-                            color: review.operator_pending ? GOV.navy : '#fff'}}>
-                            {review.operator_pending}
-                        </Box>
+                {(review?.is_reviewer || review?.is_operator) && (
+                    <Box sx={{
+                        display: 'grid', gap: 1.5, mb: 4,
+                        gridTemplateColumns: {xs: '1fr', sm: review?.is_reviewer && review?.is_operator ? '1fr 1fr' : '1fr'},
+                    }}>
+                        {review?.is_reviewer && (
+                            <TaskCard
+                                title="Təsdiq gözləyən sənədlər"
+                                hint="Yoxlayın, təsdiqləyin və ya rədd edin"
+                                count={review.total}
+                                onClick={() => router.push(`${APP_ROUTES.SENEDLERIM}?tab=tesdiq`)}
+                            />
+                        )}
+                        {review?.is_operator && (
+                            <TaskCard
+                                title="Operator yoxlaması"
+                                hint="Uğurlu və ya imtina qərarı verin"
+                                count={review.operator_pending}
+                                onClick={() => router.push(APP_ROUTES.OPERATOR_YOXLAMA)}
+                            />
+                        )}
                     </Box>
                 )}
 

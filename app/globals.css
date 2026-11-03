@@ -12,10 +12,58 @@ html, body {
     text-rendering: optimizeLegibility;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 .building {
     height: 100% !important;
 }
 
 a {
     color: inherit;
+}
+
+a:focus-visible {
+    outline: 2px solid #2488FF;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+::selection {
+    background: #E4C583;
+    color: #020624;
+}
+
+/* Nazik scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #C5CAD8 transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #C5CAD8;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #9AA3B8;
+    background-clip: content-box;
+}
+
+/* Rəqəm sahələrində brauzerin oxları */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    opacity: 0.4;
 }

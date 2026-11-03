@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useRouter} from "next/navigation";
@@ -18,8 +18,15 @@ export default function AppShell({children, onReady}) {
     const [tree, setTree] = useState([]);
     const [loading, setLoading] = useState(true);
     const [collapsed, setCollapsed] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     const router = useRouter();
+
+    // onReady çox vaxt səhifədə inline funksiya kimi yazılır (hər renderdə yeni yaranır).
+    // Onu effect-in dependency-sinə qoysaq: onReady -> setState -> render -> yeni onReady -> effect yenidən işləyir
+    // və /auth/user + /permissions/my-modules sorğuları sonsuz təkrarlanır. Ona görə ref-də saxlanılır.
+    const onReadyRef = useRef(onReady);
+    onReadyRef.current = onReady;
 
     useEffect(() => {
         let mounted = true;
@@ -39,7 +46,7 @@ export default function AppShell({children, onReady}) {
                 setUser(currentUser);
                 setTree(modules);
 
-                onReady && onReady({
+                onReadyRef.current && onReadyRef.current({
                     user: currentUser,
                 });
 
@@ -59,16 +66,16 @@ export default function AppShell({children, onReady}) {
         return () => {
             mounted = false;
         };
-    }, [router, onReady]);
+    }, [router]);
 
     if (loading) {
         return (<Box
-                sx={{
-                    display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
-                }}
-            >
-                <CircularProgress size={28}/>
-            </Box>);
+            sx={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',
+            }}
+        >
+            <CircularProgress size={28}/>
+        </Box>);
     }
 
     /*
@@ -87,32 +94,37 @@ export default function AppShell({children, onReady}) {
     const sidebarTree = tree;
 
     return (<Box
+        sx={{
+            minHeight: '100vh', backgroundColor: GOV.pageBg,
+        }}
+    >
+        <AppHeader user={user} onMenuClick={() => setMobileOpen(true)}/>
+
+        <Box
             sx={{
-                minHeight: '100vh', backgroundColor: GOV.pageBg,
+                display: 'flex', alignItems: 'stretch', minHeight: 'calc(100vh - 62px)',
             }}
         >
-            <AppHeader user={user}/>
+            <AdminSidebar
+                tree={sidebarTree}
+                collapsed={collapsed}
+                onToggleCollapsed={() => setCollapsed((c) => !c)}
+                mobileOpen={mobileOpen}
+                onCloseMobile={() => setMobileOpen(false)}
+            />
 
             <Box
                 sx={{
-                    display: 'flex', alignItems: 'stretch', minHeight: 'calc(100vh - 62px)',
+                    flexGrow: 1, minWidth: 0,
                 }}
             >
-                <AdminSidebar
-                    tree={sidebarTree}
-                    collapsed={collapsed}
-                    onToggleCollapsed={() => setCollapsed((c) => !c)}
-                />
-
-                <Box
-                    sx={{
-                        flexGrow: 1, minWidth: 0,
-                    }}
-                >
+                {/* Çox geniş ekranlarda məzmun çox yayılmasın */}
+                <Box sx={{maxWidth: 1680, mx: 'auto', width: '100%'}}>
                     {typeof children === 'function' ? children({
                         user, tree,
                     }) : children}
                 </Box>
             </Box>
-        </Box>);
+        </Box>
+    </Box>);
 }

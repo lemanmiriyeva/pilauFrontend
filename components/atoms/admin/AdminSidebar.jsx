@@ -24,6 +24,7 @@ function hrefForModule(module, parentKeys = []) {
         if (module.key === 'departament-vezife') return APP_ROUTES.INZIBATCI_DEPARTAMENT_VEZIFE;
         if (module.key === 'tesdiq-huquqlari') return APP_ROUTES.TESDIQ_HUQUQLARI;
         if (module.key === 'tesdiq-axini') return APP_ROUTES.TESDIQ_AXINI;
+        if (module.key === 'operatorlar') return APP_ROUTES.OPERATORLAR;
     }
     return `${APP_ROUTES.MODULES}/${[...parentKeys, module.key].join('/')}`;
 }

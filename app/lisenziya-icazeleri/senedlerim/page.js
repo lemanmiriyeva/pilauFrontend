@@ -23,6 +23,7 @@ import {handleError} from "@/app/utils";
 import {APP_ROUTES} from "@/components/constants";
 import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
+import {docTypeDetailRoute} from "@/components/atoms/reports/docTypeRoutes";
 
 /* Kateqoriya adları və tab sırası (backend: licenses/field_schema.py -> DOC_TYPES) */
 const CATEGORY_LABELS = {
@@ -162,12 +163,49 @@ function DocRow({doc, mode, busy, onOpen, onOpenCertificate, onApprove, onReject
     );
 }
 
+function OperatorDocRow({doc, onOpen, onReview}) {
+    return (
+        <Box sx={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap',
+            px: 2.5, py: 2, borderBottom: `1px solid ${GOV.cardBorder}`,
+            '&:last-of-type': {borderBottom: 'none'}, '&:hover': {backgroundColor: GOV.pageBg},
+        }}>
+            <Box sx={{minWidth: 0, flex: '1 1 260px'}}>
+                <Typography sx={{fontSize: 13.5, fontWeight: 700, color: GOV.textPrimary}}>
+                    {doc.number} · {doc.category}
+                </Typography>
+                <Typography sx={{fontSize: 12, color: GOV.textMuted, mt: 0.3}}>
+                    {doc.applicant_name || doc.organization_name || 'Müraciətçi göstərilməyib'}
+                    {doc.files_count != null ? ` · ${doc.files_count} fayl` : ''}
+                    {doc.submitted_at ? ` · göndərilib: ${formatDate(doc.submitted_at)}` : ''}
+                </Typography>
+            </Box>
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0, flexWrap: 'wrap'}}>
+                <StatusChip status="yoxlamada"/>
+                <Button size="small" variant="text" onClick={() => onOpen(doc)}
+                        sx={{textTransform: 'none', fontSize: 12.5, fontWeight: 700, color: GOV.navySoft}}>
+                    Bax
+                </Button>
+                <Button size="small" variant="contained" onClick={onReview}
+                        sx={{
+                            backgroundColor: GOV.navy, textTransform: 'none', fontSize: 12.5, fontWeight: 700,
+                            '&:hover': {backgroundColor: GOV.navyMid},
+                        }}>
+                    Yoxla
+                </Button>
+            </Box>
+        </Box>
+    );
+}
+
 export default function Page() {
     const router = useRouter();
     const {enqueueSnackbar} = useSnackbar();
 
     const [isReviewer, setIsReviewer] = useState(false);
-    const [mainTab, setMainTab] = useState('mine');          // 'mine' | 'pending'
+    const [isOperator, setIsOperator] = useState(false);
+    const [operatorDocs, setOperatorDocs] = useState(null);
+    const [mainTab, setMainTab] = useState('mine');          // 'mine' | 'pending' | 'operator'
     const [category, setCategory] = useState('all');         // 'all' | doc_type
     const [mineDocs, setMineDocs] = useState(null);
     const [pendingDocs, setPendingDocs] = useState(null);
@@ -200,24 +238,40 @@ export default function Page() {
         }
     }, []);
 
+    /* Operator üçün yoxlanacaq sənədlər */
+    const loadOperator = useCallback(async () => {
+        try {
+            const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.OPERATOR_QUEUE);
+            setOperatorDocs(asList(res.data));
+        } catch (e) {
+            enqueueSnackbar(e?.response?.data?.detail || handleError(e), {variant: 'error'});
+            setOperatorDocs([]);
+        }
+    }, []);
+
     useEffect(() => {
         loadMine();
         (async () => {
             try {
                 const res = await service_api.get(NEXT_API_ENDPOINTS.LICENSES.REVIEW_SUMMARY);
+                const tab = new URLSearchParams(window.location.search).get('tab');
                 if (res.data?.is_reviewer) {
                     setIsReviewer(true);
                     loadPending();
                     // Ana səhifədəki kartdan gələndə (?tab=tesdiq) birbaşa həmin tab açılsın
-                    if (new URLSearchParams(window.location.search).get('tab') === 'tesdiq') {
-                        setMainTab('pending');
-                    }
+                    if (tab === 'tesdiq') setMainTab('pending');
                 }
-            } catch (e) { /* təsdiq hüququ yoxdursa tab göstərilmir */ }
+                if (res.data?.is_operator) {
+                    setIsOperator(true);
+                    loadOperator();
+                    // Header menyusundan gələndə (?tab=operator) birbaşa "Yoxlanacaq sənədlər" açılsın
+                    if (tab === 'operator') setMainTab('operator');
+                }
+            } catch (e) { /* təsdiq/operator hüququ yoxdursa tablar göstərilmir */ }
         })();
     }, []);
 
-    const docs = mainTab === 'pending' ? pendingDocs : mineDocs;
+    const docs = mainTab === 'pending' ? pendingDocs : mainTab === 'operator' ? operatorDocs : mineDocs;
 
     /* Kateqoriya tabları: yalnız sənədi olan kateqoriyalar + "Hamısı" */
     const categoryTabs = useMemo(() => {
@@ -292,6 +346,7 @@ export default function Page() {
 
     const loading = docs === null;
     const pendingCount = pendingDocs?.length ?? null;
+    const operatorCount = operatorDocs?.length ?? null;
 
     return (
         <AppShell>
@@ -314,11 +369,13 @@ export default function Page() {
                 <Typography sx={{fontSize: 13, color: GOV.textMuted, mt: 0.5, mb: 3}}>
                     {mainTab === 'pending'
                         ? 'Sizin təsdiqinizi gözləyən sənədlər.'
-                        : 'Sizin yaratdığınız sənədlər.'}
+                        : mainTab === 'operator'
+                            ? 'Operator kimi yoxlamalı olduğunuz sənədlər.'
+                            : 'Sizin yaratdığınız sənədlər.'}
                 </Typography>
 
                 {/* 1-ci səviyyə: Yaratdığım / Təsdiq gözləyən */}
-                {isReviewer && (
+                {(isReviewer || isOperator) && (
                     <Tabs
                         value={mainTab} onChange={(e, v) => switchMain(v)}
                         sx={{
@@ -327,8 +384,14 @@ export default function Page() {
                         }}
                     >
                         <Tab value="mine" label={`Yaratdığım sənədlər${mineDocs ? ` (${mineDocs.length})` : ''}`}/>
-                        <Tab value="pending"
-                             label={`Təsdiq gözləyən sənədlər${pendingCount !== null ? ` (${pendingCount})` : ''}`}/>
+                        {isReviewer && (
+                            <Tab value="pending"
+                                 label={`Təsdiq gözləyən sənədlər${pendingCount !== null ? ` (${pendingCount})` : ''}`}/>
+                        )}
+                        {isOperator && (
+                            <Tab value="operator"
+                                 label={`Yoxlanacaq sənədlər${operatorCount !== null ? ` (${operatorCount})` : ''}`}/>
+                        )}
                     </Tabs>
                 )}
 
@@ -347,6 +410,20 @@ export default function Page() {
                     ))}
                 </Tabs>
 
+                {mainTab === 'operator' && (
+                    <Box sx={{display: 'flex', justifyContent: 'flex-end', mb: 1.5}}>
+                        <Button
+                            variant="contained" onClick={() => router.push(APP_ROUTES.OPERATOR_YOXLAMA)}
+                            sx={{
+                                backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700,
+                                '&:hover': {backgroundColor: GOV.navyMid},
+                            }}
+                        >
+                            Yoxlama səhifəsinə keç
+                        </Button>
+                    </Box>
+                )}
+
                 <Box sx={{backgroundColor: '#fff', border: `1px solid ${GOV.cardBorder}`, borderRadius: 2, overflow: 'hidden'}}>
                     {loading ? (
                         <Box sx={{display: 'flex', justifyContent: 'center', py: 6}}>
@@ -356,8 +433,18 @@ export default function Page() {
                         <EmptyState text={
                             mainTab === 'pending'
                                 ? 'Təsdiqinizi gözləyən sənəd yoxdur.'
-                                : 'Bu kateqoriya üzrə yaratdığınız sənəd yoxdur.'
+                                : mainTab === 'operator'
+                                    ? 'Yoxlama gözləyən sənəd yoxdur.'
+                                    : 'Bu kateqoriya üzrə yaratdığınız sənəd yoxdur.'
                         }/>
+                    ) : mainTab === 'operator' ? (
+                        visibleDocs.map((doc) => (
+                            <OperatorDocRow
+                                key={`operator-${doc.id}`} doc={doc}
+                                onOpen={(d) => router.push(docTypeDetailRoute(d.doc_type, d.id))}
+                                onReview={() => router.push(APP_ROUTES.OPERATOR_YOXLAMA)}
+                            />
+                        ))
                     ) : (
                         visibleDocs.map((doc) => (
                             <DocRow

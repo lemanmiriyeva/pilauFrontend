@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/inzibatci-paneli/departament-vezife/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/inzibatci-paneli/departament-vezife/page.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,25 +11,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/sexsi-kabinet/page": [
+    "/daxilol/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/sexsi-kabinet/page.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/lisenziya-icazeleri/operator-yoxlama/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/operator-yoxlama/page.js"
-    ],
-    "/lisenziya-icazeleri/operatorlar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/operatorlar/page.js"
+      "static/chunks/app/daxilol/page.js"
     ],
     "/modullar/[[...path]]/page": [
       "static/chunks/webpack.js",
@@ -41,15 +26,30 @@
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/lisenziya/page.js"
     ],
-    "/modullar/lisenziya-senedler/lisenziya/yeni/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
-    ],
     "/modullar/lisenziya-senedler/lisenziya/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/lisenziya-senedler/lisenziya/[id]/page.js"
+    ],
+    "/lisenziya-icazeleri/senedlerim/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+    ],
+    "/modullar/teskilatlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/teskilatlar/page.js"
+    ],
+    "/modullar/teskilatlar/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/teskilatlar/[id]/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

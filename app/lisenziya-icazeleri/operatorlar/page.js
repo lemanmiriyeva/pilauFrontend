@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
+import Autocomplete from '@mui/material/Autocomplete';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -26,7 +27,10 @@ const todayStr = () => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 };
 
-const EMPTY_FORM = {first_name: '', last_name: '', username: '', email: '', phone: '', fin_kod: ''};
+const userLabel = (u) => {
+    const name = u.full_name || `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.username;
+    return u.username && name !== u.username ? `${name} (${u.username})` : name;
+};
 
 function StatusChip({op}) {
     const meta = op.is_enabled && op.manual_override
@@ -61,7 +65,9 @@ export default function Page() {
     const [savingMax, setSavingMax] = useState(false);
     const [busyId, setBusyId] = useState(null);
     const [createOpen, setCreateOpen] = useState(false);
-    const [form, setForm] = useState(EMPTY_FORM);
+    const [msnUsers, setMsnUsers] = useState([]);
+    const [usersLoading, setUsersLoading] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [creating, setCreating] = useState(false);
     const [created, setCreated] = useState(null);
 
@@ -80,8 +86,31 @@ export default function Page() {
         load(day);
     }, [day]);
 
+    // "Operator yarat" açılanda MSN istifadəçilərini bir dəfə yüklə
+    useEffect(() => {
+        if (!createOpen) return;
+        let cancelled = false;
+        (async () => {
+            setUsersLoading(true);
+            try {
+                const res = await service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USERS_LIST);
+                const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+                if (!cancelled) {
+                    setMsnUsers(list.filter((u) => u.is_active !== false && u.organization_detail?.code === 'msn'));
+                }
+            } catch (e) {
+                enqueueSnackbar(e?.response?.data?.detail || handleError(e), {variant: 'error'});
+            } finally {
+                if (!cancelled) setUsersLoading(false);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [createOpen]);
+
     const canEdit = !!data?.can_edit;
     const rows = data?.results || [];
+    const operatorUsernames = new Set(rows.map((r) => r.username));
+    const availableUsers = msnUsers.filter((u) => !operatorUsernames.has(u.username));
     const maxPerRound = data?.settings?.max_per_round || 0;
 
     const saveMax = async () => {
@@ -122,13 +151,18 @@ export default function Page() {
         }
     };
 
+    const closeCreate = () => {
+        setCreateOpen(false);
+        setSelectedUser(null);
+    };
+
     const createOperator = async () => {
+        if (!selectedUser) return;
         setCreating(true);
         try {
-            const res = await service_api.post(NEXT_API_ENDPOINTS.WORKFLOW.OPERATORS, form);
+            const res = await service_api.post(NEXT_API_ENDPOINTS.WORKFLOW.OPERATORS, {user_id: selectedUser.id});
             setCreated(res.data);
-            setCreateOpen(false);
-            setForm(EMPTY_FORM);
+            closeCreate();
             await load(day);
         } catch (e) {
             const d = e?.response?.data;
@@ -138,8 +172,6 @@ export default function Page() {
             setCreating(false);
         }
     };
-
-    const setField = (k) => (e) => setForm((p) => ({...p, [k]: e.target.value}));
 
     return (
         <AppShell>
@@ -283,40 +315,59 @@ export default function Page() {
                 )}
             </Box>
 
-            {/* Operator yarat */}
-            <Dialog open={createOpen} onClose={() => setCreateOpen(false)} fullWidth maxWidth="sm">
+            {/* Operator yarat: mövcud MSN istifadəçilərindən seçim */}
+            <Dialog open={createOpen} onClose={closeCreate} fullWidth maxWidth="sm">
                 <DialogTitle sx={{fontSize: 16, fontWeight: 700}}>Yeni operator</DialogTitle>
                 <DialogContent>
-                    <Box sx={{display: 'grid', gap: 2, gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}, pt: 1}}>
-                        <TextField size="small" label="Ad" value={form.first_name} onChange={setField('first_name')}/>
-                        <TextField size="small" label="Soyad" value={form.last_name} onChange={setField('last_name')}/>
-                        <TextField size="small" label="İstifadəçi adı" value={form.username} onChange={setField('username')}/>
-                        <TextField size="small" label="E-poçt" value={form.email} onChange={setField('email')}/>
-                        <TextField size="small" label="Telefon" value={form.phone} onChange={setField('phone')}/>
-                        <TextField size="small" label="FİN kod" value={form.fin_kod} onChange={setField('fin_kod')}/>
-                    </Box>
+                    <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 2}}>
+                        Operator kimi təyin etmək üçün MSN-in mövcud istifadəçilərindən birini seçin.
+                    </Typography>
+                    <Autocomplete
+                        options={availableUsers}
+                        value={selectedUser}
+                        loading={usersLoading}
+                        onChange={(_, v) => setSelectedUser(v)}
+                        getOptionLabel={userLabel}
+                        isOptionEqualToValue={(o, v) => o.id === v.id}
+                        noOptionsText="Təyin edilə biləcək MSN istifadəçisi tapılmadı"
+                        loadingText="Yüklənir..."
+                        renderInput={(params) => (
+                            <TextField {...params} size="small" label="MSN istifadəçisi"
+                                       InputProps={{
+                                           ...params.InputProps,
+                                           endAdornment: (
+                                               <>
+                                                   {usersLoading ? <CircularProgress size={16}/> : null}
+                                                   {params.InputProps.endAdornment}
+                                               </>
+                                           ),
+                                       }}/>
+                        )}
+                    />
+                    {selectedUser && (
+                        <Box sx={{mt: 2, p: 1.5, borderRadius: 1.5, backgroundColor: GOV.pageBg, fontSize: 12.5, color: GOV.textMuted}}>
+                            {selectedUser.email || '—'}{selectedUser.phone ? ` · ${selectedUser.phone}` : ''}
+                        </Box>
+                    )}
                 </DialogContent>
                 <DialogActions sx={{px: 3, pb: 2.5}}>
-                    <Button onClick={() => setCreateOpen(false)} sx={{textTransform: 'none'}}>Ləğv et</Button>
-                    <Button variant="contained" disabled={creating} onClick={createOperator}
+                    <Button onClick={closeCreate} sx={{textTransform: 'none'}}>Ləğv et</Button>
+                    <Button variant="contained" disabled={creating || !selectedUser} onClick={createOperator}
                             sx={{backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, '&:hover': {backgroundColor: GOV.navyMid}}}>
-                        {creating ? 'Yaradılır...' : 'Yarat'}
+                        {creating ? 'Təyin edilir...' : 'Operator təyin et'}
                     </Button>
                 </DialogActions>
             </Dialog>
 
             {/* Yaradıldı - müvəqqəti şifrə */}
             <Dialog open={!!created} onClose={() => setCreated(null)} fullWidth maxWidth="xs">
-                <DialogTitle sx={{fontSize: 16, fontWeight: 700}}>Operator yaradıldı</DialogTitle>
+                <DialogTitle sx={{fontSize: 16, fontWeight: 700}}>Operator təyin edildi</DialogTitle>
                 <DialogContent>
                     <Typography sx={{fontSize: 13.5, mb: 1.5}}>
-                        <b>{created?.full_name}</b> ({created?.username}) üçün ilkin şifrə:
+                        <b>{created?.full_name}</b> ({created?.username}) operator kimi təyin edildi.
                     </Typography>
-                    <Box sx={{p: 1.5, borderRadius: 1.5, backgroundColor: GOV.pageBg, fontFamily: 'monospace', fontSize: 14, fontWeight: 700}}>
-                        {created?.initial_password}
-                    </Box>
-                    <Typography sx={{fontSize: 12, color: GOV.textMuted, mt: 1.5}}>
-                        İstifadəçi ilk girişdə şifrəni özü dəyişəcək.
+                    <Typography sx={{fontSize: 12, color: GOV.textMuted}}>
+                        İstifadəçi öz mövcud hesabı ilə daxil olacaq.
                     </Typography>
                 </DialogContent>
                 <DialogActions sx={{px: 3, pb: 2.5}}>

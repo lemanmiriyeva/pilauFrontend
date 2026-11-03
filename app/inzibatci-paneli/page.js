@@ -16,121 +16,137 @@ export default function Page() {
     const router = useRouter();
 
     return (<AppShell>
-            {({tree, user}) => {
-                const result = findModuleByPath(tree, ['inzibatci-paneli']);
+        {({tree, user}) => {
+            const result = findModuleByPath(tree, ['inzibatci-paneli']);
 
-                const children = result?.node?.children || [];
+            const backendChildren = result?.node?.children || [];
 
-                return (<Box
+            // "Operatorlar" bölməsi backend modul cədvəlindən asılı olmasın deyə burada əlavə olunur
+            // (backend artıq eyni açarla qaytarırsa təkrar göstərilmir).
+            const children = result && !backendChildren.some((ch) => ch.key === 'operatorlar')
+                ? [...backendChildren, {
+                    id: 'operatorlar',
+                    key: 'operatorlar',
+                    title: 'Operatorlar',
+                    meta: 'Operatorların siyahısı, gündəlik statistika, dövr limiti və aç/söndür',
+                    icon: 'manage_accounts',
+                }]
+                : backendChildren;
+
+            return (<Box
+                sx={{
+                    maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6},
+                }}
+            >
+                {/* Breadcrumb */}
+                <Typography
+                    sx={{
+                        fontSize: 12.5, color: GOV.textMuted, mb: 3,
+                    }}
+                >
+                    <Link
+                        component="button"
+                        onClick={() => router.push(APP_ROUTES.HOME)}
                         sx={{
-                            maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6},
+                            fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none',
                         }}
                     >
-                        {/* Breadcrumb */}
-                        <Typography
-                            sx={{
-                                fontSize: 12.5, color: GOV.textMuted, mb: 3,
-                            }}
-                        >
-                            <Link
-                                component="button"
-                                onClick={() => router.push(APP_ROUTES.HOME)}
-                                sx={{
-                                    fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none',
-                                }}
-                            >
-                                Ana Səhifə
-                            </Link>
+                        Ana Səhifə
+                    </Link>
 
-                            {' / '}
+                    {' / '}
 
-                            <span>
+                    <span>
                                 İnzibatçı Paneli
                             </span>
-                        </Typography>
+                </Typography>
 
-                        {/* Page title */}
-                        <Box
-                            sx={{
-                                textAlign: 'center', mb: 5,
-                            }}
+                {/* Page title */}
+                <Box
+                    sx={{
+                        textAlign: 'center', mb: 5,
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontSize: {
+                                xs: 22, md: 28,
+                            },
+                            fontWeight: 800,
+                            letterSpacing: 1,
+                            color: GOV.textPrimary,
+                            textTransform: 'uppercase',
+                        }}
+                    >
+                        İnzibatçı Paneli
+                    </Typography>
+                </Box>
+
+                {/* Submodules */}
+                {children.length > 0 ? (<Box
+                    sx={{
+                        display: 'grid', gap: 2, gridTemplateColumns: {
+                            xs: '1fr', sm: '1fr 1fr',
+                        },
+                    }}
+                >
+                    {children.map((child) => {
+                        let href;
+
+                        switch (child.key) {
+                            case 'istifadeciler':
+                                href = APP_ROUTES.INZIBATCI_ISTIFADECILER;
+                                break;
+
+                            case 'icazelerin-idaresi':
+                                href = APP_ROUTES.INZIBATCI_ICAZELER;
+                                break;
+
+                            case 'departament-vezife':
+                                href = APP_ROUTES.INZIBATCI_DEPARTAMENT_VEZIFE;
+                                break;
+
+                            case 'tesdiq-huquqlari':
+                                href = APP_ROUTES.TESDIQ_HUQUQLARI;
+                                break;
+
+                            case 'tesdiq-axini':
+                                href = '/inzibatci-paneli/tesdiq-axini';
+                                break;
+
+                            case 'operatorlar':
+                                href = APP_ROUTES.OPERATORLAR;
+                                break;
+
+                            default:
+                                href = `${APP_ROUTES.INZIBATCI}/${child.key}`;
+                        }
+
+                        return (<ModuleCard
+                            key={child.id}
+                            module={child}
+                            variant="sub"
+                            onClick={() => router.push(href)}
+                        />);
+                    })}
+                </Box>) : (<Typography
+                    sx={{
+                        fontSize: 13, color: GOV.textMuted, textAlign: 'center', py: 4,
+                    }}
+                >
+                    Bu bölməyə girişiniz yoxdur.
+                </Typography>)}
+                {(user?.is_staff || user?.is_superuser) && (
+                    <Box sx={{mt: 3, textAlign: 'center'}}>
+                        <Link
+                            component="button" onClick={() => router.push('/inzibatci-paneli/modul-konfiqurasiyasi')}
+                            sx={{fontSize: 13, fontWeight: 700, color: GOV.navySoft}}
                         >
-                            <Typography
-                                sx={{
-                                    fontSize: {
-                                        xs: 22, md: 28,
-                                    },
-                                    fontWeight: 800,
-                                    letterSpacing: 1,
-                                    color: GOV.textPrimary,
-                                    textTransform: 'uppercase',
-                                }}
-                            >
-                                İnzibatçı Paneli
-                            </Typography>
-                        </Box>
-
-                        {/* Submodules */}
-                        {children.length > 0 ? (<Box
-                                sx={{
-                                    display: 'grid', gap: 2, gridTemplateColumns: {
-                                        xs: '1fr', sm: '1fr 1fr',
-                                    },
-                                }}
-                            >
-                                {children.map((child) => {
-                                    let href;
-
-                                    switch (child.key) {
-                                        case 'istifadeciler':
-                                            href = APP_ROUTES.INZIBATCI_ISTIFADECILER;
-                                            break;
-
-                                        case 'icazelerin-idaresi':
-                                            href = APP_ROUTES.INZIBATCI_ICAZELER;
-                                            break;
-
-                                        case 'departament-vezife':
-                                            href = APP_ROUTES.INZIBATCI_DEPARTAMENT_VEZIFE;
-                                            break;
-
-                                        case 'tesdiq-huquqlari':
-                                            href = APP_ROUTES.TESDIQ_HUQUQLARI;
-                                            break;
-
-                                        case 'tesdiq-axini':
-                                            href = '/inzibatci-paneli/tesdiq-axini';
-                                            break;
-
-                                        default:
-                                            href = `${APP_ROUTES.INZIBATCI}/${child.key}`;
-                                    }
-
-                                    return (<ModuleCard
-                                            key={child.id}
-                                            module={child}
-                                            variant="sub"
-                                            onClick={() => router.push(href)}
-                                        />);
-                                })}
-                            </Box>) : (<Typography
-                                sx={{
-                                    fontSize: 13, color: GOV.textMuted, textAlign: 'center', py: 4,
-                                }}
-                            >
-                                Bu bölməyə girişiniz yoxdur.
-                            </Typography>)}
-                        {(user?.is_staff || user?.is_superuser) && (
-                            <Box sx={{mt: 3, textAlign: 'center'}}>
-                                <Link
-                                    component="button" onClick={() => router.push('/inzibatci-paneli/modul-konfiqurasiyasi')}
-                                    sx={{fontSize: 13, fontWeight: 700, color: GOV.navySoft}}
-                                >
-                                    Qurum adminləri üçün modul konfiqurasiyası
-                                </Link>
-                            </Box>
-                        )}
-                    </Box>);
-            }}
-        </AppShell>);
+                            Qurum adminləri üçün modul konfiqurasiyası
+                        </Link>
+                    </Box>
+                )}
+            </Box>);
+        }}
+    </AppShell>);
 }

@@ -59,9 +59,24 @@ export default function NotificationBell() {
     };
 
     useEffect(() => {
-        fetchUnreadOnly();
-        pollRef.current = setInterval(fetchUnreadOnly, POLL_MS);
-        return () => clearInterval(pollRef.current);
+        const start = () => {
+            if (pollRef.current) return;
+            fetchUnreadOnly();
+            pollRef.current = setInterval(fetchUnreadOnly, POLL_MS);
+        };
+        const stop = () => {
+            clearInterval(pollRef.current);
+            pollRef.current = null;
+        };
+        // Tab gizlidirsə sorğu getmir, qayıdanda dərhal yeniləyib davam edir
+        const onVisibility = () => (document.hidden ? stop() : start());
+
+        if (!document.hidden) start();
+        document.addEventListener('visibilitychange', onVisibility);
+        return () => {
+            document.removeEventListener('visibilitychange', onVisibility);
+            stop();
+        };
     }, []);
 
     const handleOpen = (e) => {
