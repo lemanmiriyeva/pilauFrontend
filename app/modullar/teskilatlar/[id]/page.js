@@ -222,6 +222,7 @@ export default function Page() {
                                     <InfoItem label="DÖVLƏT QEYDİYYAT NÖMRƏSİ" value={org.state_reg_number}/>
                                     <InfoItem label="TELEFON" value={org.phone}/>
                                     <InfoItem label="E-POÇT" value={org.email}/>
+                                    <InfoItem label="VÖEN" value={org.voen}/>
                                     <InfoItem label="TABE OLDUĞU TƏŞKİLAT" value={org.parent_name}/>
                                     <InfoItem label="SİSTEMƏ ƏLAVƏ OLUNUB" value={formatDate(org.created_at)}/>
                                 </Box>

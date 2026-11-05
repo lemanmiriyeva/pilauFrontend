@@ -93,11 +93,8 @@ export default function Page() {
         (async () => {
             setUsersLoading(true);
             try {
-                const res = await service_api.get(NEXT_API_ENDPOINTS.AUTHENTICATION.ADMIN_USERS_LIST);
-                const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
-                if (!cancelled) {
-                    setMsnUsers(list.filter((u) => u.is_active !== false && u.organization_detail?.code === 'msn'));
-                }
+                const res = await service_api.get(NEXT_API_ENDPOINTS.WORKFLOW.OPERATOR_CANDIDATES);
+                if (!cancelled) setMsnUsers(Array.isArray(res.data) ? res.data : []);
             } catch (e) {
                 enqueueSnackbar(e?.response?.data?.detail || handleError(e), {variant: 'error'});
             } finally {
@@ -347,6 +344,8 @@ export default function Page() {
                     {selectedUser && (
                         <Box sx={{mt: 2, p: 1.5, borderRadius: 1.5, backgroundColor: GOV.pageBg, fontSize: 12.5, color: GOV.textMuted}}>
                             {selectedUser.email || '—'}{selectedUser.phone ? ` · ${selectedUser.phone}` : ''}
+                            {(selectedUser.department_name || selectedUser.position_name)
+                                ? ` · ${[selectedUser.department_name, selectedUser.position_name].filter(Boolean).join(' / ')}` : ''}
                         </Box>
                     )}
                 </DialogContent>

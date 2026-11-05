@@ -605,50 +605,24 @@ export default function UserForm({
 
             if (hasChildren) {
 
+                // Alt-şöbəsi olan departament də SEÇİLƏ bilər (departament direktorları üçün).
                 result.push(<MenuItem
                     key={`header-${node.id}`}
-                    disabled
+                    value={node.id}
                     sx={{
-                        pl: 2 + level * 3,
-
-                        minHeight: 42,
-
-                        fontSize: level === 0 ? 13 : 12.5,
-
-                        fontWeight: 700,
-
-                        color: `${GOV.navy} !important`,
-
-                        backgroundColor: "#F7F9FC",
-
-                        borderBottom: `1px solid ${GOV.cardBorder}`,
-
-                        opacity: "1 !important",
-
-                        cursor: "default",
-
-                        "&.Mui-disabled": {
-                            opacity: 1
-                        }
+                        pl: 2 + level * 3, minHeight: 42, fontSize: level === 0 ? 13 : 12.5, fontWeight: 700,
+                        color: GOV.navy, backgroundColor: "#F7F9FC", borderBottom: `1px solid ${GOV.cardBorder}`,
+                        "&:hover": {backgroundColor: "#EEF2F8"},
+                        "&.Mui-selected": {backgroundColor: "#E1E9F5", "&:hover": {backgroundColor: "#E1E9F5"}}
                     }}
                 >
-
-                    <Box
-                        sx={{
-                            display: "flex", alignItems: "center", gap: 1
-                        }}
-                    >
-
-                        <Box
-                            sx={{
-                                width: 6, height: 6, borderRadius: "50%", backgroundColor: GOV.navy
-                            }}
-                        />
-
+                    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                        <Box sx={{width: 6, height: 6, borderRadius: "50%", backgroundColor: GOV.navy}}/>
                         {node.name}
-
+                        <Box component="span" sx={{fontSize: 11, fontWeight: 500, color: GOV.textMuted}}>
+                            (departamentin özü)
+                        </Box>
                     </Box>
-
                 </MenuItem>);
 
             } else {
@@ -997,13 +971,9 @@ export default function UserForm({
                     }}
                     disabled={!form.organization || loadingDepartments}
                     SelectProps={{
-                        MenuProps: {
-                            PaperProps: {
-                                sx: {
-                                    maxHeight: 400
-                                }
-                            }
-                        }
+                        renderValue: (v) => (v ? (departments.find((d) => String(d.id) === String(v))?.name || "") : "Seçin"),
+                        displayEmpty: true,
+                        MenuProps: { PaperProps: { sx: { maxHeight: 400 } } }
                     }}
                 >
 
