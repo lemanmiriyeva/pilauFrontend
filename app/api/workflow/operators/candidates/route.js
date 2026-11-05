@@ -9,7 +9,13 @@ export async function GET() {
     const refresh = cookies().get("refresh")
     try {
         const res = await get_request(DJANGO_API_ENDPOINTS.WORKFLOW.OPERATOR_CANDIDATES, access, refresh)
-        const data = await res.json()
+        const text = await res.text()
+        let data
+        try {
+            data = JSON.parse(text)
+        } catch {
+            data = {detail: `Backend ${res.status} qaytardı (JSON deyil). Serverin xəta jurnalına baxın.`}
+        }
         return Response.json(data, {status: res.status})
     } catch (e) {
         return Response.json({detail: handleError(e)}, {status: 500})
