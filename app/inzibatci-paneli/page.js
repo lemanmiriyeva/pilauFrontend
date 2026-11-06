@@ -23,15 +23,23 @@ export default function Page() {
 
             // "Operatorlar" bölməsi backend modul cədvəlindən asılı olmasın deyə burada əlavə olunur
             // (backend artıq eyni açarla qaytarırsa təkrar göstərilmir).
-            const children = result && !backendChildren.some((ch) => ch.key === 'operatorlar')
-                ? [...backendChildren, {
+            const extra = [
+                {
                     id: 'operatorlar',
                     key: 'operatorlar',
                     title: 'Operatorlar',
                     meta: 'Operatorların siyahısı, gündəlik statistika, dövr limiti və aç/söndür',
                     icon: 'manage_accounts',
-                }]
-                : backendChildren;
+                },
+                {
+                    id: 'nomenklatura',
+                    key: 'nomenklatura',
+                    title: 'Nomenklatura',
+                    meta: 'Nomenklatura kataloqu, kateqoriyalar və təşkilatlara təyinat',
+                    icon: 'inventory_2',
+                },
+            ].filter((e) => !backendChildren.some((ch) => ch.key === e.key));
+            const children = result ? [...backendChildren, ...extra] : backendChildren;
 
             return (<Box
                 sx={{
@@ -116,6 +124,10 @@ export default function Page() {
 
                             case 'operatorlar':
                                 href = APP_ROUTES.OPERATORLAR;
+                                break;
+
+                            case 'nomenklatura':
+                                href = APP_ROUTES.NOMENKLATURA;
                                 break;
 
                             default:

@@ -85,10 +85,9 @@ export default function Page() {
         {label: 'KATEQORİYA / ALT KATEQORİYA', width: '1.6fr', render: (r) => (
             <Box>{r.category_name}{r.subcategory_name && <Typography component="span" sx={{display: 'block', fontSize: 11.5, color: GOV.textMuted}}>{r.subcategory_name}</Typography>}</Box>
         )},
-        {label: 'MƏHSULUN ADI', width: '2fr', render: (r) => (
-            <Box>{r.name}{r.note && <Typography component="span" sx={{display: 'block', fontSize: 11.5, color: GOV.textMuted}}>{r.note}</Typography>}</Box>
-        )},
+        {label: 'MƏHSULUN ADI', width: '1.8fr', render: (r) => r.name},
         {label: 'ÖLÇÜ VAHİDİ', width: '0.8fr', render: (r) => r.unit || '—'},
+        {label: 'QEYD', width: '1.6fr', render: (r) => r.note || '—'},
         {label: 'TƏŞKİLATLAR', width: '2fr', render: (r) => (
             <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
                 {(r.organizations || []).length === 0

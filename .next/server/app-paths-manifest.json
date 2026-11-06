@@ -1,11 +1,8 @@
 {
-  "/daxilol/page": "app/daxilol/page.js",
-  "/api/organizations/table/route": "app/api/organizations/table/route.js",
-  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
-  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
   "/page": "app/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
-  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
+  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js",
+  "/daxilol/page": "app/daxilol/page.js",
+  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
+  "/api/nomenclature/[...path]/route": "app/api/nomenclature/[...path]/route.js",
+  "/modullar/teskilatlar/nomenklatura/page": "app/modullar/teskilatlar/nomenklatura/page.js"
 }

@@ -93,10 +93,9 @@ export default function NomenclatureTab({orgId, canAssign, onChanged}) {
         {label: 'KATEQORİYA', width: '1.5fr', render: (r) => (
             <Box>{r.category_name}{r.subcategory_name && <Typography component="span" sx={{display: 'block', fontSize: 11.5, color: GOV.textMuted}}>{r.subcategory_name}</Typography>}</Box>
         )},
-        {label: 'MƏHSULUN ADI', width: '2.2fr', render: (r) => (
-            <Box>{r.name}{r.note && <Typography component="span" sx={{display: 'block', fontSize: 11.5, color: GOV.textMuted}}>{r.note}</Typography>}</Box>
-        )},
+        {label: 'MƏHSULUN ADI', width: '1.8fr', render: (r) => r.name},
         {label: 'ÖLÇÜ VAHİDİ', width: '0.8fr', render: (r) => r.unit || '—'},
+        {label: 'QEYD', width: '1.6fr', render: (r) => r.note || '—'},
         ...(canAssign ? [{
             label: '', width: '0.8fr', render: (r) => (
                 <Link component="button" onClick={() => unassign(r)} sx={{fontSize: 12.5, fontWeight: 600, color: '#B0374D', textDecoration: 'none'}}>Götür</Link>

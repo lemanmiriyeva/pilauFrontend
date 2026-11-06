@@ -25,6 +25,7 @@ function hrefForModule(module, parentKeys = []) {
         if (module.key === 'tesdiq-huquqlari') return APP_ROUTES.TESDIQ_HUQUQLARI;
         if (module.key === 'tesdiq-axini') return APP_ROUTES.TESDIQ_AXINI;
         if (module.key === 'operatorlar') return APP_ROUTES.OPERATORLAR;
+        if (module.key === 'nomenklatura') return APP_ROUTES.NOMENKLATURA;
     }
     return `${APP_ROUTES.MODULES}/${[...parentKeys, module.key].join('/')}`;
 }

@@ -45,6 +45,16 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/teskilatlar/[id]/page.js"
+    ],
+    "/inzibatci-paneli/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inzibatci-paneli/page.js"
+    ],
+    "/modullar/teskilatlar/nomenklatura/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/teskilatlar/nomenklatura/page.js"
     ]
   }
 }
