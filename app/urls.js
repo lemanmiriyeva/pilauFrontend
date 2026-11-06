@@ -106,6 +106,7 @@ export const DJANGO_API_ENDPOINTS = {
         OPERATOR_SETTINGS: API_URL + "/api/workflow/operators/settings/",
         OPERATOR_QUEUE: API_URL + "/api/workflow/operator-queue/",
         OPERATOR_CANDIDATES: API_URL + "/api/workflow/operators/candidates/",
+        OPERATOR_ACTIVITY: API_URL + "/api/workflow/operators/activity/",
     },
 }
 
@@ -214,5 +215,6 @@ export const NEXT_API_ENDPOINTS = {
         OPERATOR_SETTINGS: "workflow/operators/settings/",
         OPERATOR_QUEUE: "workflow/operator-queue/",
         OPERATOR_CANDIDATES: "workflow/operators/candidates/",
+        OPERATOR_ACTIVITY: "workflow/operators/activity/",
     },
 }

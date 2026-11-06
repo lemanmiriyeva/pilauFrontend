@@ -195,10 +195,13 @@ export default function Page() {
                                    onChange={(e) => setDay(e.target.value || todayStr())}
                                    InputLabelProps={{shrink: true}}/>
                         {canEdit && (
+                            <>
+                            <Button variant="outlined" onClick={() => router.push('/lisenziya-icazeleri/operator-jurnal')}
+                                    sx={{textTransform: 'none', fontWeight: 700}}>Fəaliyyət jurnalı</Button>
                             <Button variant="contained" onClick={() => setCreateOpen(true)}
                                     sx={{backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, '&:hover': {backgroundColor: GOV.navyMid}}}>
                                 + Operator yarat
-                            </Button>
+                            </Button></>
                         )}
                     </Box>
                 </Box>

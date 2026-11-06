@@ -55,6 +55,26 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/teskilatlar/nomenklatura/page.js"
+    ],
+    "/lisenziya-icazeleri/operatorlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/operatorlar/page.js"
+    ],
+    "/lisenziya-icazeleri/operator-jurnal/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/operator-jurnal/page.js"
+    ],
+    "/modullar/hesabatlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/hesabatlar/page.js"
+    ],
+    "/modullar/teskilatlar/[id]/redakte/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/teskilatlar/[id]/redakte/page.js"
     ]
   }
 }

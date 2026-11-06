@@ -1,11 +1,20 @@
 {
-  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js",
-  "/page": "app/page.js",
-  "/modullar/teskilatlar/nomenklatura/page": "app/modullar/teskilatlar/nomenklatura/page.js",
-  "/api/nomenclature/[...path]/route": "app/api/nomenclature/[...path]/route.js",
+  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
   "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/daxilol/page": "app/daxilol/page.js",
-  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
   "/api/organizations/table/route": "app/api/organizations/table/route.js",
-  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js"
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js",
+  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
+  "/modullar/teskilatlar/page": "app/modullar/teskilatlar/page.js",
+  "/modullar/lisenziya-senedler/lisenziya/page": "app/modullar/lisenziya-senedler/lisenziya/page.js",
+  "/api/organizations/[id]/profile/route": "app/api/organizations/[id]/profile/route.js",
+  "/modullar/teskilatlar/[id]/redakte/page": "app/modullar/teskilatlar/[id]/redakte/page.js",
+  "/api/organizations/[id]/nomenclature/route": "app/api/organizations/[id]/nomenclature/route.js",
+  "/api/nomenclature/[...path]/route": "app/api/nomenclature/[...path]/route.js",
+  "/api/organizations/summary/route": "app/api/organizations/summary/route.js",
+  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
+  "/modullar/lisenziya-senedler/lisenziya/[id]/page": "app/modullar/lisenziya-senedler/lisenziya/[id]/page.js",
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js"
 }
