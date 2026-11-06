@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
@@ -596,26 +596,25 @@ export default function Page() {
     |--------------------------------------------------------------------------
     */
 
+    /*
+     * Növbəti bölmə yalnız bölmə "tamamlanmamış -> tamamlanmış" vəziyyətinə KEÇƏNDƏ açılır.
+     * Əvvəlki versiya hər render-də "tamamdır və açıqdır" şərtini yoxlayırdı: bölmə artıq
+     * tam olduqda (məs. istifadəçinin təşkilatı avtomatik dolur) onu əl ilə açmaq mümkün
+     * olmurdu - dərhal növbətiyə atlayırdı. Anket mətn yazılarkən özbaşına atlamır.
+     */
+    const prevApplicantComplete = useRef(applicantComplete);
+
     useEffect(() => {
 
-        if (applicantComplete && expanded === 'applicant' && !touched.anket) {
+        if (applicantComplete && !prevApplicantComplete.current && expanded === 'applicant') {
 
             setExpanded('anket');
 
         }
 
-    }, [applicantComplete, expanded, touched.anket]);
+        prevApplicantComplete.current = applicantComplete;
 
-
-    useEffect(() => {
-
-        if (anketComplete && expanded === 'anket' && !touched.files) {
-
-            setExpanded('files');
-
-        }
-
-    }, [anketComplete, expanded, touched.files]);
+    }, [applicantComplete]);
 
 
     /*
@@ -1397,9 +1396,25 @@ export default function Page() {
                                                     borderRadius: 1.5, p: 1.75,
                                                 }}
                                             >
-                                                <Typography sx={{fontSize: 12.5, fontWeight: 700, color: GOV.textPrimary, mb: 1.5}}>
-                                                    {numberLabel}{f.required ? ' *' : ''}
-                                                </Typography>
+                                                <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, flexWrap: 'wrap', mb: 1.5}}>
+                                                    <Typography sx={{fontSize: 12.5, fontWeight: 700, color: GOV.textPrimary}}>
+                                                        {numberLabel}{f.required ? ' *' : ''}
+                                                    </Typography>
+                                                    {(() => {
+                                                        const allKeys = (f.options || []).map((o) => o.key);
+                                                        const allSelected = allKeys.length > 0 && allKeys.every((k) => selected.includes(k));
+                                                        return (
+                                                            <Button
+                                                                size="small"
+                                                                variant="outlined"
+                                                                onClick={() => setFormValues((prev) => ({...prev, [f.key]: allSelected ? [] : allKeys}))}
+                                                                sx={{textTransform: 'none', fontWeight: 600, fontSize: 12, color: GOV.navy, borderColor: GOV.navy}}
+                                                            >
+                                                                {allSelected ? 'Seçimi təmizlə' : 'Hamısını seç'}
+                                                            </Button>
+                                                        );
+                                                    })()}
+                                                </Box>
 
                                                 {groups.map((g) => (
                                                     <Box key={g.group} sx={{mb: 1.5}}>
