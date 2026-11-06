@@ -234,7 +234,7 @@ export default function Page() {
                         {tab === 'employees' && <EmployeesTab orgId={params.id} canCreate={org.can_create} canEdit={org.can_edit} onChanged={loadProfile}/>}
                         {tab === 'licenses' && <DocumentsTab orgId={params.id} group="license"/>}
                         {tab === 'permits' && <DocumentsTab orgId={params.id} group="permit"/>}
-                        {tab === 'nomenclature' && <NomenclatureTab orgId={params.id} canCreate={org.can_create} canEdit={org.can_edit} canDelete={org.can_delete} onChanged={loadProfile}/>}
+                        {tab === 'nomenclature' && <NomenclatureTab orgId={params.id} canAssign={org.can_edit_all_fields} onChanged={loadProfile}/>}
                         {tab === 'subordinates' && <SubordinatesTab orgId={params.id} onChanged={loadProfile}/>}
                         {tab === 'equipment' && <EquipmentTab orgId={params.id} canCreate={org.can_create} canEdit={org.can_edit} canDelete={org.can_delete} onChanged={loadProfile}/>}
                         {tab === 'turnover' && <TurnoverTab orgId={params.id}/>}

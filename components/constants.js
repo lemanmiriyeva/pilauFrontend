@@ -39,6 +39,7 @@ export const APP_ROUTES = {
     SENEDLERIM: "/lisenziya-icazeleri/senedlerim",
     SENED: (id) => `/lisenziya-icazeleri/sened/${id}`,
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
+    NOMENKLATURA: "/modullar/teskilatlar/nomenklatura",
     BILDIRISLER:"/bildirisler",
     HESABATLAR: "/modullar/hesabatlar",
     HESABATLAR_TESKILATLAR: "/modullar/hesabatlar/teskilatlar",

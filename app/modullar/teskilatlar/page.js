@@ -227,6 +227,15 @@ export default function Page() {
                     </Box>
 
 
+                    <Box sx={{display: 'flex', alignItems: 'center'}}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => router.push(APP_ROUTES.NOMENKLATURA)}
+                        sx={{textTransform: 'none', fontWeight: 700, fontSize: 13, px: 2.5, mr: 1.5, color: GOV.navy, borderColor: GOV.navy}}
+                    >
+                        Nomenklatura
+                    </Button>
+
                     {canManageStatus && (
                     <Button
                         variant="contained"
@@ -243,6 +252,7 @@ export default function Page() {
                         Yeni təşkilat
                     </Button>
                     )}
+                    </Box>
 
                 </Box>
 

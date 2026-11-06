@@ -86,6 +86,23 @@ export default function Page() {
 
     const [formValues, setFormValues] = useState({});
 
+    // Seçilmiş təşkilata təyin olunmuş nomenklaturalar (yalnız onlar autocomplete-də göstərilir).
+    const [orgNomenclatures, setOrgNomenclatures] = useState([]);
+    const [nomenclatureLoading, setNomenclatureLoading] = useState(false);
+
+    useEffect(() => {
+        // Təşkilat dəyişəndə əvvəlki təşkilatın nomenklaturası formada qalmasın.
+        setFormValues((prev) => (prev.mehsulun_novu ? {...prev, mehsulun_novu: ''} : prev));
+        if (!applicant.organization) { setOrgNomenclatures([]); return; }
+        let alive = true;
+        setNomenclatureLoading(true);
+        service_api.get(NEXT_API_ENDPOINTS.ORGANIZATIONS.NOMENCLATURE(applicant.organization))
+            .then((res) => alive && setOrgNomenclatures(Array.isArray(res.data) ? res.data : []))
+            .catch((e) => { if (alive) { setOrgNomenclatures([]); enqueueSnackbar(handleError(e), {variant: 'error'}); } })
+            .finally(() => alive && setNomenclatureLoading(false));
+        return () => { alive = false; };
+    }, [applicant.organization]);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -1457,6 +1474,42 @@ export default function Page() {
 
                                     }
 
+
+                                    /*
+                                     * NOMENKLATURA - yalnız seçilmiş təşkilata təyin olunmuş mövqelər,
+                                     * autocomplete ilə (çoxlu seçim). Dəyər vergüllə birləşdirilmiş mətn kimi saxlanılır.
+                                     */
+                                    if (f.type === 'nomenclature') {
+                                        const labelOf = (n) => n.subcategory_name
+                                            ? `${n.name} (${n.category_name} / ${n.subcategory_name})` : `${n.name} (${n.category_name})`;
+                                        const options = orgNomenclatures.map(labelOf);
+                                        const current = String(formValues[f.key] || '').split(' | ').filter(Boolean);
+                                        return (
+                                            <Autocomplete
+                                                key={f.key}
+                                                multiple
+                                                size="small"
+                                                options={options}
+                                                value={current}
+                                                loading={nomenclatureLoading}
+                                                disabled={!applicant.organization}
+                                                onChange={(_, v) => setFormValues((prev) => ({...prev, [f.key]: v.join(' | ')}))}
+                                                noOptionsText="Bu təşkilata nomenklatura təyin olunmayıb"
+                                                loadingText="Yüklənir..."
+                                                renderInput={(p) => (
+                                                    <TextField
+                                                        {...p}
+                                                        label={numberLabel}
+                                                        required={f.required}
+                                                        error={!!errors[`form__${f.key}`]}
+                                                        helperText={errors[`form__${f.key}`] || (applicant.organization
+                                                            ? f.help_text
+                                                            : 'Əvvəlcə müraciətçi təşkilatı seçin.')}
+                                                    />
+                                                )}
+                                            />
+                                        );
+                                    }
 
                                     const fieldValue = formValues[f.key] ?? '';
 

@@ -1,20 +1,11 @@
 {
-  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/inzibatci-paneli/icazeler/page": "app/inzibatci-paneli/icazeler/page.js",
+  "/daxilol/page": "app/daxilol/page.js",
+  "/api/organizations/table/route": "app/api/organizations/table/route.js",
+  "/api/licenses/permit-documents-schema/route": "app/api/licenses/permit-documents-schema/route.js",
   "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
-  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js",
-  "/modullar/hesabatlar/page": "app/modullar/hesabatlar/page.js",
   "/page": "app/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
   "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
-  "/inzibatci-paneli/icazeler/icaze-yarat/page": "app/inzibatci-paneli/icazeler/icaze-yarat/page.js",
-  "/modullar/[[...path]]/page": "app/modullar/[[...path]]/page.js",
-  "/modullar/hesabatlar/teskilatlar/page": "app/modullar/hesabatlar/teskilatlar/page.js",
-  "/api/organizations/report-cards/route": "app/api/organizations/report-cards/route.js",
-  "/api/licenses/permit-documents/route": "app/api/licenses/permit-documents/route.js",
-  "/lisenziya-icazeleri/senedlerim/page": "app/lisenziya-icazeleri/senedlerim/page.js",
-  "/api/licenses/review-summary/route": "app/api/licenses/review-summary/route.js",
-  "/sexsi-kabinet/page": "app/sexsi-kabinet/page.js",
-  "/api/workflow/operator-queue/route": "app/api/workflow/operator-queue/route.js",
-  "/api/organizations/table/route": "app/api/organizations/table/route.js"
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/api/licenses/applicant-info/route": "app/api/licenses/applicant-info/route.js",
+  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
 }
