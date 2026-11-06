@@ -40,6 +40,8 @@ export const APP_ROUTES = {
     SENED: (id) => `/lisenziya-icazeleri/sened/${id}`,
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
     NOMENKLATURA: "/modullar/teskilatlar/nomenklatura",
+    PARTNYORLAR: "/modullar/partnyor-sirketler",
+    MODUL_KONFIQURASIYASI: "/inzibatci-paneli/modul-konfiqurasiyasi",
     BILDIRISLER:"/bildirisler",
     HESABATLAR: "/modullar/hesabatlar",
     HESABATLAR_TESKILATLAR: "/modullar/hesabatlar/teskilatlar",

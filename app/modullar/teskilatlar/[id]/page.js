@@ -28,8 +28,7 @@ import ActivityDocsTab from "@/components/atoms/organizations/profile/ActivityDo
 import SubordinatesTab from "@/components/atoms/organizations/profile/SubordinatesTab";
 import EquipmentTab from "@/components/atoms/organizations/profile/EquipmentTab";
 import TurnoverTab from "@/components/atoms/organizations/profile/TurnoverTab";
-import ModulesTab from "@/components/atoms/organizations/profile/ModulesTab";
-import ApprovalFlowTab from "@/components/atoms/organizations/profile/ApprovalFlowTab";
+import PartnersTab from "@/components/atoms/organizations/profile/PartnersTab";
 import {formatDate} from "@/components/atoms/organizations/profile/shared";
 
 function InfoItem({label, value}) {
@@ -67,12 +66,11 @@ const TABS = [
     {key: 'licenses', label: 'Lisenziyalar', count: 'license_count'},
     {key: 'permits', label: 'İcazə sənədləri', count: 'permit_count'},
     {key: 'nomenclature', label: 'Nomenklatura', count: 'nomenclature_count'},
+    {key: 'partners', label: 'Partnyor şirkətlər', count: 'partner_count'},
     {key: 'activity', label: 'Fəaliyyətə dair sənədlər', count: 'activity_document_count'},
     {key: 'subordinates', label: 'Tabeli qurumlar', count: 'subordinate_count'},
     {key: 'equipment', label: 'Əsas avadanlıqlar', count: 'equipment_count'},
     {key: 'turnover', label: 'Dövriyyələr'},
-    {key: 'flow', label: 'Təsdiq axını'},
-    {key: 'modules', label: 'Modul icazələri'},
 ];
 
 export default function Page() {
@@ -238,8 +236,7 @@ export default function Page() {
                         {tab === 'subordinates' && <SubordinatesTab orgId={params.id} onChanged={loadProfile}/>}
                         {tab === 'equipment' && <EquipmentTab orgId={params.id} canCreate={org.can_create} canEdit={org.can_edit} canDelete={org.can_delete} onChanged={loadProfile}/>}
                         {tab === 'turnover' && <TurnoverTab orgId={params.id}/>}
-                        {tab === 'flow' && <ApprovalFlowTab orgId={params.id}/>}
-                        {tab === 'modules' && <ModulesTab orgId={params.id}/>}
+                        {tab === 'partners' && <PartnersTab orgId={params.id} canAssign={org.can_edit_all_fields} onChanged={loadProfile}/>}
                         {tab === 'activity' && <ActivityDocsTab orgId={params.id} canCreate={org.can_create} canDelete={org.can_delete} onChanged={loadProfile}/>}
                     </>
                 )}

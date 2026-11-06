@@ -156,6 +156,11 @@ export const NEXT_API_ENDPOINTS = {
         NOMENCLATURE_UNASSIGN: (id, nid) => `organizations/${id}/nomenclature/${nid}/`,
         // ümumi nomenklatura + kataloqlar (proxy: app/api/nomenclature/[...path])
         NOMENCLATURES: "nomenclature/nomenclatures",
+        // partnyor şirkətlər (proxy: app/api/partners/[[...path]])
+        PARTNERS: "partners",
+        PARTNER: (id) => `partners/${id}`,
+        ORG_PARTNERS: (orgId) => `partners/org/${orgId}`,
+        ORG_PARTNER_ITEM: (orgId, partnerId) => `partners/org/${orgId}/${partnerId}`,
         NOMENCLATURE_CATALOG: (kind) => `nomenclature/nomenclature-catalog/${kind}`,
         PERMIT_DOCUMENTS: (id) => `organizations/${id}/permit-documents/`,
         TURNOVER: (id) => `organizations/${id}/turnover/`,

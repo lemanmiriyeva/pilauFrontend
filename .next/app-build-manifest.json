@@ -75,6 +75,16 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/teskilatlar/[id]/redakte/page.js"
+    ],
+    "/lisenziya-icazeleri/tesdiq-huquqlari/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/tesdiq-huquqlari/page.js"
+    ],
+    "/lisenziya-icazeleri/tesdiq-axini/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/tesdiq-axini/page.js"
     ]
   }
 }

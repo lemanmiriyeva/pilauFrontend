@@ -148,13 +148,13 @@ export default function Page() {
                 >
                     Bu bölməyə girişiniz yoxdur.
                 </Typography>)}
-                {(user?.is_staff || user?.is_superuser) && (
+                {(user?.is_staff || user?.is_superuser || user?.is_org_admin) && (
                     <Box sx={{mt: 3, textAlign: 'center'}}>
                         <Link
                             component="button" onClick={() => router.push('/inzibatci-paneli/modul-konfiqurasiyasi')}
                             sx={{fontSize: 13, fontWeight: 700, color: GOV.navySoft}}
                         >
-                            Qurum adminləri üçün modul konfiqurasiyası
+                            Təşkilatların modul icazələri
                         </Link>
                     </Box>
                 )}
