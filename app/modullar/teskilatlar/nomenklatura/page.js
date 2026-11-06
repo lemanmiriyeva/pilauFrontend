@@ -21,6 +21,7 @@ import AppShell from "@/components/atoms/AppShell";
 import {SimpleTable} from "@/components/atoms/organizations/profile/shared";
 import CatalogAutocomplete from "@/components/atoms/nomenclature/CatalogAutocomplete";
 import NomenclatureFormDialog from "@/components/atoms/nomenclature/NomenclatureFormDialog";
+import CatalogManagerDialog from "@/components/atoms/nomenclature/CatalogManagerDialog";
 
 export default function Page() {
     const router = useRouter();
@@ -36,6 +37,7 @@ export default function Page() {
     const [category, setCategory] = useState(null);
     const [orgOptions, setOrgOptions] = useState([]);
     const [dialog, setDialog] = useState({open: false, item: null});
+    const [catalogOpen, setCatalogOpen] = useState(false);
 
     useEffect(() => {
         const t = setTimeout(() => setDebounced(search.trim()), 300);
@@ -121,10 +123,16 @@ export default function Page() {
                 <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1.5, mb: 3}}>
                     <Typography sx={{fontSize: 22, fontWeight: 800, color: GOV.textPrimary}}>Nomenklatura</Typography>
                     {isAdmin && (
-                        <Button variant="contained" startIcon={<AddIcon/>} onClick={() => setDialog({open: true, item: null})}
-                                sx={{backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13, '&:hover': {backgroundColor: GOV.navyMid}}}>
-                            Yeni nomenklatura
-                        </Button>
+                        <Box sx={{display: 'flex', gap: 1.5}}>
+                            <Button variant="outlined" onClick={() => setCatalogOpen(true)}
+                                    sx={{textTransform: 'none', fontWeight: 700, fontSize: 13, color: GOV.navy, borderColor: GOV.navy}}>
+                                Kataloqlar
+                            </Button>
+                            <Button variant="contained" startIcon={<AddIcon/>} onClick={() => setDialog({open: true, item: null})}
+                                    sx={{backgroundColor: GOV.navy, textTransform: 'none', fontWeight: 700, fontSize: 13, '&:hover': {backgroundColor: GOV.navyMid}}}>
+                                Yeni nomenklatura
+                            </Button>
+                        </Box>
                     )}
                 </Box>
 
@@ -146,6 +154,7 @@ export default function Page() {
                     <SimpleTable columns={columns} rows={rows} empty="Nomenklatura tapılmadı."/>
                 )}
 
+                {isAdmin && <CatalogManagerDialog open={catalogOpen} onClose={() => setCatalogOpen(false)}/>}
                 {isAdmin && (
                     <NomenclatureFormDialog
                         open={dialog.open} item={dialog.item} orgOptions={orgOptions}

@@ -1,8 +1,11 @@
 {
-  "/page": "app/page.js",
   "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js",
-  "/daxilol/page": "app/daxilol/page.js",
-  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
+  "/page": "app/page.js",
+  "/modullar/teskilatlar/nomenklatura/page": "app/modullar/teskilatlar/nomenklatura/page.js",
   "/api/nomenclature/[...path]/route": "app/api/nomenclature/[...path]/route.js",
-  "/modullar/teskilatlar/nomenklatura/page": "app/modullar/teskilatlar/nomenklatura/page.js"
+  "/api/auth/user/route": "app/api/auth/user/route.js",
+  "/daxilol/page": "app/daxilol/page.js",
+  "/api/permissions/my-modules/route": "app/api/permissions/my-modules/route.js",
+  "/api/organizations/table/route": "app/api/organizations/table/route.js",
+  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js"
 }
