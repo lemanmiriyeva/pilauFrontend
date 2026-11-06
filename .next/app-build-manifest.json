@@ -16,40 +16,95 @@
       "static/chunks/main-app.js",
       "static/chunks/app/daxilol/page.js"
     ],
-    "/modullar/[[...path]]/page": [
+    "/lisenziya-icazeleri/operator-yoxlama/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/[[...path]]/page.js"
+      "static/chunks/app/lisenziya-icazeleri/operator-yoxlama/page.js"
     ],
-    "/modullar/lisenziya-senedler/lisenziya/page": [
+    "/inzibatci-paneli/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/page.js"
+      "static/chunks/app/inzibatci-paneli/page.js"
     ],
-    "/modullar/lisenziya-senedler/lisenziya/[id]/page": [
+    "/lisenziya-icazeleri/operatorlar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/[id]/page.js"
+      "static/chunks/app/lisenziya-icazeleri/operatorlar/page.js"
     ],
-    "/lisenziya-icazeleri/senedlerim/page": [
+    "/lisenziya-icazeleri/tesdiq-axini/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+      "static/chunks/app/lisenziya-icazeleri/tesdiq-axini/page.js"
+    ],
+    "/lisenziya-icazeleri/tesdiq-huquqlari/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/tesdiq-huquqlari/page.js"
     ],
     "/modullar/teskilatlar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/teskilatlar/page.js"
     ],
+    "/modullar/[[...path]]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/[[...path]]/page.js"
+    ],
     "/modullar/teskilatlar/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/modullar/teskilatlar/[id]/page.js"
     ],
-    "/modullar/teskilatlar/[id]/redakte/page": [
+    "/inzibatci-paneli/icazeler/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/modullar/teskilatlar/[id]/redakte/page.js"
+      "static/chunks/app/inzibatci-paneli/icazeler/page.js"
+    ],
+    "/inzibatci-paneli/icazeler/[orgId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inzibatci-paneli/icazeler/[orgId]/page.js"
+    ],
+    "/inzibatci-paneli/icazeler/icaze-yarat/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/inzibatci-paneli/icazeler/icaze-yarat/page.js"
+    ],
+    "/lisenziya-icazeleri/senedlerim/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/lisenziya-icazeleri/senedlerim/page.js"
+    ],
+    "/modullar/lisenziya-senedler/lisenziya/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/page.js"
+    ],
+    "/modullar/lisenziya-senedler/lisenziya/yeni/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/yeni/page.js"
+    ],
+    "/modullar/lisenziya-senedler/lisenziya/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/lisenziya-senedler/lisenziya/[id]/page.js"
+    ],
+    "/modullar/hesabatlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/hesabatlar/page.js"
+    ],
+    "/modullar/hesabatlar/teskilatlar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/modullar/hesabatlar/teskilatlar/page.js"
+    ],
+    "/sexsi-kabinet/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/sexsi-kabinet/page.js"
     ]
   }
 }

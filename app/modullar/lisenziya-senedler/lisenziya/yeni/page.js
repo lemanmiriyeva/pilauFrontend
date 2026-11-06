@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Checkbox from '@mui/material/Checkbox';
@@ -64,6 +65,10 @@ export default function Page() {
     });
 
     const [isMsn, setIsMsn] = useState(false);
+
+    // Müraciətçi təşkilatın seçimi: istifadəçinin əhatəsindəki təşkilatlar (backend scoped_organization_ids).
+    const [orgOptions, setOrgOptions] = useState([]);
+    const [orgLoading, setOrgLoading] = useState(false);
 
     const [applicant, setApplicant] = useState({
         organization: null,
@@ -213,6 +218,32 @@ export default function Page() {
 
         loadData();
 
+        const loadOrganizations = async () => {
+
+            setOrgLoading(true);
+
+            try {
+
+                const res = await service_api.get(NEXT_API_ENDPOINTS.ORGANIZATIONS.TABLE);
+
+                const list = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+
+                setOrgOptions(list.filter((o) => o.is_active !== false));
+
+            } catch (e) {
+
+                // Siyahı yüklənməsə də forma əl ilə doldurula bilir.
+
+            } finally {
+
+                setOrgLoading(false);
+
+            }
+
+        };
+
+        loadOrganizations();
+
     }, [enqueueSnackbar]);
 
 
@@ -259,47 +290,133 @@ export default function Page() {
     const [voenLookupLoading, setVoenLookupLoading] = useState(false);
     const [docxParsing, setDocxParsing] = useState(false);
 
-    const handleVoenLookup = async () => {
+    /*
+     * Təşkilatın məlumatlarını (ad, VÖEN, səlahiyyətli şəxslər) API-dən gətirib formaya yazır.
+     * Həm təşkilat siyahısından seçəndə, həm də VÖEN yazılıb sahədən çıxılanda istifadə olunur.
+     * Tapılmasa (və ya əhatədən kənardırsa) "fallback" təşkilatın ad/VÖEN-i ilə kifayətlənir.
+     */
+    const fillFromOrganization = async (voen, fallback = null) => {
 
-        if (!isMsn) return;
+        const res = await service_api.get(`${NEXT_API_ENDPOINTS.ORGANIZATIONS.VOEN_LOOKUP}?voen=${encodeURIComponent(voen)}`);
 
-        const voen = (applicant.voen || '').trim();
+        if (!res.data?.found) {
 
-        if (!voen || voen.length < 9) return;
+            if (fallback) {
 
+                setPersons([]);
+
+                setApplicant((prev) => ({
+                    ...prev,
+                    organization: fallback.id || null,
+                    applicant_name: fallback.full_name || prev.applicant_name,
+                    voen: fallback.voen || prev.voen,
+                    authorized_person: '', fin_kod: '', department: '', position: '', phone: '', email: '',
+                }));
+
+                setFormValues((prev) => ({...prev, subyekt_adi: fallback.full_name || prev.subyekt_adi}));
+
+            }
+
+            return false;
+
+        }
+
+        const org = res.data.organization;
+        const personList = res.data.authorized_persons || [];
+        const firstPerson = personList[0];
+
+        setPersons(personList);
+
+        setApplicant((prev) => ({
+            ...prev,
+            organization: org?.id || null,
+            applicant_name: org?.full_name || prev.applicant_name,
+            voen: org?.voen || prev.voen,
+            authorized_person: firstPerson?.id || '',
+            fin_kod: firstPerson?.fin_kod || '',
+            department: firstPerson?.department || '',
+            position: firstPerson?.position || '',
+            phone: firstPerson?.phone || '',
+            email: firstPerson?.email || '',
+        }));
+
+        // Subyekt adı avtomatik müəssisə adı olur.
+        if (org?.full_name) {
+            setFormValues((prev) => ({...prev, subyekt_adi: org.full_name}));
+        }
+
+        return org;
+
+    };
+
+
+    /*
+     * Müraciətçi təşkilat siyahıdan seçildi -> məlumatlar API-dən avtomatik dolur.
+     * Təmizlənərsə (x) sahələr boşaldılır ki, əl ilə daxil edilə bilsin.
+     */
+    const handleOrganizationSelect = async (org) => {
+
+        if (!org) {
+
+            setPersons([]);
+
+            setApplicant((prev) => ({
+                ...prev,
+                organization: null, applicant_name: '', voen: '',
+                authorized_person: '', fin_kod: '', department: '', position: '', phone: '', email: '',
+            }));
+
+            return;
+
+        }
 
         setVoenLookupLoading(true);
 
         try {
 
-            const res = await service_api.get(`${NEXT_API_ENDPOINTS.ORGANIZATIONS.VOEN_LOOKUP}?voen=${encodeURIComponent(voen)}`);
+            const found = await fillFromOrganization(org.voen, org);
 
-            const found = res.data?.found;
-
-            if (!found) {
-                enqueueSnackbar('Bu VÖEN üzrə sistemdə qeydiyyatlı təşkilat tapılmadı, məlumatları əl ilə daxil edə bilərsiniz.', {variant: 'info'});
-                return;
+            if (found) {
+                enqueueSnackbar(`"${org.full_name}" məlumatları avtomatik dolduruldu.`, {variant: 'success'});
             }
 
-            const org = res.data.organization;
-            const personList = res.data.authorized_persons || [];
-            const firstPerson = personList[0];
+        } catch (e) {
 
-            setPersons(personList);
+            enqueueSnackbar(handleError(e), {variant: 'error'});
 
-            setApplicant((prev) => ({
-                ...prev,
-                organization: org?.id || null,
-                applicant_name: org?.full_name || prev.applicant_name,
-                authorized_person: firstPerson?.id || '',
-                fin_kod: firstPerson?.fin_kod || '',
-                department: firstPerson?.department || '',
-                position: firstPerson?.position || '',
-                phone: firstPerson?.phone || '',
-                email: firstPerson?.email || '',
-            }));
+        } finally {
 
-            enqueueSnackbar(`"${org?.full_name}" məlumatları avtomatik dolduruldu.`, {variant: 'success'});
+            setVoenLookupLoading(false);
+
+        }
+
+    };
+
+
+    /*
+     * VÖEN yazılıb sahədən çıxılanda sistemdə qeydiyyatda olan təşkilat tapılırsa məlumatlar dolur.
+     */
+    const handleVoenLookup = async () => {
+
+        const voen = (applicant.voen || '').trim();
+
+        if (!voen || voen.length < 9) return;
+
+        // Artıq həmin təşkilat seçilibsə təkrar sorğu göndərmirik.
+        const current = orgOptions.find((o) => o.id === applicant.organization);
+        if (current && current.voen === voen) return;
+
+        setVoenLookupLoading(true);
+
+        try {
+
+            const org = await fillFromOrganization(voen);
+
+            if (org) {
+                enqueueSnackbar(`"${org.full_name}" məlumatları avtomatik dolduruldu.`, {variant: 'success'});
+            } else {
+                enqueueSnackbar('Bu VÖEN üzrə sistemdə qeydiyyatlı təşkilat tapılmadı, məlumatları əl ilə daxil edə bilərsiniz.', {variant: 'info'});
+            }
 
         } catch (e) {
 
@@ -1018,7 +1135,7 @@ export default function Page() {
                                 fontSize: 11.5, color: GOV.textMuted, mb: 2
                             }}
                         >
-                            {isMsn ? 'Müdafiə Sənayesi Nazirliyi istifadəçisi olduğunuz üçün bütün sahələr sərbəst redaktə olunur.' : 'Təşkilat və VÖEN məlumatları öz təşkilatınıza əsasən avtomatik doldurulub. Səlahiyyətli şəxsi siyahıdan seçə bilərsiniz, digər sahələr seçiminə görə avtomatik dolur.'}
+                            Müraciətçi təşkilatı siyahıdan seçin - ad, VÖEN və səlahiyyətli şəxs məlumatları avtomatik dolacaq. Bütün sahələri əl ilə də dəyişə bilərsiniz.
                         </Typography>
 
 
@@ -1030,6 +1147,44 @@ export default function Page() {
                             }}
                         >
 
+                            <Autocomplete
+                                size="small"
+                                sx={{gridColumn: {sm: '1 / -1'}}}
+                                options={orgOptions}
+                                loading={orgLoading}
+                                value={orgOptions.find((o) => o.id === applicant.organization) || null}
+                                onChange={(_, org) => handleOrganizationSelect(org)}
+                                getOptionLabel={(o) => o.full_name || ''}
+                                isOptionEqualToValue={(a, b) => a.id === b.id}
+                                filterOptions={(opts, {inputValue}) => {
+                                    const q = inputValue.trim().toLowerCase();
+                                    if (!q) return opts;
+                                    return opts.filter((o) =>
+                                        (o.full_name || '').toLowerCase().includes(q)
+                                        || (o.voen || '').includes(q)
+                                    );
+                                }}
+                                noOptionsText="Təşkilat tapılmadı"
+                                loadingText="Yüklənir..."
+                                renderOption={(props, o) => (
+                                    <li {...props} key={o.id}>
+                                        <Box>
+                                            <Typography sx={{fontSize: 13, fontWeight: 600}}>{o.full_name}</Typography>
+                                            <Typography sx={{fontSize: 11.5, color: GOV.textMuted}}>VÖEN: {o.voen}</Typography>
+                                        </Box>
+                                    </li>
+                                )}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Müraciətçi təşkilat"
+                                        placeholder="Təşkilat adı və ya VÖEN ilə axtarın"
+                                        helperText={voenLookupLoading ? 'Məlumatlar yüklənir...' : ''}
+                                    />
+                                )}
+                            />
+
+
                             <TextField
                                 size="small"
                                 label="Müraciətçi müəssisənin tam adı"
@@ -1040,7 +1195,6 @@ export default function Page() {
                                 }))}
                                 error={!!errors.applicant_name}
                                 helperText={errors.applicant_name}
-                                disabled={!isMsn}
                             />
 
 
@@ -1054,8 +1208,7 @@ export default function Page() {
                                 }))}
                                 onBlur={handleVoenLookup}
                                 error={!!errors.voen}
-                                helperText={errors.voen || (voenLookupLoading ? 'Yoxlanılır...' : (isMsn ? 'VÖEN daxil edib sahədən çıxın - məlumatlar tapılarsa avtomatik dolacaq.' : ''))}
-                                disabled={!isMsn}
+                                helperText={errors.voen || (voenLookupLoading ? 'Yoxlanılır...' : 'VÖEN daxil edib sahədən çıxın - məlumatlar tapılarsa avtomatik dolacaq.')}
                             />
 
 
@@ -1102,7 +1255,6 @@ export default function Page() {
                                 onChange={(e) => setApplicant((p) => ({
                                     ...p, fin_kod: e.target.value
                                 }))}
-                                disabled={!isMsn}
                             />
 
 
@@ -1113,7 +1265,6 @@ export default function Page() {
                                 onChange={(e) => setApplicant((p) => ({
                                     ...p, phone: e.target.value
                                 }))}
-                                disabled={!isMsn}
                             />
 
 
@@ -1124,7 +1275,6 @@ export default function Page() {
                                 onChange={(e) => setApplicant((p) => ({
                                     ...p, email: e.target.value
                                 }))}
-                                disabled={!isMsn}
                             />
 
 
@@ -1135,7 +1285,6 @@ export default function Page() {
                                 onChange={(e) => setApplicant((p) => ({
                                     ...p, department: e.target.value
                                 }))}
-                                disabled={!isMsn}
                             />
 
 
@@ -1146,7 +1295,6 @@ export default function Page() {
                                 onChange={(e) => setApplicant((p) => ({
                                     ...p, position: e.target.value
                                 }))}
-                                disabled={!isMsn}
                             />
 
                         </Box>
