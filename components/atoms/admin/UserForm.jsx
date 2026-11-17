@@ -37,6 +37,7 @@ const emptyForm = {
     birth_date: "", fin_kod: "", id_card_serial: "",
 
     is_org_admin: false,
+    rehber_kadr: false,
 };
 
 
@@ -237,6 +238,8 @@ export default function UserForm({
         id_card_serial: `${initialParsedIdCard.series}${initialParsedIdCard.number}`,
 
         is_org_admin: Boolean(initialData?.is_org_admin),
+
+        rehber_kadr: Boolean(initialData?.rehber_kadr),
 
     });
 
@@ -1200,6 +1203,25 @@ export default function UserForm({
                             alignItems: "flex-start", ml: 0
                         }}
                     />
+
+                    {!restrictedAdmin && (
+                        <FormControlLabel
+                            control={<Checkbox
+                                checked={Boolean(form.rehber_kadr)}
+                                onChange={(e) => setForm((f) => ({...f, rehber_kadr: e.target.checked}))}
+                                sx={{color: GOV.navy, "&.Mui-checked": {color: GOV.navy}}}
+                            />}
+                            label={<Box>
+                                <Typography sx={{fontSize: 13, fontWeight: 700, color: GOV.navy}}>
+                                    Rəhbərlik (nazir / nazir müavini)
+                                </Typography>
+                                <Typography sx={{fontSize: 11.5, color: GOV.textMuted, mt: 0.25}}>
+                                    Sənədi imzalayan şəxs kimi seçilə bilər və bütün təşkilatların datasını görür.
+                                </Typography>
+                            </Box>}
+                            sx={{alignItems: "flex-start", ml: 0, mt: 1}}
+                        />
+                    )}
 
                 </FormGroup>
 

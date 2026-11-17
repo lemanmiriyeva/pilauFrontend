@@ -57,6 +57,7 @@ export default function Page() {
                     position: form.position || null,
                     birth_date: form.birth_date || null,
                     is_org_admin: Boolean(form.is_org_admin),
+                rehber_kadr: Boolean(form.rehber_kadr),
 
                     fin_kod: form.fin_kod,
                     id_card_serial: form.id_card_serial,

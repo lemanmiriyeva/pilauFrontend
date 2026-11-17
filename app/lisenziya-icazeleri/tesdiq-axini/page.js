@@ -323,7 +323,8 @@ export default function Page() {
                                         const settingsSaving = settingsSavingKey === row.doc_type;
                                         const stage1User = eligible.find((u) => u.id === row.stage1_user);
                                         const stage2User = eligible.find((u) => u.id === row.stage2_user);
-                                        const signerUser = eligible.find((u) => u.id === row.signer_user);
+                                        const signerCandidates = row.signer_candidates || [];
+                                        const signerUser = signerCandidates.find((u) => u.id === row.signer_user) || eligible.find((u) => u.id === row.signer_user);
 
                                         return (
                                             <React.Fragment key={row.doc_type}>
@@ -538,12 +539,12 @@ export default function Page() {
                                                                 <MenuItem value="" disabled>
                                                                     <em style={{color: GOV.textMuted, fontStyle: 'normal'}}>Seçin...</em>
                                                                 </MenuItem>
-                                                                {eligible.length === 0 && (
+                                                                {signerCandidates.length === 0 && (
                                                                     <MenuItem value="" disabled>
-                                                                        Uyğun icazəli istifadəçi yoxdur
+                                                                        Rəhbərlik (nazir / müavin) təyin olunmayıb. İstifadəçi formasında "Rəhbərlik" işarələyin.
                                                                     </MenuItem>
                                                                 )}
-                                                                {eligible.map((u) => (
+                                                                {signerCandidates.map((u) => (
                                                                     <MenuItem key={u.id} value={u.id}>
                                                                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                                                                             <UserAvatar name={u.full_name} size={24} tone={GOV.gold}/>

@@ -1,8 +1,1 @@
-{
-  "/api/workflow/notifications/route": "app/api/workflow/notifications/route.js",
-  "/modullar/teskilatlar/[id]/page": "app/modullar/teskilatlar/[id]/page.js",
-  "/modullar/lisenziya-senedler/lisenziya/yeni/page": "app/modullar/lisenziya-senedler/lisenziya/yeni/page.js",
-  "/lisenziya-icazeleri/tesdiq-huquqlari/page": "app/lisenziya-icazeleri/tesdiq-huquqlari/page.js",
-  "/lisenziya-icazeleri/tesdiq-axini/page": "app/lisenziya-icazeleri/tesdiq-axini/page.js",
-  "/modullar/lisenziya-senedler/lisenziya/[id]/page": "app/modullar/lisenziya-senedler/lisenziya/[id]/page.js"
-}
+{}
