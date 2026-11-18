@@ -24,7 +24,6 @@ import {GOV} from "@/components/theme/govColors";
 import AppShell from "@/components/atoms/AppShell";
 import FileDropField from "@/components/atoms/licenses/FileDropField";
 import GovAccordionSection from "@/components/atoms/organizations/GovAccordionSection";
-import {afterPermitCreate} from "@/components/atoms/licenses/permitSubmit";
 
 /*
  * "İstehsal" bundan sonra "Lisenziya" adlanır. Əvvəllər Xüsusi/Ümumi Lisenziya
@@ -605,25 +604,10 @@ export default function Page() {
     */
 
     /*
-     * Növbəti bölmə yalnız bölmə "tamamlanmamış -> tamamlanmış" vəziyyətinə KEÇƏNDƏ açılır.
-     * Əvvəlki versiya hər render-də "tamamdır və açıqdır" şərtini yoxlayırdı: bölmə artıq
-     * tam olduqda (məs. istifadəçinin təşkilatı avtomatik dolur) onu əl ilə açmaq mümkün
-     * olmurdu - dərhal növbətiyə atlayırdı. Anket mətn yazılarkən özbaşına atlamır.
+     * Bölmə tamamlananda (yaşıl işarə) BAĞLANMIR və növbətiyə də keçmir - istifadəçi
+     * məlumatları daxil etməyə davam edə bilsin. Bölmələri yalnız özü açıb-bağlayır;
+     * tamamlanma vəziyyəti başlıqdakı yaşıl işarə ilə (complete) göstərilir.
      */
-    const prevApplicantComplete = useRef(applicantComplete);
-
-    useEffect(() => {
-
-        if (applicantComplete && !prevApplicantComplete.current && expanded === 'applicant') {
-
-            setExpanded('anket');
-
-        }
-
-        prevApplicantComplete.current = applicantComplete;
-
-    }, [applicantComplete]);
-
 
     /*
     |--------------------------------------------------------------------------
@@ -811,11 +795,18 @@ export default function Page() {
             const res = await service_api.post(NEXT_API_ENDPOINTS.LICENSES.PERMIT_CREATE, fd, {
                 headers: {'Content-Type': 'multipart/form-data'},
             });
-            afterPermitCreate({
-                data: res.data, router, enqueueSnackbar,
-                successMessage: 'İcazə sənədi yoxlamaya göndərildi.',
-                listRoute: APP_ROUTES.IDXAL_IXRAC,
-            });
+            // Yaradıldıqdan sonra həmişə yaradılan sənədin detalına keçirik (idxal/ixrac siyahısına yox).
+            const created = res.data || {};
+            if (created.status === 'qaralama') {
+                const n = (created.missing_files || []).length;
+                enqueueSnackbar(
+                    `Sənəd natamam kimi saxlanıldı (qaralama). Çatışmayan ${n} sənədi yükləyin.`,
+                    {variant: 'warning', autoHideDuration: 6000}
+                );
+            } else {
+                enqueueSnackbar('Lisenziya sənədi yaradıldı.', {variant: 'success'});
+            }
+            router.push(created.id ? `${APP_ROUTES.LISENZIYA}/${created.id}` : APP_ROUTES.LISENZIYA);
 
 
         } catch (e) {
