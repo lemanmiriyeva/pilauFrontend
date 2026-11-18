@@ -52,6 +52,14 @@ export default function Page() {
     const [schema, setSchema] = useState(null);
 
     const [persons, setPersons] = useState([]);
+    // Sənədi imzalayan şəxs - yalnız rəhbərlik (nazir, nazir müavinləri)
+    const [signerOptions, setSignerOptions] = useState([]);
+    const [signerId, setSignerId] = useState('');
+    useEffect(() => {
+        service_api.get(NEXT_API_ENDPOINTS.LICENSES.SIGNER_CANDIDATES)
+            .then((res) => setSignerOptions(Array.isArray(res.data) ? res.data : []))
+            .catch(() => setSignerOptions([]));
+    }, []);
     const [submitting, setSubmitting] = useState(false);
 
     const [errors, setErrors] = useState({});
@@ -756,6 +764,10 @@ export default function Page() {
 
             }
 
+            if (signerId) {
+                fd.append('signer', signerId);
+            }
+
 
             fd.append('fin_kod', applicant.fin_kod);
 
@@ -1261,6 +1273,28 @@ export default function Page() {
 
                                 )}
 
+                            </TextField>
+
+
+                            <TextField
+                                select
+                                size="small"
+                                label="İmzalayan şəxs (rəhbərlik)"
+                                value={signerId}
+                                onChange={(e) => setSignerId(e.target.value)}
+                                helperText="Nazir və ya nazir müavini - sənədin aşağısında adı, vəzifəsi və imza xətti görünəcək."
+                            >
+                                <MenuItem value="">Seçilməyib</MenuItem>
+                                {signerOptions.map((u) => (
+                                    <MenuItem key={u.id} value={u.id}>
+                                        {u.full_name}{u.position ? ` - ${u.position}` : ''}
+                                    </MenuItem>
+                                ))}
+                                {signerOptions.length === 0 && (
+                                    <MenuItem disabled value="__none">
+                                        Rəhbərlik üzvü tapılmadı (istifadəçi formasında "Rəhbərlik" işarələyin)
+                                    </MenuItem>
+                                )}
                             </TextField>
 
 

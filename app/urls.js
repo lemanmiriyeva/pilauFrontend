@@ -72,6 +72,7 @@ export const DJANGO_API_ENDPOINTS = {
     },
     LICENSES: {
         APPLICANT_INFO: API_URL + "/api/licenses/applicant-info/",
+        SIGNER_CANDIDATES: API_URL + "/api/licenses/signer-candidates/",
         REVIEW_SUMMARY: API_URL + "/api/licenses/review-summary/",
         PERMIT_SCHEMA: API_URL + "/api/licenses/permit-documents/schema/",
         ANKET_TEMPLATE: API_URL + "/api/licenses/permit-documents/anket-template/",
@@ -186,6 +187,7 @@ export const NEXT_API_ENDPOINTS = {
     },
     LICENSES: {
         APPLICANT_INFO: "licenses/applicant-info/",
+        SIGNER_CANDIDATES: "licenses/signer-candidates/",
         REVIEW_SUMMARY: "licenses/review-summary/",
         PERMIT_SCHEMA: "licenses/permit-documents-schema/",
         ANKET_TEMPLATE: "licenses/anket-template/",
