@@ -13,9 +13,10 @@ const filter = createFilterOptions();
  * Kataloq (əməliyyat növü / kateqoriya / alt kateqoriya) üçün autocomplete.
  * Seçim mövcud siyahıdan olur; canCreate (admin) olduqda siyahıda olmayan ad yazılanda
  * "+ Əlavə et" təklifi çıxır və yeni qeyd kataloqa yazılır (sonra təkrar yazmaq lazım olmur).
+ * multiple: bir neçə qeyd seçmək üçün (value - massiv, onChange - massiv).
  * kind: 'categories' | 'subcategories' | 'operation-types'. subcategories üçün category (id) tələb olunur.
  */
-export default function CatalogAutocomplete({kind, label, value, onChange, category, canCreate, required, error, helperText}) {
+export default function CatalogAutocomplete({kind, label, value, onChange, category, canCreate, required, error, helperText, multiple}) {
     const {enqueueSnackbar} = useSnackbar();
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -38,7 +39,8 @@ export default function CatalogAutocomplete({kind, label, value, onChange, categ
             const body = needsCategory ? {name, category} : {name};
             const res = await service_api.post(NEXT_API_ENDPOINTS.ORGANIZATIONS.NOMENCLATURE_CATALOG(kind), body);
             setOptions((prev) => prev.some((o) => o.id === res.data.id) ? prev : [...prev, res.data]);
-            onChange(res.data);
+            if (multiple) onChange([...(Array.isArray(value) ? value : []), res.data]);
+            else onChange(res.data);
         } catch (e) {
             enqueueSnackbar(e?.response?.data?.name || e?.response?.data?.category || handleError(e), {variant: 'error'});
         }
@@ -50,7 +52,8 @@ export default function CatalogAutocomplete({kind, label, value, onChange, categ
             options={options}
             loading={loading}
             disabled={needsCategory && !category}
-            value={value || null}
+            multiple={!!multiple}
+            value={multiple ? (Array.isArray(value) ? value : []) : (value || null)}
             isOptionEqualToValue={(o, v) => o.id === v.id}
             getOptionLabel={(o) => o.name || ''}
             filterOptions={(opts, params) => {
@@ -63,6 +66,12 @@ export default function CatalogAutocomplete({kind, label, value, onChange, categ
             }}
             renderOption={(props, o) => <li {...props} key={o.id}>{o.label || o.name}</li>}
             onChange={(_, o) => {
+                if (multiple) {
+                    const fresh = (o || []).find((x) => x.id === '__new__');
+                    if (fresh) create(fresh.name);
+                    else onChange(o || []);
+                    return;
+                }
                 if (o && o.id === '__new__') create(o.name);
                 else onChange(o);
             }}

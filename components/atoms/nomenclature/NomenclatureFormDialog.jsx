@@ -26,7 +26,7 @@ function errorText(e) {
     return handleError(e);
 }
 
-const EMPTY = {operation_type: null, category: null, subcategory: null, name: '', unit: '', note: '', organizations: []};
+const EMPTY = {operation_types: [], category: null, subcategory: null, name: '', unit: '', note: '', organizations: []};
 
 /** Nomenklatura yaratma/redaktə pəncərəsi (yalnız admin). item - redaktə üçün mövcud sətir. */
 export default function NomenclatureFormDialog({open, item, orgOptions, onClose, onSaved}) {
@@ -38,7 +38,7 @@ export default function NomenclatureFormDialog({open, item, orgOptions, onClose,
         if (!open) return;
         setError('');
         setForm(item ? {
-            operation_type: {id: item.operation_type, name: item.operation_type_name},
+            operation_types: (item.operation_types_detail || []).map((o) => ({id: o.id, name: o.name})),
             category: {id: item.category, name: item.category_name},
             subcategory: item.subcategory ? {id: item.subcategory, name: item.subcategory_name} : null,
             name: item.name, unit: item.unit || '', note: item.note || '',
@@ -48,13 +48,13 @@ export default function NomenclatureFormDialog({open, item, orgOptions, onClose,
 
     const submit = async () => {
         setError('');
-        if (!form.operation_type) return setError('Əməliyyat növünü seçin.');
+        if (!form.operation_types.length) return setError('Ən azı bir əməliyyat növü seçin.');
         if (!form.category) return setError('Kateqoriyanı seçin.');
         if (!form.name.trim()) return setError('Məhsulun adını yazın.');
         setSaving(true);
         try {
             const body = {
-                operation_type: form.operation_type.id, category: form.category.id,
+                operation_types: form.operation_types.map((o) => o.id), category: form.category.id,
                 subcategory: form.subcategory ? form.subcategory.id : null,
                 name: form.name.trim(), unit: form.unit || '', note: form.note || '',
                 organization_ids: form.organizations.map((o) => o.id),
@@ -74,9 +74,9 @@ export default function NomenclatureFormDialog({open, item, orgOptions, onClose,
             <DialogTitle sx={{fontWeight: 800}}>{item ? 'Nomenklaturanı redaktə et' : 'Yeni nomenklatura'}</DialogTitle>
             <DialogContent>
                 <Box sx={{display: 'grid', gridTemplateColumns: {xs: '1fr', sm: '1fr 1fr'}, gap: 2, mt: 1}}>
-                    <CatalogAutocomplete kind="operation-types" label="Əməliyyat növü" required canCreate
-                                         value={form.operation_type}
-                                         onChange={(v) => setForm((p) => ({...p, operation_type: v}))}/>
+                    <CatalogAutocomplete kind="operation-types" label="Əməliyyat növü (bir neçə seçmək olar)" required canCreate multiple
+                                         value={form.operation_types}
+                                         onChange={(v) => setForm((p) => ({...p, operation_types: v}))}/>
                     <CatalogAutocomplete kind="categories" label="Kateqoriya" required canCreate
                                          value={form.category}
                                          onChange={(v) => setForm((p) => ({...p, category: v, subcategory: null}))}/>
