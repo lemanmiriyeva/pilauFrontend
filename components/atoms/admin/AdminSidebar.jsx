@@ -35,7 +35,6 @@ const S = {
 function hrefForModule(module, parentKeys = []) {
     if (module.key === 'inzibatci-paneli') return APP_ROUTES.INZIBATCI;
     if (parentKeys.length === 0) {
-        if (module.key === 'tesdiq-axini') return APP_ROUTES.TESDIQ_AXINI;
         if (module.key === 'dovriyyeler') return APP_ROUTES.DOVRIYYELER;
         if (module.key === 'partnyor-sirketler') return APP_ROUTES.PARTNYORLAR;
     }

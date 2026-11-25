@@ -65,7 +65,7 @@ export default function AppHeader({user, onMenuClick}) {
         <Box sx={{
             position: 'sticky', top: 0, zIndex: 1100,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            backgroundColor: GOV.navy, color: GOV.textOnNavy, px: {xs: 1.5, md: 4}, py: 1.5,
+            background: 'linear-gradient(90deg, #0B1E4A 0%, #07143A 55%, #050D26 100%)', borderBottom: '1px solid rgba(255,255,255,0.08)', color: GOV.textOnNavy, px: {xs: 1.5, md: 4}, py: 1.5,
             boxShadow: '0 2px 10px rgba(2, 6, 36, 0.22)',
         }}>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 0.5}}>
