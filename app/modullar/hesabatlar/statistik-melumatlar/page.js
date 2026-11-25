@@ -53,7 +53,7 @@ export default function Page() {
 
     return (
         <AppShell>
-            <Box sx={{maxWidth: "90%", mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 4, md: 6}}}>
+            <Box sx={{maxWidth: 1360, mx: 'auto', px: {xs: 2, md: 4}, py: {xs: 3, md: 5}}}>
                 <Typography sx={{fontSize: 12.5, color: GOV.textMuted, mb: 1}}>
                     <Link component="button" onClick={() => router.push(APP_ROUTES.HESABATLAR)}
                           sx={{fontSize: 12.5, color: GOV.textMuted, textDecoration: 'none'}}>
@@ -96,18 +96,22 @@ export default function Page() {
                     </Box>
                 ) : !data ? null : (
                     <>
-                        <Box sx={{display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap'}}>
-                            <StatCard label="Ümumi sənəd" value={data.total}/>
-                            <StatCard label="Aktiv" value={data.status_breakdown?.aktiv || 0}/>
-                            <StatCard label="Gözlənilir" value={data.status_breakdown?.gozleyir || 0}/>
-                            <StatCard label="Təşkilat sayı" value={data.by_organization?.length || 0}/>
+                        <Box sx={{display: 'flex', gap: 2, mb: 2.5, flexWrap: 'wrap'}}>
+                            <StatCard label="Ümumi sənəd" value={data.total} accent="#6D5BD0"
+                                      hint="Seçilmiş aralıqda"/>
+                            <StatCard label="Aktiv" value={data.status_breakdown?.aktiv || 0} accent="#12B76A"
+                                      hint={data.total ? `${Math.round(((data.status_breakdown?.aktiv || 0) / data.total) * 100)}% ümumi sənədlərdən` : ' '}/>
+                            <StatCard label="Gözlənilir" value={data.status_breakdown?.gozleyir || 0} accent="#F79009"
+                                      hint="Təsdiq gözləyən"/>
+                            <StatCard label="Təşkilat sayı" value={data.by_organization?.length || 0} accent="#2E90FA"
+                                      hint="Sənədi olan təşkilatlar"/>
                         </Box>
 
                         <Box sx={{
-                            display: 'grid', gap: 2.5, mb: 2.5,
-                            gridTemplateColumns: {xs: '1fr', md: '1.4fr 1fr'},
+                            display: 'grid', gap: 2.5, mb: 2.5, alignItems: 'stretch',
+                            gridTemplateColumns: {xs: '1fr', md: '2fr 1fr'},
                         }}>
-                            <SectionCard title="Zaman üzrə sənəd sayı">
+                            <SectionCard title="Zaman üzrə sənəd sayı" subtitle="Seçilmiş qruplaşdırmaya görə">
                                 <TimeSeriesChart series={data.series} granularity={filters.granularity}/>
                             </SectionCard>
                             <SectionCard title="Status bölgüsü">
@@ -116,15 +120,15 @@ export default function Page() {
                         </Box>
 
                         <Box sx={{
-                            display: 'grid', gap: 2.5,
-                            gridTemplateColumns: {xs: '1fr', md: data.by_doc_type?.length ? '1fr 1.2fr' : '1fr'},
+                            display: 'grid', gap: 2.5, alignItems: 'start',
+                            gridTemplateColumns: {xs: '1fr', md: data.by_doc_type?.length ? '1fr 1fr' : '1fr'},
                         }}>
                             {!!data.by_doc_type?.length && (
                                 <SectionCard title="Kateqoriya üzrə bölgü">
                                     <DocTypePieChart byDocType={data.by_doc_type}/>
                                 </SectionCard>
                             )}
-                            <SectionCard title="Təşkilat üzrə bölgü (ilk 8)">
+                            <SectionCard title="Təşkilat üzrə bölgü" subtitle="Ən çox sənədi olan ilk 8 təşkilat">
                                 <ByOrganizationBarChart byOrganization={data.by_organization}/>
                             </SectionCard>
                         </Box>
