@@ -107,6 +107,7 @@ export default function AppShell({children, onReady}) {
         >
             <AdminSidebar
                 tree={sidebarTree}
+                user={user}
                 collapsed={collapsed}
                 onToggleCollapsed={() => setCollapsed((c) => !c)}
                 mobileOpen={mobileOpen}

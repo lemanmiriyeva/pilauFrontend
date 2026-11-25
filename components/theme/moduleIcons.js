@@ -5,6 +5,8 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import GavelOutlinedIcon from '@mui/icons-material/GavelOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import ImportExportOutlinedIcon from '@mui/icons-material/ImportExportOutlined';
+import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
+import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined';
 import PercentOutlinedIcon from '@mui/icons-material/PercentOutlined';
 
 const ICON_MAP = {
@@ -16,6 +18,8 @@ const ICON_MAP = {
     local_shipping: LocalShippingOutlinedIcon,
     import_export: ImportExportOutlinedIcon,
     percent: PercentOutlinedIcon,
+    swap_horiz: SwapHorizOutlinedIcon,
+    fact_check: FactCheckOutlinedIcon,
 };
 
 export function getModuleIcon(key) {

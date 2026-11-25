@@ -41,6 +41,7 @@ export const APP_ROUTES = {
     TESKILATLAR_YENI: "/modullar/teskilatlar/yeni",
     NOMENKLATURA: "/modullar/teskilatlar/nomenklatura",
     PARTNYORLAR: "/modullar/partnyor-sirketler",
+    DOVRIYYELER: "/modullar/dovriyyeler",
     MODUL_KONFIQURASIYASI: "/inzibatci-paneli/modul-konfiqurasiyasi",
     BILDIRISLER:"/bildirisler",
     HESABATLAR: "/modullar/hesabatlar",

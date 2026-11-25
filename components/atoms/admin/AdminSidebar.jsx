@@ -3,21 +3,42 @@ import React, {useState} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import {useRouter, usePathname} from "next/navigation";
-import {GOV} from "@/components/theme/govColors";
 import {APP_ROUTES} from "@/components/constants";
+import {getModuleIcon} from "@/components/theme/moduleIcons";
 
-const SIDEBAR_WIDTH = 300;
-const RAIL_WIDTH = 56;
-const CIRCLE = 22;
+const SIDEBAR_WIDTH = 296;
+const RAIL_WIDTH = 84;
+
+/* Yeni sidebar dizaynı: tünd mavi şüşə kart, ikon kafelləri, aktiv bənd bənövşəyi,
+ * altda istifadəçi kartı. Rənglər burada yerlidir (digər səhifələrə təsir etmir). */
+const S = {
+    bgTop: '#0B1E4A',
+    bgBottom: '#050D26',
+    border: 'rgba(255,255,255,0.08)',
+    tile: 'rgba(255,255,255,0.07)',
+    tileBorder: 'rgba(255,255,255,0.06)',
+    text: '#E8EDF8',
+    muted: '#8D9BC0',
+    activeTop: '#8B6CF6',
+    activeBottom: '#5B3FD9',
+    activeBg: 'linear-gradient(90deg, rgba(139,108,246,0.30) 0%, rgba(139,108,246,0.08) 100%)',
+    hover: 'rgba(255,255,255,0.05)',
+};
 
 function hrefForModule(module, parentKeys = []) {
     if (module.key === 'inzibatci-paneli') return APP_ROUTES.INZIBATCI;
+    if (parentKeys.length === 0) {
+        if (module.key === 'tesdiq-axini') return APP_ROUTES.TESDIQ_AXINI;
+        if (module.key === 'dovriyyeler') return APP_ROUTES.DOVRIYYELER;
+        if (module.key === 'partnyor-sirketler') return APP_ROUTES.PARTNYORLAR;
+    }
     if (parentKeys[0] === 'inzibatci-paneli') {
         if (module.key === 'istifadeciler') return APP_ROUTES.INZIBATCI_ISTIFADECILER;
         if (module.key === 'icazelerin-idaresi') return APP_ROUTES.INZIBATCI_ICAZELER;
@@ -30,20 +51,67 @@ function hrefForModule(module, parentKeys = []) {
     return `${APP_ROUTES.MODULES}/${[...parentKeys, module.key].join('/')}`;
 }
 
-function NavIcon({open, hasChildren}) {
-    const Icon = hasChildren && open ? KeyboardArrowDownIcon : ChevronRightIcon;
+function IconTile({Icon, active, size = 38}) {
     return (
         <Box sx={{
-            width: CIRCLE, height: CIRCLE, borderRadius: '50%', flexShrink: 0,
+            width: size, height: size, borderRadius: '12px', flexShrink: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: `linear-gradient(180deg, ${GOV.navIconBgTop} 0%, ${GOV.navIconBgBottom} 100%)`,
+            background: active
+                ? `linear-gradient(180deg, ${S.activeTop} 0%, ${S.activeBottom} 100%)`
+                : S.tile,
+            border: `1px solid ${active ? 'transparent' : S.tileBorder}`,
+            boxShadow: active ? '0 6px 16px rgba(91,63,217,0.45)' : 'none',
+            transition: 'background 0.2s ease',
         }}>
-            <Icon sx={{fontSize: 16, color: GOV.navIconFg}}/>
+            <Icon sx={{fontSize: 20, color: active ? '#fff' : S.text}}/>
         </Box>
     );
 }
 
-function NavItem({module, parentKeys, depth, pathname, onNavigate}) {
+function NavRow({Icon, label, active, hasChildren, open, onClick, collapsed}) {
+    return (
+        <Box sx={{position: 'relative', px: 1.5, py: 0.4}}>
+            {active && (
+                <Box sx={{
+                    position: 'absolute', left: 0, top: 10, bottom: 10, width: 3, borderRadius: '0 3px 3px 0',
+                    background: S.activeTop,
+                }}/>
+            )}
+            <Box
+                onClick={onClick}
+                title={collapsed ? label : undefined}
+                sx={{
+                    display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
+                    px: collapsed ? 0.5 : 1, py: 0.9, borderRadius: '14px',
+                    justifyContent: collapsed ? 'center' : 'flex-start',
+                    background: active ? S.activeBg : 'transparent',
+                    '&:hover': {background: active ? S.activeBg : S.hover},
+                }}
+            >
+                <IconTile Icon={Icon} active={active}/>
+                {!collapsed && (
+                    <>
+                        <Typography sx={{
+                            fontSize: 14.5, fontWeight: active ? 700 : 600, color: active ? '#fff' : S.text,
+                            flexGrow: 1, lineHeight: 1.25,
+                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        }}>
+                            {label}
+                        </Typography>
+                        {hasChildren && (
+                            <ExpandMoreIcon sx={{
+                                fontSize: 20, color: S.muted,
+                                transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease',
+                            }}/>
+                        )}
+                    </>
+                )}
+            </Box>
+        </Box>
+    );
+}
+
+function NavItem({module, parentKeys, depth, pathname, onNavigate, collapsed}) {
     const hasChildren = module.children && module.children.length > 0;
     const href = hrefForModule(module, parentKeys);
     const modulePath = `${APP_ROUTES.MODULES}/${[...parentKeys, module.key].join('/')}`;
@@ -53,20 +121,22 @@ function NavItem({module, parentKeys, depth, pathname, onNavigate}) {
 
     if (depth > 0) {
         return (
-            <Box sx={{position: 'relative', pl: `${CIRCLE / 2 + 42}px`, pr: 2}}>
+            <Box sx={{position: 'relative', pl: '34px', pr: 2.5}}>
                 <Box sx={{
-                    position: 'absolute', left: `${CIRCLE / 2 + 17}px`, top: 0, bottom: 0,
-                    borderLeft: `1.5px dashed ${GOV.textOnNavyMuted}`, opacity: 0.55,
+                    position: 'absolute', left: '34px', top: 0, bottom: 0,
+                    borderLeft: `1.5px solid ${S.border}`,
                 }}/>
                 <Box
                     onClick={() => onNavigate(href)}
-                    sx={{py: 1.3, cursor: 'pointer', '&:hover .navlabel': {color: '#FFFFFF'}}}
+                    sx={{
+                        ml: 2.5, my: 0.25, px: 1.5, py: 0.9, borderRadius: '10px', cursor: 'pointer',
+                        background: isActive ? S.activeBg : 'transparent',
+                        '&:hover': {background: isActive ? S.activeBg : S.hover},
+                    }}
                 >
-                    <Typography className="navlabel" sx={{
-                        fontSize: 11.5, fontWeight: isActive ? 700 : 500,
-                        color: isActive ? '#FFFFFF' : GOV.textOnNavyMuted,
-                        textTransform: 'uppercase', letterSpacing: 0.3, lineHeight: 1.3,
-                        textDecoration: isActive ? 'underline' : 'none',
+                    <Typography sx={{
+                        fontSize: 13, fontWeight: isActive ? 700 : 500, lineHeight: 1.3,
+                        color: isActive ? '#fff' : S.muted,
                     }}>
                         {module.title}
                     </Typography>
@@ -75,30 +145,18 @@ function NavItem({module, parentKeys, depth, pathname, onNavigate}) {
         );
     }
 
+    const Icon = getModuleIcon(module.icon);
     return (
         <Box>
-            <Box
+            <NavRow
+                Icon={Icon} label={module.title} active={containsActive && !hasChildren ? true : isActive}
+                hasChildren={hasChildren} open={open} collapsed={collapsed}
                 onClick={() => {
-                    if (hasChildren) setOpen((o) => !o);
+                    if (hasChildren && !collapsed) setOpen((o) => !o);
                     else onNavigate(href);
                 }}
-                sx={{
-                    display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
-                    pl: 2.25, pr: 2, py: 1.5,
-                    '&:hover .navlabel': {color: '#FFFFFF'},
-                }}
-            >
-                <NavIcon open={open} hasChildren={hasChildren}/>
-                <Typography className="navlabel" sx={{
-                    fontSize: 12.5, fontWeight: isActive ? 700 : 600, flexGrow: 1,
-                    color: isActive ? '#FFFFFF' : GOV.textOnNavyMuted,
-                    textTransform: 'uppercase', letterSpacing: 0.3, lineHeight: 1.3,
-                    textDecoration: isActive ? 'underline' : 'none',
-                }}>
-                    {module.title}
-                </Typography>
-            </Box>
-            {hasChildren && (
+            />
+            {hasChildren && !collapsed && (
                 <Collapse in={open} timeout={220} unmountOnExit>
                     <Box sx={{pb: 0.5}}>
                         {module.children.map((child) => (
@@ -114,36 +172,74 @@ function NavItem({module, parentKeys, depth, pathname, onNavigate}) {
     );
 }
 
-function NavList({tree, pathname, onNavigate}) {
+function NavList({tree, pathname, onNavigate, collapsed}) {
     return (
-        <Box sx={{py: 1.5, width: SIDEBAR_WIDTH}}>
-            <Box
-                onClick={() => onNavigate(APP_ROUTES.HOME)}
-                sx={{
-                    display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
-                    pl: 2.25, pr: 2, py: 1.3,
-                    '&:hover .navlabel': {color: '#FFFFFF'},
-                }}
-            >
-                <NavIcon open={false} hasChildren={false}/>
-                <Typography className="navlabel" sx={{
-                    fontSize: 12.5, fontWeight: pathname === APP_ROUTES.HOME ? 700 : 600,
-                    color: pathname === APP_ROUTES.HOME ? '#FFFFFF' : GOV.textOnNavyMuted,
-                    textTransform: 'uppercase', letterSpacing: 0.3,
-                    textDecoration: pathname === APP_ROUTES.HOME ? 'underline' : 'none',
+        <Box sx={{py: 1}}>
+            {!collapsed && (
+                <Typography sx={{
+                    px: 3, pt: 1.5, pb: 1, fontSize: 11.5, fontWeight: 800, letterSpacing: 1.4, color: S.muted,
                 }}>
-                    Ana Səhifə
+                    MODULLAR
                 </Typography>
-            </Box>
-
+            )}
+            <NavRow
+                Icon={HomeOutlinedIcon} label="Ana səhifə" collapsed={collapsed}
+                active={pathname === APP_ROUTES.HOME} onClick={() => onNavigate(APP_ROUTES.HOME)}
+            />
             {(tree || []).map((m) => (
-                <NavItem key={m.id} module={m} parentKeys={[]} depth={0} pathname={pathname} onNavigate={onNavigate}/>
+                <NavItem
+                    key={m.id} module={m} parentKeys={[]} depth={0}
+                    pathname={pathname} onNavigate={onNavigate} collapsed={collapsed}
+                />
             ))}
         </Box>
     );
 }
 
-export default function AdminSidebar({tree, collapsed, onToggleCollapsed, mobileOpen, onCloseMobile}) {
+function UserCard({user, collapsed}) {
+    if (!user) return null;
+    const name = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username;
+    const role = (user.is_superuser || user.is_staff)
+        ? 'Sistem administratoru'
+        : (user.position_name || user.position?.name || user.organization_name || user.email || '');
+    const initials = ((user.first_name || '')[0] || '') + ((user.last_name || '')[0] || '') || (user.username || '?')[0];
+    return (
+        <Box sx={{p: 1.5, borderTop: `1px solid ${S.border}`}}>
+            <Box sx={{
+                display: 'flex', alignItems: 'center', gap: 1.25, p: collapsed ? 0.75 : 1.25, borderRadius: '16px',
+                background: 'rgba(255,255,255,0.05)', border: `1px solid ${S.tileBorder}`,
+                justifyContent: collapsed ? 'center' : 'flex-start',
+            }}>
+                <Avatar
+                    src={user.photo || user.avatar || undefined}
+                    sx={{width: 38, height: 38, fontSize: 14, fontWeight: 700, bgcolor: S.activeBottom}}
+                >
+                    {initials.toUpperCase()}
+                </Avatar>
+                {!collapsed && (
+                    <Box sx={{minWidth: 0}}>
+                        <Typography noWrap sx={{fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: 1.25}}>{name}</Typography>
+                        <Typography noWrap sx={{fontSize: 12, color: S.muted, lineHeight: 1.3}}>{role}</Typography>
+                    </Box>
+                )}
+            </Box>
+        </Box>
+    );
+}
+
+function Panel({tree, pathname, onNavigate, collapsed, user}) {
+    return (
+        <Box sx={{display: 'flex', flexDirection: 'column', height: '100%'}}>
+            <Box sx={{flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', '&::-webkit-scrollbar': {width: 4},
+                '&::-webkit-scrollbar-thumb': {background: 'rgba(255,255,255,0.18)', borderRadius: 4}}}>
+                <NavList tree={tree} pathname={pathname} onNavigate={onNavigate} collapsed={collapsed}/>
+            </Box>
+            <UserCard user={user} collapsed={collapsed}/>
+        </Box>
+    );
+}
+
+export default function AdminSidebar({tree, user, collapsed, onToggleCollapsed, mobileOpen, onCloseMobile}) {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -154,41 +250,40 @@ export default function AdminSidebar({tree, collapsed, onToggleCollapsed, mobile
 
     return (
         <>
+            {/* Desktop */}
             <Box sx={{
                 display: {xs: 'none', sm: 'block'},
-                width: collapsed ? RAIL_WIDTH : SIDEBAR_WIDTH,
-                flexShrink: 0, minHeight: '100%', backgroundColor: GOV.navy,
-                borderRight: `1px solid ${GOV.navDivider}`,
-                overflow: 'hidden',
+                width: (collapsed ? RAIL_WIDTH : SIDEBAR_WIDTH) + 24, flexShrink: 0,
                 transition: 'width 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
             }}>
                 <Box sx={{
-                    display: 'flex', justifyContent: collapsed ? 'center' : 'flex-end',
-                    px: collapsed ? 0 : 2, py: 1.25,
-                    borderBottom: `1px solid ${GOV.navDivider}`,
-                    transition: 'padding 0.28s ease',
+                    position: 'sticky', top: 74, m: '12px', ml: '12px',
+                    height: 'calc(100vh - 98px)', minHeight: 420,
+                    borderRadius: '26px', overflow: 'visible',
+                    background: `linear-gradient(180deg, ${S.bgTop} 0%, ${S.bgBottom} 100%)`,
+                    border: `1px solid ${S.border}`,
+                    boxShadow: '0 18px 40px rgba(5,13,38,0.35)',
                 }}>
-                    {collapsed ? (
-                        <OpenInFullIcon
-                            onClick={onToggleCollapsed}
-                            sx={{fontSize: 17, color: GOV.textOnNavyMuted, cursor: 'pointer'}}
-                        />
-                    ) : (
-                        <CloseFullscreenIcon
-                            onClick={onToggleCollapsed}
-                            sx={{fontSize: 17, color: GOV.textOnNavyMuted, cursor: 'pointer'}}
-                        />
-                    )}
-                </Box>
-
-                <Box sx={{
-                    opacity: collapsed ? 0 : 1,
-                    transition: collapsed ? 'opacity 0.12s ease' : 'opacity 0.22s ease 0.08s',
-                }}>
-                    <NavList tree={tree} pathname={pathname} onNavigate={(href) => router.push(href)}/>
+                    <Box sx={{height: '100%', borderRadius: '26px', overflow: 'hidden'}}>
+                        <Panel tree={tree} pathname={pathname} onNavigate={(href) => router.push(href)}
+                               collapsed={collapsed} user={user}/>
+                    </Box>
+                    <Box
+                        onClick={onToggleCollapsed}
+                        sx={{
+                            position: 'absolute', top: 18, right: -14, width: 28, height: 28, borderRadius: '50%',
+                            background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.25)', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2,
+                        }}
+                    >
+                        {collapsed
+                            ? <ChevronRightIcon sx={{fontSize: 20, color: '#0B1E4A'}}/>
+                            : <ChevronLeftIcon sx={{fontSize: 20, color: '#0B1E4A'}}/>}
+                    </Box>
                 </Box>
             </Box>
 
+            {/* Mobil */}
             <Box
                 onClick={onCloseMobile}
                 sx={{
@@ -203,22 +298,18 @@ export default function AdminSidebar({tree, collapsed, onToggleCollapsed, mobile
             <Box sx={{
                 display: {xs: 'block', sm: 'none'},
                 position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 1201,
-                width: Math.min(SIDEBAR_WIDTH, 300), maxWidth: '85vw',
-                backgroundColor: GOV.navy, overflowY: 'auto',
+                width: SIDEBAR_WIDTH, maxWidth: '85vw',
+                background: `linear-gradient(180deg, ${S.bgTop} 0%, ${S.bgBottom} 100%)`,
                 transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
                 transition: 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow: mobileOpen ? '4px 0 24px rgba(0,0,0,0.35)' : 'none',
             }}>
-                <Box sx={{
-                    display: 'flex', justifyContent: 'flex-end', px: 2, py: 1.25,
-                    borderBottom: `1px solid ${GOV.navDivider}`,
-                }}>
-                    <CloseIcon
-                        onClick={onCloseMobile}
-                        sx={{fontSize: 20, color: GOV.textOnNavyMuted, cursor: 'pointer'}}
-                    />
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', px: 2, py: 1.25}}>
+                    <CloseIcon onClick={onCloseMobile} sx={{fontSize: 22, color: S.muted, cursor: 'pointer'}}/>
                 </Box>
-                <NavList tree={tree} pathname={pathname} onNavigate={navigate}/>
+                <Box sx={{height: 'calc(100% - 52px)'}}>
+                    <Panel tree={tree} pathname={pathname} onNavigate={navigate} collapsed={false} user={user}/>
+                </Box>
             </Box>
         </>
     );
